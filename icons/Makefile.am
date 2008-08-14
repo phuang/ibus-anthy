@@ -23,7 +23,7 @@ icons_DATA = \
 	ibus-anthy.png \
 	$(NULL)
 
-iconsdir = $(datadir)/ibus-anthy/icons
+iconsdir = $(pkgdatadir)/icons
 
 EXTRA_DIST = \
 	ibus-anthy.png \
