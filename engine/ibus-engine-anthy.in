@@ -18,8 +18,9 @@
 # License along with this program; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-
+prefix=@prefix@
+datadir=@datadir@
 export IBUS_PREFIX=@prefix@
-export IBUS_ANTHY_PKGDATADIR=@prefix@/share/ibus-anthy
-exec python @prefix@/share/ibus-anthy/main.py $@
+export IBUS_ANTHY_PKGDATADIR=@datadir@/@PACKAGE@
+exec python @datadir@/@PACKAGE@/main.py $@
 
