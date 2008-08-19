@@ -55,46 +55,36 @@ class Engine(ibus.EngineBase):
         props = ibus.PropList()
 
         # init input mode properties
-        mode_prop = ibus.Property(name = "InputMode",
+        mode_prop = ibus.Property(name = u"InputMode",
                             type = ibus.PROP_TYPE_MENU,
                             label = u"あ",
-                            tooltip = "Switch input mode")
-        self.__prop_dict["InputMode"] = mode_prop
+                            tooltip = _(u"Switch input mode"))
+        self.__prop_dict[u"InputMode"] = mode_prop
 
         mode_props = ibus.PropList()
-        mode_props.append(ibus.Property(name = "InputMode.Hiragana",
+        mode_props.append(ibus.Property(name = u"InputMode.Hiragana",
                                         type = ibus.PROP_TYPE_RADIO,
-                                        label = "Hiragana"))
-        mode_props.append(ibus.Property(name = "InputMode.Katakana",
+                                        label = _(u"Hiragana")))
+        mode_props.append(ibus.Property(name = u"InputMode.Katakana",
                                         type = ibus.PROP_TYPE_RADIO,
-                                        label = "Katakana"))
-        mode_props.append(ibus.Property(name = "InputMode.HalfWidthKatakana",
+                                        label = _(u"Katakana")))
+        mode_props.append(ibus.Property(name = u"InputMode.HalfWidthKatakana",
                                         type = ibus.PROP_TYPE_RADIO,
-                                        label = "Half width katakana"))
-        mode_props.append(ibus.Property(name = "InputMode.Latin",
+                                        label = _(u"Half width katakana")))
+        mode_props.append(ibus.Property(name = u"InputMode.Latin",
                                         type = ibus.PROP_TYPE_RADIO,
-                                        label = "Latin"))
-        mode_props.append(ibus.Property(name = "InputMode.WideLatin",
+                                        label = _(u"Latin")))
+        mode_props.append(ibus.Property(name = u"InputMode.WideLatin",
                                         type = ibus.PROP_TYPE_RADIO,
-                                        label = "Wide Latin"))
+                                        label = _(u"Wide Latin")))
 
         mode_props[self.__input_mode].set_state(ibus.PROP_STATE_CHECKED)
 
         for prop in mode_props:
-            self.__prop_dict[prop.get_name()] = prop
+            self.__prop_dict[prop.name] = prop
 
         mode_prop.set_sub_props(mode_props)
         props.append(mode_prop)
-
-
-        # init test property
-        # test_prop = ibus.Property(name = "TestProp",
-        #                     type = ibus.PROP_TYPE_TOGGLE,
-        #                     label = u"あ",
-        #                     tooltip = "test property")
-        # self.__prop_dict["TestProp"] = test_prop
-        # props.append(test_prop)
-
 
         return props
 
@@ -213,37 +203,37 @@ class Engine(ibus.EngineBase):
         prop.set_state(state)
 
         if state == ibus.PROP_STATE_CHECKED:
-            if prop_name == "InputMode.Hiragana":
-                prop = self.__prop_dict["InputMode"]
-                prop.set_label(_(u"あ"))
+            if prop_name == u"InputMode.Hiragana":
+                prop = self.__prop_dict[u"InputMode"]
+                prop.label = u"あ"
                 self.__input_mode = MODE_HIRAGANA
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
-            elif prop_name == "InputMode.Katakana":
-                prop = self.__prop_dict["InputMode"]
-                prop.set_label(_(u"ア"))
+            elif prop_name == u"InputMode.Katakana":
+                prop = self.__prop_dict[u"InputMode"]
+                prop.label = u"ア"
                 self.__input_mode = MODE_KATAKANA
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
-            elif prop_name == "InputMode.HalfWidthKatakana":
-                prop = self.__prop_dict["InputMode"]
-                prop.set_label(_(u"ｱ"))
+            elif prop_name == u"InputMode.HalfWidthKatakana":
+                prop = self.__prop_dict[u"InputMode"]
+                prop.label = u"ｱ"
                 self.__input_mode = MODE_HALF_WIDTH_KATAKANA
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
-            elif prop_name == "InputMode.Latin":
-                prop = self.__prop_dict["InputMode"]
+            elif prop_name == u"InputMode.Latin":
+                prop = self.__prop_dict[u"InputMode"]
                 self.__input_mode = MODE_LATIN
-                prop.set_label(_(u"A"))
+                prop.label = u"A"
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
-            elif prop_name == "InputMode.WideLatin":
-                prop = self.__prop_dict["InputMode"]
-                prop.set_label(_(u"Ａ"))
+            elif prop_name == u"InputMode.WideLatin":
+                prop = self.__prop_dict[u"InputMode"]
+                prop.label = u"Ａ"
                 self.__input_mode = MODE_WIDE_LATIN
                 self.update_property(prop)
                 self.__reset()
