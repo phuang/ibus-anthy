@@ -19,8 +19,8 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 prefix=@prefix@
-datadir=@datadir@
+datarootdir=@datarootdir@
 export IBUS_PREFIX=@prefix@
-export IBUS_ANTHY_PKGDATADIR=@datadir@/@PACKAGE@
-exec python @datadir@/@PACKAGE@/main.py $@
+export IBUS_ANTHY_PKGDATADIR=@datarootdir@/@PACKAGE@
+exec python @datarootdir@/@PACKAGE@/main.py $@
 
