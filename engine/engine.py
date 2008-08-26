@@ -264,6 +264,17 @@ class Engine(ibus.EngineBase):
         self.__fill_lookup_table()
         self.__lookup_table_visible = False
 
+    def __end_convert(self):
+        if self.__convert_begined == False:
+            return
+        self.__convert_begined = False
+        self.__convert_chars = u""
+        self.__segments = list()
+        self.__cursor_pos = len(self.__input_chars)
+        self.__lookup_table.clean()
+        self.__lookup_table_visible = False
+
+
     def __fill_lookup_table(self):
         # get segment stat
         seg_stat = anthy.anthy_segment_stat()
@@ -366,10 +377,7 @@ class Engine(ibus.EngineBase):
             return False
 
         if self.__convert_begined:
-            self.__convert_begined = False
-            self.__cursor_pos = len(self.__input_chars)
-            self.__lookup_table.clean()
-            self.__lookup_table_visible = False
+            self.__end_convert()
         elif self.__cursor_pos > 0:
             self.__input_chars = self.__input_chars[:self.__cursor_pos - 1] + self.__input_chars [self.__cursor_pos:]
             self.__cursor_pos -= 1
@@ -382,10 +390,7 @@ class Engine(ibus.EngineBase):
             return False
 
         if self.__convert_begined:
-            self.__convert_begined = False
-            self.__cursor_pos = len(self.__input_chars)
-            self.__lookup_table.clean()
-            self.__lookup_table_visible = False
+            self.__end_convert()
         elif self.__cursor_pos < len(self.__input_chars):
             self.__input_chars = self.__input_chars[:self.__cursor_pos] + self.__input_chars [self.__cursor_pos + 1:]
 
