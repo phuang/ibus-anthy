@@ -278,6 +278,8 @@ class Engine(ibus.EngineBase):
 
 
     def __invalidate(self):
+        self.__update()
+        return
         if self.__need_update:
             return
         self.__need_update = True
