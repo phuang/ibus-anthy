@@ -284,23 +284,24 @@ class Engine(ibus.EngineBase):
         gobject.idle_add(self.__update, priority = gobject.PRIORITY_LOW)
 
     def __translate_to_ja(self):
-        begin, end  = max(self.__cursor_pos - 4, 0), self.__cursor_pos
-
+        begin = self.__cursor_pos - 4
+        if begin < 0:
+            begin = 0
+        end  = self.__cursor_pos
         for i in range(begin, end):
             text = self.__input_chars[i:end]
             romja = romaji_typing_rule.get(text, None)
-            if romja != None:
+            if romja == None:
+                continue
+            if self.__input_mode == MODE_HIRAGANA:
                 text = romja
-                if self.__input_mode == MODE_HIRAGANA:
-                    text = romja
-                elif self.__input_mode == MODE_KATAKANA:
-                    text = hiragana_katakana_table[romja][0]
-                elif self.__input_mode == MODE_HALF_WIDTH_KATAKANA:
-                    text = hiragana_katakana_table[romja][1]
+            elif self.__input_mode == MODE_KATAKANA:
+                text = hiragana_katakana_table[romja][0]
+            elif self.__input_mode == MODE_HALF_WIDTH_KATAKANA:
+                text = hiragana_katakana_table[romja][1]
 
-                self.__input_chars = u"".join((self.__input_chars[:i], text, self.__input_chars[end:]))
-                self.__cursor_pos -= len(text)
-                self.__cursor_pos += len(text)
+            self.__input_chars = romja.join((self.__input_chars[:i], self.__input_chars[end:]))
+            self.__cursor_pos = i + len(text)
 
     def __update_input_chars(self):
         self.__translate_to_ja()
@@ -334,10 +335,10 @@ class Engine(ibus.EngineBase):
 
     def __update(self):
         self.__need_update = False
-        if self.__convert_begined == False:
-            self.__update_input_chars()
-        else:
+        if self.__convert_begined:
             self.__update_convert_chars()
+        else:
+            self.__update_input_chars()
 
     def __on_key_return(self):
         if not self.__input_chars:
@@ -485,10 +486,12 @@ class Engine(ibus.EngineBase):
 
     def __on_key_common(self, keyval):
         if self.__input_mode == MODE_LATIN:
+            # Input Latin chars
             char = unichr(keyval)
             self.__commit_string(char)
             return True
         elif self.__input_mode == MODE_WIDE_LATIN:
+            #  Input Wide Latin chars
             char = unichr(keyval)
             if char in symbols_set:
                 char = romaji_typing_rule[char]
@@ -497,15 +500,15 @@ class Engine(ibus.EngineBase):
             self.__commit_string(char)
             return True
 
+        # Input Japanese
         if self.__convert_begined:
             i = 0
             for seg_index, text in self.__segments:
                 self.__context.commit_segment(i, seg_index)
             self.__commit_string(self.__convert_chars)
-        self.__input_chars  = \
-            self.__input_chars[:self.__cursor_pos] + \
-            unichr(keyval) + \
-            self.__input_chars[self.__cursor_pos:]
+
+        self.__input_chars  = unichr(keyval).join(
+            (self.__input_chars[:self.__cursor_pos], self.__input_chars[self.__cursor_pos:]))
         self.__cursor_pos += 1
         self.__invalidate()
         return True
