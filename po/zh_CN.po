@@ -1,16 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
+# Chinese translation for ibus-anthy.
 # Copyright (C) YEAR Huang Peng <shawn.p.huang@gmail.com>
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the ibus-anthy package.
+# Huang Peng <shawn.p.huang@gmail.com>, 2008.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
 "POT-Creation-Date: 2008-08-21 21:37+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2008-08-21 21:37+0800\n"
+"Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +17,7 @@ msgstr ""
 
 #: engine/engine.py:61
 msgid "Switch input mode"
-msgstr ""
+msgstr "切换输入模式"
 
 #: engine/engine.py:67
 msgid "Hiragana"
@@ -34,8 +33,8 @@ msgstr ""
 
 #: engine/engine.py:76
 msgid "Latin"
-msgstr ""
+msgstr "英数"
 
 #: engine/engine.py:79
 msgid "Wide Latin"
-msgstr ""
+msgstr "全角英数"
