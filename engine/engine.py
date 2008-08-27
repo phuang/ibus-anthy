@@ -346,7 +346,8 @@ class Engine(ibus.EngineBase):
             elif self.__input_mode == MODE_HALF_WIDTH_KATAKANA:
                 text = hiragana_katakana_table[romja][1]
 
-            self.__input_chars = romja.join((self.__input_chars[:i], self.__input_chars[end:]))
+            self.__input_chars = text.join(
+                (self.__input_chars[:i], self.__input_chars[end:]))
             self.__cursor_pos = i + len(text)
 
     def __update_input_chars(self):
@@ -548,7 +549,8 @@ class Engine(ibus.EngineBase):
             self.__commit_string(self.__convert_chars)
 
         self.__input_chars  = unichr(keyval).join(
-            (self.__input_chars[:self.__cursor_pos], self.__input_chars[self.__cursor_pos:]))
+            (self.__input_chars[:self.__cursor_pos],
+            self.__input_chars[self.__cursor_pos:]))
         self.__cursor_pos += 1
         self.__invalidate()
         return True
