@@ -24,6 +24,7 @@ import ibus
 import anthy
 from tables import *
 from ibus import keysyms
+from ibus import modifier
 
 MODE_HIRAGANA, \
 MODE_KATAKANA, \
@@ -160,9 +161,39 @@ class Engine(ibus.EngineBase):
         self.commit_string(text)
         self.__invalidate()
 
+    def __shrink_segment(self, relative_size):
+        self.__context.resize_segment(self.__cursor_pos, relative_size)
+        conv_stat = anthy.anthy_conv_stat()
+        self.__context.get_stat(conv_stat)
+        del self.__segments[self.__cursor_pos:]
+        for i in xrange(self.__cursor_pos, conv_stat.nr_segment):
+            buf = self.__context.get_segment(i, 0)
+            text = unicode(buf, "utf-8")
+            self.__segments.append((0, text))
+        self.__lookup_table_visible = False
+        self.__fill_lookup_table()
+        self.__invalidate()
+        return True
+
     def process_key_event(self, keyval, is_press, state):
         # ignore key release events
         if not is_press:
+            return False
+        state = state & (modifier.SHIFT_MASK | modifier.CONTROL_MASK | modifier.MOD1_MASK)
+
+        if state == modifier.SHIFT_MASK:
+            if self.__convert_begined:
+                if keyval == keysyms.Left:
+                    self.__shrink_segment(-1)
+                    return True
+                elif keyval == keysyms.Right:
+                    self.__shrink_segment(1)
+                    return True
+
+        if state & (modifier.CONTROL_MASK | modifier.MOD1_MASK) != 0:
+            if self.__input_chars:
+                # if user has inputed some chars
+                return True
             return False
 
         if keyval == keysyms.Return:
@@ -194,9 +225,9 @@ class Engine(ibus.EngineBase):
             unichr(keyval) in symbols_set:
             return self.__on_key_common(keyval)
         else:
-            return True
-
-        return False
+            if self.__input_chars:
+                return True
+            return False
 
     def property_activate(self, prop_name, state):
         prop = self.__prop_dict[prop_name]
