@@ -26,13 +26,15 @@ from tables import *
 from ibus import keysyms
 from ibus import modifier
 
+from gettext import dgettext
+_  = lambda a : dgettext("ibus-anthy", a)
+N_ = lambda a : a
+
 MODE_HIRAGANA, \
 MODE_KATAKANA, \
 MODE_HALF_WIDTH_KATAKANA, \
 MODE_LATIN, \
 MODE_WIDE_LATIN = range(5)
-
-_ = lambda a: a
 
 class Engine(ibus.EngineBase):
     def __init__(self, bus, object_path):

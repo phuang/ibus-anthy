@@ -25,6 +25,7 @@ import getopt
 import ibus
 import factory
 import gobject
+import locale
 
 class IMApp:
     def __init__(self):
@@ -50,6 +51,11 @@ def print_help(out, v = 0):
     sys.exit(v)
 
 def main():
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+    except:
+        pass
+
     daemonize = False
     shortopt = "hd"
     longopt = ["help", "daemonize"]
