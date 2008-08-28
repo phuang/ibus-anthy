@@ -596,15 +596,21 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_conv(self, mode):
+        if self.__input_chars.is_empty():
+            return False
+
         if self.__convert_mode == CONV_MODE_ANTHY:
             self.__end_anthy_convert()
 
-        if mode in (0, 1):
-            self.__convert_mode = mode + CONV_MODE_HIRAGANA
+        if mode == 0 or mode == 1:
+            if self.__convert_mode == CONV_MODE_HIRAGANA + mode:
+                return True
+            self.__convert_mode = CONV_MODE_HIRAGANA + mode
         elif mode == 2:
+            if self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
+                return True
             if self.__convert_mode == CONV_MODE_HIRAGANA or \
                 self.__convert_mode == CONV_MODE_KATAKANA or \
-                self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA or \
                 self.__convert_mode == CONV_MODE_OFF or \
                 self.__convert_mode == CONV_MODE_ANTHY:
                 self.__convert_mode = CONV_MODE_HALF_WIDTH_KATAKANA
