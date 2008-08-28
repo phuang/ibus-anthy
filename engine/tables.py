@@ -156,7 +156,6 @@ romaji_typing_rule = {
     u"ha" : u"は",
     u"hi" : u"ひ",
     u"hu" : u"ふ",
-    u"fu" : u"ふ",
     u"he" : u"へ",
     u"ho" : u"ほ",
     u"ba" : u"ば",

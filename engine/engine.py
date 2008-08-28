@@ -30,11 +30,24 @@ from gettext import dgettext
 _  = lambda a : dgettext("ibus-anthy", a)
 N_ = lambda a : a
 
-MODE_HIRAGANA, \
-MODE_KATAKANA, \
-MODE_HALF_WIDTH_KATAKANA, \
-MODE_LATIN, \
-MODE_WIDE_LATIN = range(5)
+INPUT_MODE_HIRAGANA, \
+INPUT_MODE_KATAKANA, \
+INPUT_MODE_HALF_WIDTH_KATAKANA, \
+INPUT_MODE_LATIN, \
+INPUT_MODE_WIDE_LATIN = range(5)
+
+CONV_MODE_OFF, \
+CONV_MODE_ANTHY, \
+CONV_MODE_HIRAGANA, \
+CONV_MODE_KATAKANA, \
+CONV_MODE_HALF_WIDTH_KATAKANA, \
+CONV_MODE_LATIN_1, \
+CONV_MODE_LATIN_2, \
+CONV_MODE_LATIN_3, \
+CONV_MODE_WIDE_LATIN_1, \
+CONV_MODE_WIDE_LATIN_2, \
+CONV_MODE_WIDE_LATIN_3, \
+= range(11)
 
 class Engine(ibus.EngineBase):
     def __init__(self, bus, object_path):
@@ -45,7 +58,7 @@ class Engine(ibus.EngineBase):
         self.__context._set_encoding(anthy.ANTHY_UTF8_ENCODING)
 
         # init state
-        self.__input_mode = MODE_HIRAGANA
+        self.__input_mode = INPUT_MODE_HIRAGANA
         self.__prop_dict = {}
 
         self.__lookup_table = ibus.LookupTable()
@@ -53,6 +66,17 @@ class Engine(ibus.EngineBase):
 
         # use reset to init values
         self.__reset()
+
+    # reset values of engine
+    def __reset(self):
+        self.__input_chars = JaString()
+        self.__convert_chars = u""
+        self.__cursor_pos = 0
+        self.__need_update = False
+        self.__convert_mode = CONV_MODE_OFF
+        self.__segments = list()
+        self.__lookup_table.clean()
+        self.__lookup_table_visible = False
 
     def __init_props(self):
         props = ibus.PropList()
@@ -91,20 +115,9 @@ class Engine(ibus.EngineBase):
 
         return props
 
-    # reset values of engine
-    def __reset(self):
-        self.__input_chars = JaString()
-        self.__convert_chars = u""
-        self.__cursor_pos = 0
-        self.__need_update = False
-        self.__convert_begined = False
-        self.__segments = list()
-        self.__lookup_table.clean()
-        self.__lookup_table_visible = False
-
     def page_up(self):
         # only process cursor down in convert mode
-        if not self.__convert_begined:
+        if self.__convert_mode != CONV_MODE_ANTHY:
             return False
 
         if not self.__lookup_table.page_up():
@@ -118,7 +131,7 @@ class Engine(ibus.EngineBase):
 
     def page_down(self):
         # only process cursor down in convert mode
-        if not self.__convert_begined:
+        if self.__convert_mode != CONV_MODE_ANTHY:
             return False
 
         if not self.__lookup_table.page_down():
@@ -132,7 +145,7 @@ class Engine(ibus.EngineBase):
 
     def cursor_up(self):
         # only process cursor down in convert mode
-        if not self.__convert_begined:
+        if self.__convert_mode != CONV_MODE_ANTHY:
             return False
 
         if not self.__lookup_table.cursor_up():
@@ -146,7 +159,7 @@ class Engine(ibus.EngineBase):
 
     def cursor_down(self):
         # only process cursor down in convert mode
-        if not self.__convert_begined:
+        if self.__convert_mode != CONV_MODE_ANTHY:
             return False
 
         if not self.__lookup_table.cursor_down():
@@ -188,7 +201,7 @@ class Engine(ibus.EngineBase):
             return False
 
         if state == modifier.SHIFT_MASK:
-            if self.__convert_begined:
+            if self.__convert_mode == CONV_MODE_ANTHY:
                 if keyval == keysyms.Left:
                     self.__shrink_segment(-1)
                     return True
@@ -226,6 +239,8 @@ class Engine(ibus.EngineBase):
             return self.__on_key_left()
         elif keyval == keysyms.Right:
             return self.__on_key_right()
+        elif keyval in xrange(keysyms.F6, keysyms.F9 + 1):
+            return self.__on_key_conv(keyval - keysyms.F6)
         elif keyval in xrange(keysyms.a, keysyms.z + 1) or \
             keyval in xrange(keysyms.A, keysyms.Z + 1) or \
             unichr(keyval) in symbols_set:
@@ -243,27 +258,27 @@ class Engine(ibus.EngineBase):
             if prop_name == u"InputMode.Hiragana":
                 prop = self.__prop_dict[u"InputMode"]
                 prop.label = u"あ"
-                self.__input_mode = MODE_HIRAGANA
+                self.__input_mode = INPUT_MODE_HIRAGANA
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
             elif prop_name == u"InputMode.Katakana":
                 prop = self.__prop_dict[u"InputMode"]
                 prop.label = u"ア"
-                self.__input_mode = MODE_KATAKANA
+                self.__input_mode = INPUT_MODE_KATAKANA
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
             elif prop_name == u"InputMode.HalfWidthKatakana":
                 prop = self.__prop_dict[u"InputMode"]
                 prop.label = u"ｱ"
-                self.__input_mode = MODE_HALF_WIDTH_KATAKANA
+                self.__input_mode = INPUT_MODE_HALF_WIDTH_KATAKANA
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
             elif prop_name == u"InputMode.Latin":
                 prop = self.__prop_dict[u"InputMode"]
-                self.__input_mode = MODE_LATIN
+                self.__input_mode = INPUT_MODE_LATIN
                 prop.label = u"A"
                 self.update_property(prop)
                 self.__reset()
@@ -271,7 +286,7 @@ class Engine(ibus.EngineBase):
             elif prop_name == u"InputMode.WideLatin":
                 prop = self.__prop_dict[u"InputMode"]
                 prop.label = u"Ａ"
-                self.__input_mode = MODE_WIDE_LATIN
+                self.__input_mode = INPUT_MODE_WIDE_LATIN
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
@@ -283,10 +298,10 @@ class Engine(ibus.EngineBase):
         pass
 
     # begine convert
-    def __begin_convert(self):
-        if self.__convert_begined:
+    def __begin_anthy_convert(self):
+        if self.__convert_mode == CONV_MODE_ANTHY:
             return
-        self.__convert_begined = True
+        self.__convert_mode = CONV_MODE_ANTHY
 
         text, cursor = self.__input_chars.get_hiragana()
 
@@ -303,16 +318,19 @@ class Engine(ibus.EngineBase):
         self.__fill_lookup_table()
         self.__lookup_table_visible = False
 
-    def __end_convert(self):
-        if self.__convert_begined == False:
+    def __end_anthy_convert(self):
+        if self.__convert_mode == CONV_MODE_OFF:
             return
-        self.__convert_begined = False
+
+        self.__convert_mode = CONV_MODE_OFF
         self.__convert_chars = u""
         self.__segments = list()
         self.__cursor_pos = 0
         self.__lookup_table.clean()
         self.__lookup_table_visible = False
 
+    def __end_convert(self):
+        self.__end_anthy_convert()
 
     def __fill_lookup_table(self):
         # get segment stat
@@ -328,21 +346,24 @@ class Engine(ibus.EngineBase):
 
 
     def __invalidate(self):
-        self.__update()
-        return
         if self.__need_update:
             return
         self.__need_update = True
         gobject.idle_add(self.__update, priority = gobject.PRIORITY_LOW)
 
-    def __update_input_chars(self):
-        if self.__input_mode == MODE_HIRAGANA:
+    def __get_preedit(self):
+        if self.__input_mode == INPUT_MODE_HIRAGANA:
             text, cursor = self.__input_chars.get_hiragana()
-        elif self.__input_mode == MODE_KATAKANA:
+        elif self.__input_mode == INPUT_MODE_KATAKANA:
             text, cursor = self.__input_chars.get_katakana()
-        elif self.__input_mode == MODE_HALF_WIDTH_KATAKANA:
+        elif self.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA:
             text, cursor = self.__input_chars.get_half_width_katakana()
+        else:
+            text, cursor = u"", 0
+        return text, cursor
 
+    def __update_input_chars(self):
+        text, cursor = self.__get_preedit()
         attrs = ibus.AttrList()
         attrs.append(ibus.AttributeUnderline(
             ibus.ATTR_UNDERLINE_SINGLE, 0,
@@ -355,6 +376,45 @@ class Engine(ibus.EngineBase):
             self.__lookup_table_visible)
 
     def __update_convert_chars(self):
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            self.__update_anthy_convert_chars()
+            return
+        if self.__convert_mode == CONV_MODE_HIRAGANA:
+            text, cursor = self.__input_chars.get_hiragana()
+        elif self.__convert_mode == CONV_MODE_KATAKANA:
+            text, cursor = self.__input_chars.get_katakana()
+        elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
+            text, cursor = self.__input_chars.get_half_width_katakana()
+        elif self.__convert_mode == CONV_MODE_LATIN_1:
+            text, cursor = self.__input_chars.get_latin()
+            text = text.lower()
+        elif self.__convert_mode == CONV_MODE_LATIN_2:
+            text, cursor = self.__input_chars.get_latin()
+            text = text.upper()
+        elif self.__convert_mode == CONV_MODE_LATIN_3:
+            text, cursor = self.__input_chars.get_latin()
+            text = text.capitalize()
+        elif self.__convert_mode == CONV_MODE_WIDE_LATIN_1:
+            text, cursor = self.__input_chars.get_wide_latin()
+            text = text.lower()
+        elif self.__convert_mode == CONV_MODE_WIDE_LATIN_2:
+            text, cursor = self.__input_chars.get_wide_latin()
+            text = text.upper()
+        elif self.__convert_mode == CONV_MODE_WIDE_LATIN_3:
+            text, cursor = self.__input_chars.get_wide_latin()
+            text = text.capitalize()
+        self.__convert_chars = text
+        attrs = ibus.AttrList()
+        attrs.append(ibus.AttributeBackground(ibus.RGB(200, 200, 240),
+            0, len(text)))
+        self.update_preedit(text, attrs, len(text), True)
+
+        self.update_aux_string(u"",
+            ibus.AttrList(), self.__lookup_table_visible)
+        self.update_lookup_table(self.__lookup_table,
+            self.__lookup_table_visible)
+
+    def __update_anthy_convert_chars(self):
         self.__convert_chars = u""
         pos = 0
         i = 0
@@ -379,21 +439,26 @@ class Engine(ibus.EngineBase):
 
     def __update(self):
         self.__need_update = False
-        if self.__convert_begined:
-            self.__update_convert_chars()
-        else:
+        if self.__convert_mode == CONV_MODE_OFF:
             self.__update_input_chars()
+        else:
+            self.__update_convert_chars()
 
     def __on_key_return(self):
         if self.__input_chars.is_empty():
             return False
-        if self.__convert_begined == False:
-            self.__commit_string(self.__input_chars.to_latin())
-        else:
+
+        if self.__convert_mode == CONV_MODE_OFF:
+            text, cursor = self.__get_preedit()
+            self.__commit_string(text)
+        elif self.__convert_mode == CONV_MODE_ANTHY:
             i = 0
             for seg_index, text in self.__segments:
                 self.__context.commit_segment(i, seg_index)
             self.__commit_string(self.__convert_chars)
+        else:
+            self.__commit_string(self.__convert_chars)
+
         return True
 
     def __on_key_escape(self):
@@ -407,7 +472,7 @@ class Engine(ibus.EngineBase):
         if self.__input_chars.is_empty():
             return False
 
-        if self.__convert_begined:
+        if self.__convert_mode != CONV_MODE_OFF:
             self.__end_convert()
         else:
             self.__input_chars.remove_before()
@@ -419,7 +484,7 @@ class Engine(ibus.EngineBase):
         if self.__input_chars.is_empty():
             return False
 
-        if self.__convert_begined:
+        if self.__convert_mode != CONV_MODE_OFF:
             self.__end_convert()
         else:
             self.__input_chars.remove_after()
@@ -431,16 +496,16 @@ class Engine(ibus.EngineBase):
         if self.__input_chars.is_empty():
             return False
 
-        if self.__convert_begined == False:
-            self.__begin_convert()
+        if self.__convert_mode != CONV_MODE_ANTHY:
+            self.__begin_anthy_convert()
             self.__invalidate()
-        else:
+        elif self.__convert_mode == CONV_MODE_ANTHY:
             self.__lookup_table_visible = True
             self.cursor_down()
         return True
 
     def __on_key_up(self):
-        if not self.__convert_begined:
+        if self.__input_chars.is_empty():
             return False
         self.__lookup_table_visible = True
         self.cursor_up()
@@ -471,9 +536,12 @@ class Engine(ibus.EngineBase):
         if self.__input_chars.is_empty():
             return False
 
-        if not self.__convert_begined:
+        if self.__convert_mode == CONV_MODE_OFF:
             self.__input_chars.move_cursor(-1)
             self.__invalidate()
+            return True
+
+        if self.__convert_mode != CONV_MODE_ANTHY:
             return True
 
         if self.__cursor_pos == 0:
@@ -488,12 +556,15 @@ class Engine(ibus.EngineBase):
         if self.__input_chars.is_empty():
             return False
 
-        if not self.__convert_begined:
+        if self.__convert_mode == CONV_MODE_OFF:
             self.__input_chars.move_cursor(1)
             self.__invalidate()
             return True
 
-        if self.__cursor_pos == len(self.__segments):
+        if self.__convert_mode != CONV_MODE_ANTHY:
+            return True
+
+        if self.__cursor_pos + 1 >= len(self.__segments):
             return True
 
         self.__cursor_pos += 1
@@ -504,11 +575,11 @@ class Engine(ibus.EngineBase):
 
     def __on_key_number(self, keyval):
 
-        if self.__input_mode == MODE_LATIN:
+        if self.__input_mode == INPUT_MODE_LATIN:
             char = unichr(keyval)
             self.__commit_string(char)
             return True
-        elif self.__input_mode == MODE_WIDE_LATIN:
+        elif self.__input_mode == INPUT_MODE_WIDE_LATIN:
             char = ibus.unichar_half_to_full(unichr(keyval))
             self.__commit_string(char)
             return True
@@ -518,7 +589,7 @@ class Engine(ibus.EngineBase):
             return True
 
         index = keyval - keysyms._1
-        if self.__convert_begined and self.__lookup_table_visible:
+        if self.__convert_mode == CONV_MODE_ANTHY and self.__lookup_table_visible:
             candidates = self.__lookup_table.get_canidates_in_current_page()
             if self.__lookup_table.set_cursor_pos_in_current_page(index):
                 index = self.__lookup_table.get_cursor_pos()
@@ -529,14 +600,48 @@ class Engine(ibus.EngineBase):
                 self.__invalidate()
         return True
 
+    def __on_key_conv(self, mode):
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            self.__end_anthy_convert()
+
+        if mode in (0, 1):
+            self.__convert_mode = mode + CONV_MODE_HIRAGANA
+        elif mode == 2:
+            if self.__convert_mode == CONV_MODE_HIRAGANA or \
+                self.__convert_mode == CONV_MODE_KATAKANA or \
+                self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA or \
+                self.__convert_mode == CONV_MODE_OFF or \
+                self.__convert_mode == CONV_MODE_ANTHY:
+                self.__convert_mode = CONV_MODE_HALF_WIDTH_KATAKANA
+            else:
+                if self.__convert_mode >= CONV_MODE_LATIN_1 and self.__convert_mode <= CONV_MODE_LATIN_3:
+                    self.__convert_mode += 1
+                    if self.__convert_mode > CONV_MODE_LATIN_3:
+                        self.__convert_mode = CONV_MODE_LATIN_1
+                else:
+                    self.__convert_mode = CONV_MODE_LATIN_1
+        elif mode == 3:
+            if self.__convert_mode >= CONV_MODE_WIDE_LATIN_1 and self.__convert_mode <= CONV_MODE_WIDE_LATIN_3:
+                self.__convert_mode += 1
+                if self.__convert_mode > CONV_MODE_WIDE_LATIN_3:
+                    self.__convert_mode = CONV_MODE_WIDE_LATIN_1
+            else:
+                self.__convert_mode = CONV_MODE_WIDE_LATIN_1
+        else:
+            print >> sys.stderr, "Unkown convert mode (%d)!" % mode
+            return False
+        self.__invalidate()
+        return True
 
     def __on_key_common(self, keyval):
-        if self.__input_mode == MODE_LATIN:
+
+        if self.__input_mode == INPUT_MODE_LATIN:
             # Input Latin chars
             char = unichr(keyval)
             self.__commit_string(char)
             return True
-        elif self.__input_mode == MODE_WIDE_LATIN:
+
+        elif self.__input_mode == INPUT_MODE_WIDE_LATIN:
             #  Input Wide Latin chars
             char = unichr(keyval)
             if char in symbols_set:
@@ -547,10 +652,12 @@ class Engine(ibus.EngineBase):
             return True
 
         # Input Japanese
-        if self.__convert_begined:
+        if self.__convert_mode == CONV_MODE_ANTHY:
             i = 0
             for seg_index, text in self.__segments:
                 self.__context.commit_segment(i, seg_index)
+            self.__commit_string(self.__convert_chars)
+        elif self.__convert_mode != CONV_MODE_OFF:
             self.__commit_string(self.__convert_chars)
 
         self.__input_chars.insert(unichr(keyval))
@@ -752,12 +859,12 @@ class JaSegment:
 
     def to_katakana(self):
         if self.__jachars:
-            return hiragana_katakana_table[self.__jachars][0]
+            return u"".join(map(lambda c: hiragana_katakana_table[c][0], self.__jachars))
         return self.__enchars
 
     def to_half_width_katakana(self):
         if self.__jachars:
-            return hiragana_katakana_table[self.__jachars][1]
+            return u"".join(map(lambda c: hiragana_katakana_table[c][1], self.__jachars))
         return self.__enchars
 
     def to_latin(self):
