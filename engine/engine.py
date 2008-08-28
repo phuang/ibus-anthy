@@ -225,8 +225,10 @@ class Engine(ibus.EngineBase):
             return self.__on_key_delete()
         elif keyval == keysyms.space:
             return self.__on_key_space()
-        elif keyval >= keysyms._1 and keyval <= keysyms._9:
-            return self.__on_key_number(keyval)
+        elif keyval >= keysyms._0 and keyval <= keysyms._9:
+            if self.__on_key_number(keyval):
+                return True
+            return self.__on_key_common(keyval)
         elif keyval == keysyms.Page_Up or keyval == keysyms.KP_Page_Up:
             return self.__on_key_page_up()
         elif keyval == keysyms.Page_Down or keyval == keysyms.KP_Page_Down:
@@ -239,7 +241,7 @@ class Engine(ibus.EngineBase):
             return self.__on_key_left()
         elif keyval == keysyms.Right:
             return self.__on_key_right()
-        elif keyval in xrange(keysyms.F6, keysyms.F9 + 1):
+        elif keyval >= keysyms.F6 and keyval <= keysyms.F9:
             return self.__on_key_conv(keyval - keysyms.F6)
         elif keyval in xrange(keysyms.a, keysyms.z + 1) or \
             keyval in xrange(keysyms.A, keysyms.Z + 1) or \
@@ -574,30 +576,23 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_number(self, keyval):
+        if self.__convert_mode != CONV_MODE_ANTHY:
+            return False
+        if not self.__lookup_table_visible:
+            return False
 
-        if self.__input_mode == INPUT_MODE_LATIN:
-            char = unichr(keyval)
-            self.__commit_string(char)
+        if keyval == keysyms._0:
             return True
-        elif self.__input_mode == INPUT_MODE_WIDE_LATIN:
-            char = ibus.unichar_half_to_full(unichr(keyval))
-            self.__commit_string(char)
-            return True
-
-        if self.__input_chars.is_empty():
-            self.__commit_string(unichr(keyval))
-            return True
-
         index = keyval - keysyms._1
-        if self.__convert_mode == CONV_MODE_ANTHY and self.__lookup_table_visible:
-            candidates = self.__lookup_table.get_canidates_in_current_page()
-            if self.__lookup_table.set_cursor_pos_in_current_page(index):
-                index = self.__lookup_table.get_cursor_pos()
-                candidate = self.__lookup_table.get_current_candidate()[0]
-                self.__segments[self.__cursor_pos] = index, candidate
-                self.__lookup_table_visible = False
-                self.__on_key_right()
-                self.__invalidate()
+
+        candidates = self.__lookup_table.get_canidates_in_current_page()
+        if self.__lookup_table.set_cursor_pos_in_current_page(index):
+            index = self.__lookup_table.get_cursor_pos()
+            candidate = self.__lookup_table.get_current_candidate()[0]
+            self.__segments[self.__cursor_pos] = index, candidate
+            self.__lookup_table_visible = False
+            self.__on_key_right()
+            self.__invalidate()
         return True
 
     def __on_key_conv(self, mode):
@@ -771,7 +766,10 @@ class JaString:
 class JaSegment:
     def __init__(self, enchars = u"", jachars = u""):
         self.__enchars = enchars
-        self.__jachars = romaji_typing_rule.get(enchars, u"")
+        if jachars:
+            self.__jachars = jachars
+        else:
+            self.__jachars = romaji_typing_rule.get(enchars, u"")
 
     def is_finished(self):
         return self.__jachars != u""
@@ -781,6 +779,7 @@ class JaSegment:
             return [JaSegment(enchar)]
 
         text = self.__enchars + enchar
+
         jachars = romaji_typing_rule.get(text, None)
         if jachars:
             self.__enchars = text
@@ -802,7 +801,7 @@ class JaSegment:
                 self.__enchars = text[:i]
                 return [jasegment]
 
-            jachars, c = double_consonat_typing_rule.get(text, (None, None))
+            jachars, c = double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
                 jasegment = JaSegment(enchars[0], jachars)
                 self.__enchars = text[:i]
