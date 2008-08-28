@@ -69,7 +69,7 @@ class Engine(ibus.EngineBase):
 
     # reset values of engine
     def __reset(self):
-        self.__input_chars = JaString()
+        self.__preedit_ja_string = JaString()
         self.__convert_chars = u""
         self.__cursor_pos = 0
         self.__need_update = False
@@ -210,7 +210,7 @@ class Engine(ibus.EngineBase):
                     return True
 
         if state & (modifier.CONTROL_MASK | modifier.MOD1_MASK) != 0:
-            if not self.__input_chars.is_empty():
+            if not self.__preedit_ja_string.is_empty():
                 # if user has inputed some chars
                 return True
             return False
@@ -248,7 +248,7 @@ class Engine(ibus.EngineBase):
             unichr(keyval) in symbols_set:
             return self.__on_key_common(keyval)
         else:
-            if not self.__input_chars.is_empty():
+            if not self.__preedit_ja_string.is_empty():
                 return True
             return False
 
@@ -305,7 +305,7 @@ class Engine(ibus.EngineBase):
             return
         self.__convert_mode = CONV_MODE_ANTHY
 
-        text, cursor = self.__input_chars.get_hiragana()
+        text, cursor = self.__preedit_ja_string.get_hiragana()
 
         self.__context.set_string(text.encode("utf8"))
         conv_stat = anthy.anthy_conv_stat()
@@ -355,11 +355,11 @@ class Engine(ibus.EngineBase):
 
     def __get_preedit(self):
         if self.__input_mode == INPUT_MODE_HIRAGANA:
-            text, cursor = self.__input_chars.get_hiragana()
+            text, cursor = self.__preedit_ja_string.get_hiragana()
         elif self.__input_mode == INPUT_MODE_KATAKANA:
-            text, cursor = self.__input_chars.get_katakana()
+            text, cursor = self.__preedit_ja_string.get_katakana()
         elif self.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA:
-            text, cursor = self.__input_chars.get_half_width_katakana()
+            text, cursor = self.__preedit_ja_string.get_half_width_katakana()
         else:
             text, cursor = u"", 0
         return text, cursor
@@ -372,7 +372,7 @@ class Engine(ibus.EngineBase):
             len(text)))
 
         self.update_preedit(text,
-            attrs, cursor, not self.__input_chars.is_empty())
+            attrs, cursor, not self.__preedit_ja_string.is_empty())
         self.update_aux_string(u"", ibus.AttrList(), False)
         self.update_lookup_table(self.__lookup_table,
             self.__lookup_table_visible)
@@ -382,28 +382,28 @@ class Engine(ibus.EngineBase):
             self.__update_anthy_convert_chars()
             return
         if self.__convert_mode == CONV_MODE_HIRAGANA:
-            text, cursor = self.__input_chars.get_hiragana()
+            text, cursor = self.__preedit_ja_string.get_hiragana()
         elif self.__convert_mode == CONV_MODE_KATAKANA:
-            text, cursor = self.__input_chars.get_katakana()
+            text, cursor = self.__preedit_ja_string.get_katakana()
         elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
-            text, cursor = self.__input_chars.get_half_width_katakana()
+            text, cursor = self.__preedit_ja_string.get_half_width_katakana()
         elif self.__convert_mode == CONV_MODE_LATIN_1:
-            text, cursor = self.__input_chars.get_latin()
+            text, cursor = self.__preedit_ja_string.get_latin()
             text = text.lower()
         elif self.__convert_mode == CONV_MODE_LATIN_2:
-            text, cursor = self.__input_chars.get_latin()
+            text, cursor = self.__preedit_ja_string.get_latin()
             text = text.upper()
         elif self.__convert_mode == CONV_MODE_LATIN_3:
-            text, cursor = self.__input_chars.get_latin()
+            text, cursor = self.__preedit_ja_string.get_latin()
             text = text.capitalize()
         elif self.__convert_mode == CONV_MODE_WIDE_LATIN_1:
-            text, cursor = self.__input_chars.get_wide_latin()
+            text, cursor = self.__preedit_ja_string.get_wide_latin()
             text = text.lower()
         elif self.__convert_mode == CONV_MODE_WIDE_LATIN_2:
-            text, cursor = self.__input_chars.get_wide_latin()
+            text, cursor = self.__preedit_ja_string.get_wide_latin()
             text = text.upper()
         elif self.__convert_mode == CONV_MODE_WIDE_LATIN_3:
-            text, cursor = self.__input_chars.get_wide_latin()
+            text, cursor = self.__preedit_ja_string.get_wide_latin()
             text = text.capitalize()
         self.__convert_chars = text
         attrs = ibus.AttrList()
@@ -449,7 +449,7 @@ class Engine(ibus.EngineBase):
             self.__update_convert_chars()
 
     def __on_key_return(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
 
         if self.__convert_mode == CONV_MODE_OFF:
@@ -466,38 +466,38 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_escape(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
         self.__reset()
         self.__invalidate()
         return True
 
     def __on_key_back_space(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
 
         if self.__convert_mode != CONV_MODE_OFF:
             self.__end_convert()
         else:
-            self.__input_chars.remove_before()
+            self.__preedit_ja_string.remove_before()
 
         self.__invalidate()
         return True
 
     def __on_key_delete(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
 
         if self.__convert_mode != CONV_MODE_OFF:
             self.__end_convert()
         else:
-            self.__input_chars.remove_after()
+            self.__preedit_ja_string.remove_after()
 
         self.__invalidate()
         return True
 
     def __on_key_space(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
 
         if self.__convert_mode != CONV_MODE_ANTHY:
@@ -509,39 +509,39 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_up(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
         self.__lookup_table_visible = True
         self.cursor_up()
         return True
 
     def __on_key_down(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
         self.__lookup_table_visible = True
         self.cursor_down()
         return True
 
     def __on_key_page_up(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
         if self.__lookup_table_visible == True:
             self.page_up()
         return True
 
     def __on_key_page_down(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
         if self.__lookup_table_visible == True:
             self.page_down()
         return True
 
     def __on_key_left(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
 
         if self.__convert_mode == CONV_MODE_OFF:
-            self.__input_chars.move_cursor(-1)
+            self.__preedit_ja_string.move_cursor(-1)
             self.__invalidate()
             return True
 
@@ -557,11 +557,11 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_right(self):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
 
         if self.__convert_mode == CONV_MODE_OFF:
-            self.__input_chars.move_cursor(1)
+            self.__preedit_ja_string.move_cursor(1)
             self.__invalidate()
             return True
 
@@ -598,7 +598,7 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_conv(self, mode):
-        if self.__input_chars.is_empty():
+        if self.__preedit_ja_string.is_empty():
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
@@ -663,7 +663,7 @@ class Engine(ibus.EngineBase):
         elif self.__convert_mode != CONV_MODE_OFF:
             self.__commit_string(self.__convert_chars)
 
-        self.__input_chars.insert(unichr(keyval))
+        self.__preedit_ja_string.insert(unichr(keyval))
         self.__invalidate()
         return True
 
