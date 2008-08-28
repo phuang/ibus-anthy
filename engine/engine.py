@@ -181,7 +181,9 @@ class Engine(ibus.EngineBase):
         # ignore key release events
         if not is_press:
             return False
-        state = state & (modifier.SHIFT_MASK | modifier.CONTROL_MASK | modifier.MOD1_MASK)
+        state = state & (modifier.SHIFT_MASK | \
+                modifier.CONTROL_MASK | \
+                modifier.MOD1_MASK)
 
         if state == modifier.SHIFT_MASK:
             if self.__convert_begined:
@@ -354,11 +356,15 @@ class Engine(ibus.EngineBase):
         self.__translate_to_ja()
 
         attrs = ibus.AttrList()
-        attrs.append(ibus.AttributeUnderline(ibus.ATTR_UNDERLINE_SINGLE, 0, len(self.__input_chars.encode("utf-8"))))
+        attrs.append(ibus.AttributeUnderline(
+            ibus.ATTR_UNDERLINE_SINGLE, 0,
+            len(self.__input_chars.encode("utf-8"))))
 
-        self.update_preedit(self.__input_chars, attrs, self.__cursor_pos, len(self.__input_chars) > 0)
+        self.update_preedit(self.__input_chars,
+            attrs, self.__cursor_pos, len(self.__input_chars) > 0)
         self.update_aux_string(u"", ibus.AttrList(), False)
-        self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
+        self.update_lookup_table(self.__lookup_table,
+            self.__lookup_table_visible)
 
     def __update_convert_chars(self):
         self.__convert_chars = u""
@@ -371,14 +377,17 @@ class Engine(ibus.EngineBase):
             i += 1
 
         attrs = ibus.AttrList()
-        attrs.append(ibus.AttributeUnderline(ibus.ATTR_UNDERLINE_SINGLE, 0, len(self.__convert_chars)))
+        attrs.append(ibus.AttributeUnderline(
+            ibus.ATTR_UNDERLINE_SINGLE, 0, len(self.__convert_chars)))
         attrs.append(ibus.AttributeBackground(ibus.RGB(200, 200, 240),
                 pos - len(self.__segments[self.__cursor_pos][1]),
                 pos))
         self.update_preedit(self.__convert_chars, attrs, pos, True)
         aux_string = u"( %d / %d )" % (self.__lookup_table.get_cursor_pos() + 1, self.__lookup_table.get_number_of_candidates())
-        self.update_aux_string(aux_string, ibus.AttrList(), self.__lookup_table_visible)
-        self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
+        self.update_aux_string(aux_string,
+            ibus.AttrList(), self.__lookup_table_visible)
+        self.update_lookup_table(self.__lookup_table,
+            self.__lookup_table_visible)
 
     def __update(self):
         self.__need_update = False
@@ -554,5 +563,3 @@ class Engine(ibus.EngineBase):
         self.__cursor_pos += 1
         self.__invalidate()
         return True
-
-
