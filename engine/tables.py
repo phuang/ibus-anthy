@@ -225,27 +225,7 @@ romaji_typing_rule = {
     u"nn" : u"ん",
     u"wyi" : u"ゐ",
     u"wye" : u"ゑ",
-
-    # double consonant rule
-    u"bb" : u"っb",
-    u"cc" : u"っc",
-    u"dd" : u"っd",
-    u"ff" : u"っf",
-    u"gg" : u"っg",
-    u"hh" : u"っh",
-    u"jj" : u"っj",
-    u"kk" : u"っk",
-    u"mm" : u"っm",
-    u"pp" : u"っp",
-    u"rr" : u"っr",
-    u"ss" : u"っs",
-    u"tt" : u"っt",
-    u"vv" : u"っv",
-    u"ww" : u"っw",
-    u"xx" : u"っx",
-    u"yy" : u"っy",
-    u"zz" : u"っz",
-
+    
     # symbols
     u","  : u"、",
     u"."  : u"。",
@@ -280,6 +260,30 @@ romaji_typing_rule = {
     u"/"  : u"／",
     u"_"  : u"＿",
 }
+
+double_consonat_typing_rule = {
+    # double consonant rule
+    u"bb" : (u"っ", u"b"), 
+    u"cc" : (u"っ", u"c"),
+    u"dd" : (u"っ", u"d"),
+    u"ff" : (u"っ", u"f"),
+    u"gg" : (u"っ", u"g"),
+    u"hh" : (u"っ", u"h"),
+    u"jj" : (u"っ", u"j"),
+    u"kk" : (u"っ", u"k"),
+    u"mm" : (u"っ", u"m"),
+    u"pp" : (u"っ", u"p"),
+    u"rr" : (u"っ", u"r"),
+    u"ss" : (u"っ", u"s"),
+    u"tt" : (u"っ", u"t"),
+    u"vv" : (u"っ", u"v"),
+    u"ww" : (u"っ", u"w"),
+    u"xx" : (u"っ", u"x"),
+    u"yy" : (u"っ", u"y"),
+    u"zz" : (u"っ", u"z"),
+}
+
+
 
 symbols_set = set([
     u",",
@@ -406,24 +410,24 @@ hiragana_katakana_table = {
     u"ヴ" : (u"ヴ", u"ｳﾞ"),
 
     # double consonant rule
-    u"っb" : (u"ッb", u"ｯb"),
-    u"っc" : (u"ッc", u"ｯc"),
-    u"っd" : (u"ッd", u"ｯd"),
-    u"っf" : (u"ッf", u"ｯf"),
-    u"っg" : (u"ッg", u"ｯg"),
-    u"っh" : (u"ッh", u"ｯh"),
-    u"っj" : (u"ッj", u"ｯj"),
-    u"っk" : (u"ッk", u"ｯk"),
-    u"っm" : (u"ッm", u"ｯm"),
-    u"っp" : (u"ッp", u"ｯp"),
-    u"っr" : (u"ッr", u"ｯr"),
-    u"っs" : (u"ッs", u"ｯs"),
-    u"っt" : (u"ッt", u"ｯt"),
-    u"っv" : (u"ッv", u"ｯv"),
-    u"っw" : (u"ッw", u"ｯw"),
-    u"っx" : (u"ッx", u"ｯx"),
-    u"っy" : (u"ッy", u"ｯy"),
-    u"っz" : (u"ッz", u"ｯz"),
+    # u"っb" : (u"ッb", u"ｯb"),
+    # u"っc" : (u"ッc", u"ｯc"),
+    # u"っd" : (u"ッd", u"ｯd"),
+    # u"っf" : (u"ッf", u"ｯf"),
+    # u"っg" : (u"ッg", u"ｯg"),
+    # u"っh" : (u"ッh", u"ｯh"),
+    # u"っj" : (u"ッj", u"ｯj"),
+    # u"っk" : (u"ッk", u"ｯk"),
+    # u"っm" : (u"ッm", u"ｯm"),
+    # u"っp" : (u"ッp", u"ｯp"),
+    # u"っr" : (u"ッr", u"ｯr"),
+    # u"っs" : (u"ッs", u"ｯs"),
+    # u"っt" : (u"ッt", u"ｯt"),
+    # u"っv" : (u"ッv", u"ｯv"),
+    # u"っw" : (u"ッw", u"ｯw"),
+    # u"っx" : (u"ッx", u"ｯx"),
+    # u"っy" : (u"ッy", u"ｯy"),
+    # u"っz" : (u"ッz", u"ｯz"),
 
     # symbols
     u"ー" : (u"ー", u"ｰ"),

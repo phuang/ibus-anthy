@@ -60,6 +60,7 @@ anthy.py anthy_wrap.c: anthy.i
 
 test:
 	$(ENV) \
+		DBUS_DEBUG=true \
 		IBUS_ANTHY_PKGDATADIR=$(abs_top_srcdir) \
 		PYTHONPATH=$(builddir)/.libs \
 		$(PYTHON) \

@@ -93,7 +93,7 @@ class Engine(ibus.EngineBase):
 
     # reset values of engine
     def __reset(self):
-        self.__input_chars = u""
+        self.__input_chars = JaString()
         self.__convert_chars = u""
         self.__cursor_pos = 0
         self.__need_update = False
@@ -178,12 +178,14 @@ class Engine(ibus.EngineBase):
         return True
 
     def process_key_event(self, keyval, is_press, state):
-        # ignore key release events
-        if not is_press:
-            return False
+
         state = state & (modifier.SHIFT_MASK | \
                 modifier.CONTROL_MASK | \
                 modifier.MOD1_MASK)
+
+        # ignore key release events
+        if not is_press:
+            return False
 
         if state == modifier.SHIFT_MASK:
             if self.__convert_begined:
@@ -195,7 +197,7 @@ class Engine(ibus.EngineBase):
                     return True
 
         if state & (modifier.CONTROL_MASK | modifier.MOD1_MASK) != 0:
-            if self.__input_chars:
+            if not self.__input_chars.is_empty():
                 # if user has inputed some chars
                 return True
             return False
@@ -229,7 +231,7 @@ class Engine(ibus.EngineBase):
             unichr(keyval) in symbols_set:
             return self.__on_key_common(keyval)
         else:
-            if self.__input_chars:
+            if not self.__input_chars.is_empty():
                 return True
             return False
 
@@ -286,7 +288,9 @@ class Engine(ibus.EngineBase):
             return
         self.__convert_begined = True
 
-        self.__context.set_string(self.__input_chars.encode("utf-8"))
+        text, cursor = self.__input_chars.get_hiragana()
+
+        self.__context.set_string(text.encode("utf8"))
         conv_stat = anthy.anthy_conv_stat()
         self.__context.get_stat(conv_stat)
 
@@ -305,7 +309,7 @@ class Engine(ibus.EngineBase):
         self.__convert_begined = False
         self.__convert_chars = u""
         self.__segments = list()
-        self.__cursor_pos = len(self.__input_chars)
+        self.__cursor_pos = 0
         self.__lookup_table.clean()
         self.__lookup_table_visible = False
 
@@ -331,37 +335,21 @@ class Engine(ibus.EngineBase):
         self.__need_update = True
         gobject.idle_add(self.__update, priority = gobject.PRIORITY_LOW)
 
-    def __translate_to_ja(self):
-        begin = self.__cursor_pos - 4
-        if begin < 0:
-            begin = 0
-        end  = self.__cursor_pos
-        for i in range(begin, end):
-            text = self.__input_chars[i:end]
-            romja = romaji_typing_rule.get(text, None)
-            if romja == None:
-                continue
-            if self.__input_mode == MODE_HIRAGANA:
-                text = romja
-            elif self.__input_mode == MODE_KATAKANA:
-                text = hiragana_katakana_table[romja][0]
-            elif self.__input_mode == MODE_HALF_WIDTH_KATAKANA:
-                text = hiragana_katakana_table[romja][1]
-
-            self.__input_chars = text.join(
-                (self.__input_chars[:i], self.__input_chars[end:]))
-            self.__cursor_pos = i + len(text)
-
     def __update_input_chars(self):
-        self.__translate_to_ja()
+        if self.__input_mode == MODE_HIRAGANA:
+            text, cursor = self.__input_chars.get_hiragana()
+        elif self.__input_mode == MODE_KATAKANA:
+            text, cursor = self.__input_chars.get_katakana()
+        elif self.__input_mode == MODE_HALF_WIDTH_KATAKANA:
+            text, cursor = self.__input_chars.get_half_width_katakana()
 
         attrs = ibus.AttrList()
         attrs.append(ibus.AttributeUnderline(
             ibus.ATTR_UNDERLINE_SINGLE, 0,
-            len(self.__input_chars.encode("utf-8"))))
+            len(text)))
 
-        self.update_preedit(self.__input_chars,
-            attrs, self.__cursor_pos, len(self.__input_chars) > 0)
+        self.update_preedit(text,
+            attrs, cursor, not self.__input_chars.is_empty())
         self.update_aux_string(u"", ibus.AttrList(), False)
         self.update_lookup_table(self.__lookup_table,
             self.__lookup_table_visible)
@@ -397,10 +385,10 @@ class Engine(ibus.EngineBase):
             self.__update_input_chars()
 
     def __on_key_return(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
         if self.__convert_begined == False:
-            self.__commit_string(self.__input_chars)
+            self.__commit_string(self.__input_chars.to_latin())
         else:
             i = 0
             for seg_index, text in self.__segments:
@@ -409,40 +397,40 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_escape(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
         self.__reset()
         self.__invalidate()
         return True
 
     def __on_key_back_space(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
 
         if self.__convert_begined:
             self.__end_convert()
-        elif self.__cursor_pos > 0:
-            self.__input_chars = self.__input_chars[:self.__cursor_pos - 1] + self.__input_chars [self.__cursor_pos:]
-            self.__cursor_pos -= 1
+        else:
+            self.__input_chars.remove_before()
 
         self.__invalidate()
         return True
 
     def __on_key_delete(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
 
         if self.__convert_begined:
             self.__end_convert()
-        elif self.__cursor_pos < len(self.__input_chars):
-            self.__input_chars = self.__input_chars[:self.__cursor_pos] + self.__input_chars [self.__cursor_pos + 1:]
+        else:
+            self.__input_chars.remove_after()
 
         self.__invalidate()
         return True
 
     def __on_key_space(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
+
         if self.__convert_begined == False:
             self.__begin_convert()
             self.__invalidate()
@@ -452,36 +440,42 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_up(self):
-        if not self.__input_chars:
+        if not self.__convert_begined:
             return False
         self.__lookup_table_visible = True
         self.cursor_up()
         return True
 
     def __on_key_down(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
         self.__lookup_table_visible = True
         self.cursor_down()
         return True
 
     def __on_key_page_up(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
         if self.__lookup_table_visible == True:
             self.page_up()
         return True
 
     def __on_key_page_down(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
         if self.__lookup_table_visible == True:
             self.page_down()
         return True
 
     def __on_key_left(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
+
+        if not self.__convert_begined:
+            self.__input_chars.move_cursor(-1)
+            self.__invalidate()
+            return True
+
         if self.__cursor_pos == 0:
             return True
         self.__cursor_pos -= 1
@@ -491,23 +485,25 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_right(self):
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             return False
 
-        if self.__convert_begined:
-            max_pos = len(self.__segments) - 1
-        else:
-            max_pos = len(self.__input_chars)
-        if self.__cursor_pos == max_pos:
+        if not self.__convert_begined:
+            self.__input_chars.move_cursor(1)
+            self.__invalidate()
             return True
+
+        if self.__cursor_pos == len(self.__segments):
+            return True
+
         self.__cursor_pos += 1
         self.__lookup_table_visible = False
         self.__fill_lookup_table()
         self.__invalidate()
-
         return True
 
     def __on_key_number(self, keyval):
+
         if self.__input_mode == MODE_LATIN:
             char = unichr(keyval)
             self.__commit_string(char)
@@ -517,7 +513,7 @@ class Engine(ibus.EngineBase):
             self.__commit_string(char)
             return True
 
-        if not self.__input_chars:
+        if self.__input_chars.is_empty():
             self.__commit_string(unichr(keyval))
             return True
 
@@ -557,9 +553,220 @@ class Engine(ibus.EngineBase):
                 self.__context.commit_segment(i, seg_index)
             self.__commit_string(self.__convert_chars)
 
-        self.__input_chars  = unichr(keyval).join(
-            (self.__input_chars[:self.__cursor_pos],
-            self.__input_chars[self.__cursor_pos:]))
-        self.__cursor_pos += 1
+        self.__input_chars.insert(unichr(keyval))
         self.__invalidate()
+        return True
+
+class JaString:
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.__cursor = 0
+        self.__segments = list()
+
+    def insert(self, c):
+        segment_before = None
+        segment_after = None
+        if self.__cursor >= 1:
+            segment_before = self.__segments[self.__cursor - 1]
+        if self.__cursor < len(self.__segments):
+            segment_after = self.__segments[self.__cursor]
+        if segment_before and not segment_before.is_finished():
+            new_segments = segment_before.append(c)
+        elif segment_after and not segment_after.is_finished():
+            new_segments = segment_after.prepend(c)
+        else:
+            new_segments = [JaSegment(c)]
+        if new_segments:
+            self.__segments[self.__cursor:self.__cursor] = new_segments
+            self.__cursor += len(new_segments)
+
+    def remove_before(self):
+        index = self.__cursor - 1
+        if index >= 0:
+            if self.__segments[index].is_finished():
+                del self.__segments[index]
+                self.__cursor = index
+                return True
+
+            enchars = self.__segments[index].get_enchars()
+            enchars = enchars[:-1]
+            if not enchars:
+                del self.__segments[index]
+                self.__cursor = index
+                return True
+            self.__segments[index].set_enchars(enchars)
+            return True
+
+        return False
+
+    def remove_after(self):
+        index = self.__cursor
+        if index < len(self.__segments):
+            if self.__segments[index].is_finished():
+                del self.__segments[index]
+                return True
+
+            enchars = self.__segments[index].get_enchars()
+            enchars = enchars[1:]
+            if not enchars:
+                del self.__segments[index]
+                return True
+            self.__segments[index].set_enchars(enchars)
+            return True
+
+        return False
+
+    def get_string(self, type):
+        pass
+
+    def move_cursor(self, delta):
+        self.__cursor += delta
+        if self.__cursor < 0:
+            self.__cursor = 0
+        elif self.__cursor > len(self.__segments):
+            self.__cursor = len(self.__segments)
+
+    def get_hiragana(self):
+        conv = lambda s: s.to_hiragana()
+        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
+        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
+        return text_before + text_after, len(text_before)
+
+    def get_katakana(self):
+        conv = lambda s: s.to_katakana()
+        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
+        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
+        return text_before + text_after, len(text_before)
+
+    def get_half_width_katakana(self):
+        conv = lambda s: s.to_half_width_katakana()
+        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
+        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
+        return text_before + text_after, len(text_before)
+
+    def get_latin(self):
+        conv = lambda s: s.to_latin()
+        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
+        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
+        return text_before + text_after, len(text_before)
+
+    def get_wide_latin(self):
+        conv = lambda s: s.to_wide_latin()
+        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
+        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
+        return text_before + text_after, len(text_before)
+
+    def is_empty(self):
+        return all(map(lambda s: s.is_empty(), self.__segments))
+
+class JaSegment:
+    def __init__(self, enchars = u"", jachars = u""):
+        self.__enchars = enchars
+        self.__jachars = jachars
+
+    def is_finished(self):
+        return self.__jachars != u""
+
+    def append(self, enchar):
+        if self.is_finished():
+            return [JaSegment(enchar)]
+
+        text = self.__enchars + enchar
+        jachars = romaji_typing_rule.get(text, None)
+        if jachars:
+            self.__enchars = text
+            self.__jachars = jachars
+            return []
+
+        jachars, c = double_consonat_typing_rule.get(text, (None, None))
+        if jachars:
+            self.__enchars = text[0]
+            self.__jachars = jachars
+            return [JaSegment(c)]
+
+        for i in range(-min(4, len(text)), 0):
+            enchars = text[i:]
+
+            jachars = romaji_typing_rule.get(enchars, None)
+            if jachars:
+                jasegment = JaSegment(enchars, jachars)
+                self.__enchars = text[:i]
+                return [jasegment]
+
+            jachars, c = double_consonat_typing_rule.get(text, (None, None))
+            if jachars:
+                jasegment = JaSegment(enchars[0], jachars)
+                self.__enchars = text[:i]
+                return [jasegment, JaSegment(c)]
+
+        self.__enchars = text
+        return []
+
+    def prepend(self, enchar):
+        if self.is_finished():
+            return [JaSegment(enchar)]
+
+        text = enchar + self.__enchars
+        jachars = romaji_typing_rule.get(text, None)
+        if jachars:
+            self.__enchars = text
+            self.__jachars = jachars
+            return []
+
+        jachars, c = double_consonat_typing_rule.get(text, (None, None))
+        if jachars:
+            self.__enchars = c
+            return [JaSegment(text[0], jachars)]
+
+        for i in range(min(4, len(text)), 0, -1):
+            enchars = text[:i]
+
+            jachars = romaji_typing_rule.get(enchars, None)
+            if jachars:
+                jasegment = JaSegment(enchars, jachars)
+                self.__enchars = text[i:]
+                return [jasegment]
+
+            jachars, c = double_consonat_typing_rule.get(enchars, (None, None))
+            if jachars:
+                return [JaSegment(enchars[0], jachars)]
+
+        self.__enchars = text
+        return []
+
+    def set_enchars(self, enchars):
+        self.__enchars = enchars
+
+    def get_enchars(self):
+        return self.__enchars
+
+    def get_jachars(self):
+        return self.__jachars
+
+    def to_hiragana(self):
+        if self.__jachars:
+            return self.__jachars
+        return self.__enchars
+
+    def to_katakana(self):
+        if self.__jachars:
+            return hiragana_katakana_table[self.__jachars][0]
+        return self.__enchars
+
+    def to_half_width_katakana(self):
+        if self.__jachars:
+            return hiragana_katakana_table[self.__jachars][1]
+        return self.__enchars
+
+    def to_latin(self):
+        return self.__enchars
+
+    def to_wide_latin(self):
+        return u"".join(map(ibus.unichar_half_to_full, self.__enchars))
+
+    def is_empty(self):
+        if self.__enchars or self.__jachars:
+            return False
         return True
