@@ -407,6 +407,8 @@ class Engine(ibus.EngineBase):
             text = text.capitalize()
         self.__convert_chars = text
         attrs = ibus.AttrList()
+        attrs.append(ibus.AttributeUnderline(
+            ibus.ATTR_UNDERLINE_SINGLE, 0, len(text)))
         attrs.append(ibus.AttributeBackground(ibus.RGB(200, 200, 240),
             0, len(text)))
         self.update_preedit(text, attrs, len(text), True)
