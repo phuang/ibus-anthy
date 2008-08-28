@@ -771,7 +771,7 @@ class JaString:
 class JaSegment:
     def __init__(self, enchars = u"", jachars = u""):
         self.__enchars = enchars
-        self.__jachars = jachars
+        self.__jachars = romaji_typing_rule.get(enchars, u"")
 
     def is_finished(self):
         return self.__jachars != u""
