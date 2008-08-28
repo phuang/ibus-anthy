@@ -424,16 +424,14 @@ class Engine(ibus.EngineBase):
         i = 0
         for seg_index, text in self.__segments:
             self.__convert_chars += text
-            if i <= self.__cursor_pos:
+            if i < self.__cursor_pos:
                 pos += len(text)
             i += 1
-
         attrs = ibus.AttrList()
         attrs.append(ibus.AttributeUnderline(
             ibus.ATTR_UNDERLINE_SINGLE, 0, len(self.__convert_chars)))
         attrs.append(ibus.AttributeBackground(ibus.RGB(200, 200, 240),
-                pos - len(self.__segments[self.__cursor_pos][1]),
-                pos))
+                pos, pos + len(self.__segments[self.__cursor_pos][1])))
         self.update_preedit(self.__convert_chars, attrs, pos, True)
         aux_string = u"( %d / %d )" % (self.__lookup_table.get_cursor_pos() + 1, self.__lookup_table.get_number_of_candidates())
         self.update_aux_string(aux_string,
