@@ -809,9 +809,17 @@ class JaSegment:
 
             jachars, c = double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
-                jasegment = JaSegment(enchars[0], jachars)
+                jasegment = JaSegment(enchars[:-len(c)], jachars)
                 self.__enchars = text[:i]
                 return [jasegment, JaSegment(c)]
+
+            jachars, c = correction_rule.get(enchars, (None, None))
+            if jachars:
+                jasegment = JaSegment(enchars[:-len(c)], jachars)
+                self.__enchars = text[:i]
+                return [jasegment, JaSegment(c)]
+
+
 
         self.__enchars = text
         return []
@@ -843,7 +851,14 @@ class JaSegment:
 
             jachars, c = double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
-                return [JaSegment(enchars[0], jachars)]
+                self.__enchars = c + text[i:]
+                return [JaSegment(enchars[:-len(c)], jachars)]
+
+            jachars, c = correction_rule.get(enchars, (None, None))
+            if jachars:
+                self.__enchars = c + text[i:]
+                return [JaSegment(enchars[:-len(c)], jachars)]
+
 
         self.__enchars = text
         return []

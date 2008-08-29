@@ -282,7 +282,26 @@ double_consonat_typing_rule = {
     u"zz" : (u"っ", u"z"),
 }
 
-
+correction_rule = {
+    u"nb" : (u"ん", u"b"),
+    u"nc" : (u"ん", u"c"),
+    u"nd" : (u"ん", u"d"),
+    u"nf" : (u"ん", u"f"),
+    u"ng" : (u"ん", u"g"),
+    u"nh" : (u"ん", u"h"),
+    u"nj" : (u"ん", u"j"),
+    u"nk" : (u"ん", u"k"),
+    u"nl" : (u"ん", u"l"),
+    u"nm" : (u"ん", u"m"),
+    u"np" : (u"ん", u"p"),
+    u"nr" : (u"ん", u"r"),
+    u"ns" : (u"ん", u"s"),
+    u"nt" : (u"ん", u"t"),
+    u"nv" : (u"ん", u"v"),
+    u"nw" : (u"ん", u"w"),
+    u"nx" : (u"ん", u"x"),
+    u"nz" : (u"ん", u"z"),
+}
 
 symbols_set = set([
     u",",
