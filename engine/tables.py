@@ -224,7 +224,7 @@ romaji_typing_rule = {
     u"nn" : u"ん",
     u"wyi" : u"ゐ",
     u"wye" : u"ゑ",
-    
+
     # symbols
     u","  : u"、",
     u"."  : u"。",
@@ -262,7 +262,7 @@ romaji_typing_rule = {
 
 double_consonat_typing_rule = {
     # double consonant rule
-    u"bb" : (u"っ", u"b"), 
+    u"bb" : (u"っ", u"b"),
     u"cc" : (u"っ", u"c"),
     u"dd" : (u"っ", u"d"),
     u"ff" : (u"っ", u"f"),

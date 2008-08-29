@@ -305,6 +305,8 @@ class Engine(ibus.EngineBase):
             return
         self.__convert_mode = CONV_MODE_ANTHY
 
+        self.__preedit_ja_string.insert(u"")
+
         text, cursor = self.__preedit_ja_string.get_hiragana()
 
         self.__context.set_string(text.encode("utf8"))
@@ -781,6 +783,11 @@ class JaSegment:
         return self.__jachars != u""
 
     def append(self, enchar):
+        if enchar == u"":
+            if not self.is_finished() and self.__enchars == u"n":
+                self.__jachars = u"ん"
+            return []
+
         if self.is_finished():
             return [JaSegment(enchar)]
 
@@ -825,6 +832,9 @@ class JaSegment:
         return []
 
     def prepend(self, enchar):
+        if enchar == u"":
+            return []
+
         if self.is_finished():
             return [JaSegment(enchar)]
 
@@ -868,6 +878,9 @@ class JaSegment:
 
     def get_enchars(self):
         return self.__enchars
+
+    def set_jachars(self, jachars):
+        self.__jachars = jachars
 
     def get_jachars(self):
         return self.__jachars
