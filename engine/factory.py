@@ -24,11 +24,15 @@ from os import path
 import ibus
 import engine
 
+from gettext import dgettext
+_  = lambda a : dgettext("ibus-anthy", a)
+N_ = lambda a : a
+
 FACTORY_PATH = "/com/redhat/IBus/engines/Anthy/Factory"
 ENGINE_PATH = "/com/redhat/IBus/engines/Anthy/Engine/"
 
 class EngineFactory(ibus.EngineFactoryBase):
-    NAME = "Anthy"
+    NAME = _("Anthy")
     LANG = "ja"
     ICON = path.join(os.getenv("IBUS_ANTHY_PKGDATADIR"), "icons/ibus-anthy.png")
     AUTHORS = "Huang Peng <shawn.p.huang@gmail.com>"
