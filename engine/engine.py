@@ -61,7 +61,7 @@ class Engine(ibus.EngineBase):
         self.__input_mode = INPUT_MODE_HIRAGANA
         self.__prop_dict = {}
 
-        self.__lookup_table = ibus.LookupTable()
+        self.__lookup_table = ibus.LookupTable(page_size=9)
         self.__prop_list = self.__init_props()
 
         # use reset to init values
