@@ -22,5 +22,5 @@ prefix=@prefix@
 datarootdir=@datarootdir@
 export IBUS_PREFIX=@prefix@
 export IBUS_ANTHY_PKGDATADIR=@datarootdir@/@PACKAGE@
-exec python @datarootdir@/@PACKAGE@/main.py $@
+exec python @datarootdir@/@PACKAGE@/engine/main.py $@
 
