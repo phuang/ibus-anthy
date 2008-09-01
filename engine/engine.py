@@ -273,7 +273,7 @@ class Engine(ibus.EngineBase):
                 self.__invalidate()
             elif prop_name == u"InputMode.HalfWidthKatakana":
                 prop = self.__prop_dict[u"InputMode"]
-                prop.label = u"ｱ"
+                prop.label = u"_ｱ"
                 self.__input_mode = INPUT_MODE_HALF_WIDTH_KATAKANA
                 self.update_property(prop)
                 self.__reset()
@@ -281,7 +281,7 @@ class Engine(ibus.EngineBase):
             elif prop_name == u"InputMode.Latin":
                 prop = self.__prop_dict[u"InputMode"]
                 self.__input_mode = INPUT_MODE_LATIN
-                prop.label = u"A"
+                prop.label = u"_A"
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
