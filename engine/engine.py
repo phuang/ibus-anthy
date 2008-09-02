@@ -413,6 +413,8 @@ class Engine(ibus.EngineBase):
             ibus.ATTR_UNDERLINE_SINGLE, 0, len(text)))
         attrs.append(ibus.AttributeBackground(ibus.RGB(200, 200, 240),
             0, len(text)))
+        attrs.append(ibus.AttributeForeground(ibus.RGB(0, 0, 0),
+            0, len(text)))
         self.update_preedit(text, attrs, len(text), True)
 
         self.update_aux_string(u"",
@@ -433,6 +435,8 @@ class Engine(ibus.EngineBase):
         attrs.append(ibus.AttributeUnderline(
             ibus.ATTR_UNDERLINE_SINGLE, 0, len(self.__convert_chars)))
         attrs.append(ibus.AttributeBackground(ibus.RGB(200, 200, 240),
+                pos, pos + len(self.__segments[self.__cursor_pos][1])))
+        attrs.append(ibus.AttributeForeground(ibus.RGB(0, 0, 0),
                 pos, pos + len(self.__segments[self.__cursor_pos][1])))
         self.update_preedit(self.__convert_chars, attrs, pos, True)
         aux_string = u"( %d / %d )" % (self.__lookup_table.get_cursor_pos() + 1, self.__lookup_table.get_number_of_candidates())
