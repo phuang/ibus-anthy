@@ -19,6 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+from ibus import unichar_half_to_full
 from tables import *
 
 class RomajiSegment:
@@ -27,7 +28,10 @@ class RomajiSegment:
         if jachars:
             self.__jachars = jachars
         else:
-            self.__jachars = romaji_typing_rule.get(enchars, u"")
+            jachars = romaji_typing_rule.get(enchars, None)
+            if jachars == None:
+                jachars = half_symbol_rule.get(enchars, u"")
+            self.__jachars = jachars
 
     def is_finished(self):
         return self.__jachars != u""
@@ -41,6 +45,8 @@ class RomajiSegment:
         text = self.__enchars + enchar
 
         jachars = romaji_typing_rule.get(text, None)
+        if jachars == None:
+            jachars = half_symbol_rule.get(text, None)
         if jachars:
             self.__enchars = text
             self.__jachars = jachars
@@ -56,6 +62,8 @@ class RomajiSegment:
             enchars = text[i:]
 
             jachars = romaji_typing_rule.get(enchars, None)
+            if jachars == None:
+                jachars = half_symbol_rule.get(enchars, None)
             if jachars:
                 jasegment = RomajiSegment(enchars, jachars)
                 self.__enchars = text[:i]
@@ -91,6 +99,8 @@ class RomajiSegment:
 
         text = enchar + self.__enchars
         jachars = romaji_typing_rule.get(text, None)
+        if not jachars:
+            jachars = half_symbol_rule.get(text, None)
         if jachars:
             self.__enchars = text
             self.__jachars = jachars
@@ -105,6 +115,8 @@ class RomajiSegment:
             enchars = text[:i]
 
             jachars = romaji_typing_rule.get(enchars, None)
+            if not jachars:
+                jachars = half_symbol_rule.get(enchars, None)
             if jachars:
                 jasegment = RomajiSegment(enchars, jachars)
                 self.__enchars = text[i:]
@@ -155,7 +167,7 @@ class RomajiSegment:
         return self.__enchars
 
     def to_wide_latin(self):
-        return u"".join(map(ibus.unichar_half_to_full, self.__enchars))
+        return u"".join(map(unichar_half_to_full, self.__enchars))
 
     def is_empty(self):
         if self.__enchars or self.__jachars:

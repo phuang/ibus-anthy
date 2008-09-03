@@ -224,7 +224,9 @@ romaji_typing_rule = {
     u"nn" : u"ん",
     u"wyi" : u"ゐ",
     u"wye" : u"ゑ",
+}
 
+half_symbol_rule = {
     # symbols
     u","  : u"、",
     u"."  : u"。",
