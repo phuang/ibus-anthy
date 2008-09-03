@@ -52,18 +52,11 @@ class JaString:
     def remove_before(self):
         index = self.__cursor - 1
         if index >= 0:
-            if self.__segments[index].is_finished():
+            segment = self.__segments[index]
+            segment.pop()
+            if segment.is_empty():
                 del self.__segments[index]
                 self.__cursor = index
-                return True
-
-            enchars = self.__segments[index].get_enchars()
-            enchars = enchars[:-1]
-            if not enchars:
-                del self.__segments[index]
-                self.__cursor = index
-                return True
-            self.__segments[index].set_enchars(enchars)
             return True
 
         return False
@@ -71,16 +64,10 @@ class JaString:
     def remove_after(self):
         index = self.__cursor
         if index < len(self.__segments):
-            if self.__segments[index].is_finished():
+            segment = self.__segments[index]
+            segment.pop()
+            if segment.is_empty():
                 del self.__segments[index]
-                return True
-
-            enchars = self.__segments[index].get_enchars()
-            enchars = enchars[1:]
-            if not enchars:
-                del self.__segments[index]
-                return True
-            self.__segments[index].set_enchars(enchars)
             return True
 
         return False
