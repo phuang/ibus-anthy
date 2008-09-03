@@ -44,7 +44,7 @@ class JaString:
             new_segments = segment_after.prepend(c)
         else:
             if c != u"\0" and c != u"":
-                new_segments = [JaSegment(c)]
+                new_segments = [RomajiSegment(c)]
         if new_segments:
             self.__segments[self.__cursor:self.__cursor] = new_segments
             self.__cursor += len(new_segments)
@@ -128,7 +128,7 @@ class JaString:
     def is_empty(self):
         return all(map(lambda s: s.is_empty(), self.__segments))
 
-class JaSegment:
+class RomajiSegment:
     def __init__(self, enchars = u"", jachars = u""):
         self.__enchars = enchars
         if jachars:
@@ -143,7 +143,7 @@ class JaSegment:
         if self.is_finished():
             if enchar == u"" and enchar == u"\0":
                 return []
-            return [JaSegment(enchar)]
+            return [RomajiSegment(enchar)]
 
         text = self.__enchars + enchar
 
@@ -157,31 +157,31 @@ class JaSegment:
         if jachars:
             self.__enchars = text[0]
             self.__jachars = jachars
-            return [JaSegment(c)]
+            return [RomajiSegment(c)]
 
         for i in range(-min(4, len(text)), 0):
             enchars = text[i:]
 
             jachars = romaji_typing_rule.get(enchars, None)
             if jachars:
-                jasegment = JaSegment(enchars, jachars)
+                jasegment = RomajiSegment(enchars, jachars)
                 self.__enchars = text[:i]
                 return [jasegment]
 
             jachars, c = romaji_double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
-                jasegment = JaSegment(enchars[:-len(c)], jachars)
+                jasegment = RomajiSegment(enchars[:-len(c)], jachars)
                 self.__enchars = text[:i]
                 if c:
-                    return [jasegment, JaSegment(c)]
+                    return [jasegment, RomajiSegment(c)]
                 return [jasegment]
 
             jachars, c = romaji_correction_rule.get(enchars, (None, None))
             if jachars:
-                jasegment = JaSegment(enchars[:-len(c)], jachars)
+                jasegment = RomajiSegment(enchars[:-len(c)], jachars)
                 self.__enchars = text[:i]
                 if c:
-                    return [jasegment, JaSegment(c)]
+                    return [jasegment, RomajiSegment(c)]
                 return [jasegment]
 
 
@@ -194,7 +194,7 @@ class JaSegment:
             return []
 
         if self.is_finished():
-            return [JaSegment(enchar)]
+            return [RomajiSegment(enchar)]
 
         text = enchar + self.__enchars
         jachars = romaji_typing_rule.get(text, None)
@@ -206,26 +206,26 @@ class JaSegment:
         jachars, c = romaji_double_consonat_typing_rule.get(text, (None, None))
         if jachars:
             self.__enchars = c
-            return [JaSegment(text[0], jachars)]
+            return [RomajiSegment(text[0], jachars)]
 
         for i in range(min(4, len(text)), 0, -1):
             enchars = text[:i]
 
             jachars = romaji_typing_rule.get(enchars, None)
             if jachars:
-                jasegment = JaSegment(enchars, jachars)
+                jasegment = RomajiSegment(enchars, jachars)
                 self.__enchars = text[i:]
                 return [jasegment]
 
             jachars, c = romaji_double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
                 self.__enchars = c + text[i:]
-                return [JaSegment(enchars[:-len(c)], jachars)]
+                return [RomajiSegment(enchars[:-len(c)], jachars)]
 
             jachars, c = romaji_correction_rule.get(enchars, (None, None))
             if jachars:
                 self.__enchars = c + text[i:]
-                return [JaSegment(enchars[:-len(c)], jachars)]
+                return [RomajiSegment(enchars[:-len(c)], jachars)]
 
 
         self.__enchars = text
