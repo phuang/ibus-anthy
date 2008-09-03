@@ -23,6 +23,7 @@ engine_anthy_PYTHON = \
 	factory.py \
 	main.py \
 	tables.py \
+	jastring.py \
 	$(NULL)
 engine_anthydir = $(pkgdatadir)/engine
 
