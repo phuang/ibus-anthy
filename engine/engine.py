@@ -305,7 +305,7 @@ class Engine(ibus.EngineBase):
             return
         self.__convert_mode = CONV_MODE_ANTHY
 
-        self.__preedit_ja_string.insert(u"")
+        self.__preedit_ja_string.insert(u"\0")
 
         text, cursor = self.__preedit_ja_string.get_hiragana()
 
@@ -682,6 +682,8 @@ class JaString:
     def insert(self, c):
         segment_before = None
         segment_after = None
+        new_segments = None
+
         if self.__cursor >= 1:
             segment_before = self.__segments[self.__cursor - 1]
         if self.__cursor < len(self.__segments):
@@ -691,7 +693,8 @@ class JaString:
         elif segment_after and not segment_after.is_finished():
             new_segments = segment_after.prepend(c)
         else:
-            new_segments = [JaSegment(c)]
+            if c != u"\0" and c != u"":
+                new_segments = [JaSegment(c)]
         if new_segments:
             self.__segments[self.__cursor:self.__cursor] = new_segments
             self.__cursor += len(new_segments)
@@ -787,12 +790,9 @@ class JaSegment:
         return self.__jachars != u""
 
     def append(self, enchar):
-        if enchar == u"":
-            if not self.is_finished() and self.__enchars == u"n":
-                self.__jachars = u"ん"
-            return []
-
         if self.is_finished():
+            if enchar == u"" and enchar == u"\0":
+                return []
             return [JaSegment(enchar)]
 
         text = self.__enchars + enchar
@@ -822,13 +822,17 @@ class JaSegment:
             if jachars:
                 jasegment = JaSegment(enchars[:-len(c)], jachars)
                 self.__enchars = text[:i]
-                return [jasegment, JaSegment(c)]
+                if c:
+                    return [jasegment, JaSegment(c)]
+                return [jasegment]
 
             jachars, c = romaji_correction_rule.get(enchars, (None, None))
             if jachars:
                 jasegment = JaSegment(enchars[:-len(c)], jachars)
                 self.__enchars = text[:i]
-                return [jasegment, JaSegment(c)]
+                if c:
+                    return [jasegment, JaSegment(c)]
+                return [jasegment]
 
 
 
@@ -836,7 +840,7 @@ class JaSegment:
         return []
 
     def prepend(self, enchar):
-        if enchar == u"":
+        if enchar == u"" or enchar == u"\0":
             return []
 
         if self.is_finished():

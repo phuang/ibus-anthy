@@ -284,7 +284,7 @@ romaji_double_consonat_typing_rule = {
 }
 
 # this is only used with romaji_typing_rule
-romaji_oorrection_rule = {
+romaji_correction_rule = {
     u"nb" : (u"ん", u"b"),
     u"nc" : (u"ん", u"c"),
     u"nd" : (u"ん", u"d"),
@@ -303,6 +303,7 @@ romaji_oorrection_rule = {
     u"nw" : (u"ん", u"w"),
     u"nx" : (u"ん", u"x"),
     u"nz" : (u"ん", u"z"),
+    u"n\0" : (u"ん", u""),
 }
 
 # a port of 101kana.sty from scim-anthy
