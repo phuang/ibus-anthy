@@ -23,16 +23,17 @@ from ibus import unichar_half_to_full
 from tables import *
 import segment
 
-UNFINISHED_SET = set(u"かきくけこさしすせそたちつてとはひふへほ")
+_UNFINISHED_HIRAGANA = set(u"かきくけこさしすせそたちつてとはひふへほ")
 
 class KanaSegment(segment.Segment):
+    
     def __init__(self, enchars=u"", jachars=u""):
         if not jachars:
             jachars = kana_typing_rule.get(enchars, u"")
         super(KanaSegment, self).__init__(enchars, jachars)
 
     def is_finished(self):
-        return self._jachars not in UNFINISHED_SET
+        return not (self._jachars in _UNFINISHED_HIRAGANA)
 
     def append(self, enchar):
         if enchar == u"\0" or enchar == u"":
