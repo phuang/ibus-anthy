@@ -260,6 +260,7 @@ symbol_rule = {
     u"?"  : u"？",
     u"/"  : u"／",
     u"_"  : u"＿",
+    u"¥"  : u"￥",
 }
 
 # this is only used with romaji_typing_rule
@@ -360,7 +361,8 @@ kana_typing_rule = {
     u"," : u"ね",
     u"." : u"る",
     u"/" : u"め",
-    u"\\" : u"ー",
+    # u"\\" : u"ー",
+    u"\\" : u"ろ",
 
     # shift modifiered keys
     u"!" : u"ぬ",
@@ -416,6 +418,8 @@ kana_typing_rule = {
 
     u"?" : u"・",
     u"_" : u"ろ",
+
+    u"¥" : u"ー",
 }
 
 kana_voiced_consonant_rule = {
@@ -588,4 +592,5 @@ hiragana_katakana_table = {
     u"？" : (u"？", u"?"),
     u"／" : (u"／", u"/"),
     u"＿" : (u"＿", u"_"),
+    u"￥" : (u"￥", u"¥"),
 }

@@ -272,6 +272,8 @@ class Engine(ibus.EngineBase):
             return self.__on_key_conv(keyval - keysyms.F6)
         elif keyval >= keysyms.exclam and keyval <= keysyms.asciitilde:
             return self.__on_key_common(keyval)
+        elif keyval == keysyms.yen:
+            return self.__on_key_common(keyval)
         else:
             if not self.__preedit_ja_string.is_empty():
                 return True
