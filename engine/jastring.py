@@ -44,7 +44,7 @@ class JaString:
             new_segments = segment_after.prepend(c)
         else:
             if c != u"\0" and c != u"":
-                new_segments = [romaji.Segment(c)]
+                new_segments = [romaji.RomajiSegment(c)]
         if new_segments:
             self.__segments[self.__cursor:self.__cursor] = new_segments
             self.__cursor += len(new_segments)
