@@ -220,7 +220,7 @@ romaji_typing_rule = {
     u"xwa" : u"ゎ",
     u"wa" : u"わ",
     u"wo" : u"を",
-    u"n'" : u"ん",
+    # u"n'" : u"ん",
     u"nn" : u"ん",
     u"wyi" : u"ゐ",
     u"wye" : u"ゑ",
