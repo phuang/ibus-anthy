@@ -1,0 +1,72 @@
+# vim:set et sts=4 sw=4:
+# -*- coding: utf-8 -*-
+#
+# ibus-anthy - The Anthy engine for IBus
+#
+# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+from ibus import unichar_half_to_full
+from tables import *
+
+class Segment(object):
+    def __init__(self, enchars, jachars):
+        self._enchars = enchars
+        self._jachars = jachars
+
+    def append(self, enchar):
+        raise NotImplementedError("append is not implemented")
+
+    def prepend(self, enchar):
+        raise NotImplementedError("prepend is not implemented")
+
+    def set_enchars(self, enchars):
+        self.enchars = enchars
+
+    def get_enchars(self):
+        return self._enchars
+
+    def set_jachars(self, jachars):
+        self._jachars = jachars
+
+    def get_jachars(self):
+        return self._jachars
+
+    def to_hiragana(self):
+        if self._jachars:
+            return self._jachars
+        return self._enchars
+
+    def to_katakana(self):
+        if self._jachars:
+            return u"".join(map(lambda c: hiragana_katakana_table[c][0], self._jachars))
+        return self._enchars
+
+    def to_half_width_katakana(self):
+        if self._jachars:
+            return u"".join(map(lambda c: hiragana_katakana_table[c][1], self._jachars))
+        return self._enchars
+
+    def to_latin(self):
+        return self._enchars
+
+    def to_wide_latin(self):
+        return u"".join(map(unichar_half_to_full, self._enchars))
+
+    def is_empty(self):
+        if self._enchars or self._jachars:
+            return False
+        return True

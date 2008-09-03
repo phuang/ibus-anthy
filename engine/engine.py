@@ -37,6 +37,10 @@ INPUT_MODE_HALF_WIDTH_KATAKANA, \
 INPUT_MODE_LATIN, \
 INPUT_MODE_WIDE_LATIN = range(5)
 
+TYPING_MODE_ROMAJI, \
+TYPING_MODE_KANA, \
+TYPING_MODE_THUMB_SHIFT = range(3)
+
 CONV_MODE_OFF, \
 CONV_MODE_ANTHY, \
 CONV_MODE_HIRAGANA, \
@@ -47,8 +51,7 @@ CONV_MODE_LATIN_2, \
 CONV_MODE_LATIN_3, \
 CONV_MODE_WIDE_LATIN_1, \
 CONV_MODE_WIDE_LATIN_2, \
-CONV_MODE_WIDE_LATIN_3, \
-= range(11)
+CONV_MODE_WIDE_LATIN_3 = range(11)
 
 class Engine(ibus.EngineBase):
     def __init__(self, bus, object_path):
@@ -60,6 +63,7 @@ class Engine(ibus.EngineBase):
 
         # init state
         self.__input_mode = INPUT_MODE_HIRAGANA
+        self.__typing_method = TYPING_MODE_ROMAJI
         self.__prop_dict = {}
 
         self.__lookup_table = ibus.LookupTable(page_size=9)
@@ -650,7 +654,7 @@ class Engine(ibus.EngineBase):
         elif self.__input_mode == INPUT_MODE_WIDE_LATIN:
             #  Input Wide Latin chars
             char = unichr(keyval)
-            wide_char = half_symbol_rule.get(char, None)
+            wide_char = symbol_rule.get(char, None)
             if wide_char == None:
                 wide_char = ibus.unichar_half_to_full(char)
             self.__commit_string(wide_char)

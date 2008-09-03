@@ -25,6 +25,7 @@ engine_anthy_PYTHON = \
 	tables.py \
 	jastring.py \
 	romaji.py \
+	segment.py \
 	$(NULL)
 engine_anthydir = $(pkgdatadir)/engine
 

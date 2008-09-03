@@ -226,7 +226,7 @@ romaji_typing_rule = {
     u"wye" : u"ゑ",
 }
 
-half_symbol_rule = {
+symbol_rule = {
     # symbols
     u","  : u"、",
     u"."  : u"。",
