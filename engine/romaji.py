@@ -128,7 +128,24 @@ class RomajiSegment(segment.Segment):
                 self._enchars = c + text[i:]
                 return [RomajiSegment(enchars[:-len(c)], jachars)]
 
-
         self._enchars = text
         return []
+
+    def pop(self, index=-1):
+        if index == -1:
+            index = len(self._enchars) - 1
+        if index < 0 or index >= len(self._enchars):
+            raise IndexError("Out of bound")
+        if self.is_finished():
+            self._enchars = u""
+            self._jachars = u""
+        else:
+            enchars = list(self._enchars)
+            del enchars[index]
+            self._enchars = u"".join(enchars)
+            jachars = romaji_typing_rule.get(self._enchars, None)
+            if jachars == None:
+                jachars = symbol_rule.get(self._enchars, u"")
+            self._jachars = jachars
+
 
