@@ -24,7 +24,7 @@ from tables import *
 import segment
 
 class RomajiSegment(segment.Segment):
-    def __init__(self, enchars = u"", jachars = u""):
+    def __init__(self, enchars=u"", jachars=u""):
         if not jachars:
             jachars = romaji_typing_rule.get(enchars, None)
             if jachars == None:
