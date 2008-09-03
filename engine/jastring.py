@@ -19,7 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from tables import *
+import romaji
 
 class JaString:
     def __init__(self):
@@ -44,7 +44,7 @@ class JaString:
             new_segments = segment_after.prepend(c)
         else:
             if c != u"\0" and c != u"":
-                new_segments = [RomajiSegment(c)]
+                new_segments = [romaji.Segment(c)]
         if new_segments:
             self.__segments[self.__cursor:self.__cursor] = new_segments
             self.__cursor += len(new_segments)
@@ -128,143 +128,3 @@ class JaString:
     def is_empty(self):
         return all(map(lambda s: s.is_empty(), self.__segments))
 
-class RomajiSegment:
-    def __init__(self, enchars = u"", jachars = u""):
-        self.__enchars = enchars
-        if jachars:
-            self.__jachars = jachars
-        else:
-            self.__jachars = romaji_typing_rule.get(enchars, u"")
-
-    def is_finished(self):
-        return self.__jachars != u""
-
-    def append(self, enchar):
-        if self.is_finished():
-            if enchar == u"" and enchar == u"\0":
-                return []
-            return [RomajiSegment(enchar)]
-
-        text = self.__enchars + enchar
-
-        jachars = romaji_typing_rule.get(text, None)
-        if jachars:
-            self.__enchars = text
-            self.__jachars = jachars
-            return []
-
-        jachars, c = romaji_double_consonat_typing_rule.get(text, (None, None))
-        if jachars:
-            self.__enchars = text[0]
-            self.__jachars = jachars
-            return [RomajiSegment(c)]
-
-        for i in range(-min(4, len(text)), 0):
-            enchars = text[i:]
-
-            jachars = romaji_typing_rule.get(enchars, None)
-            if jachars:
-                jasegment = RomajiSegment(enchars, jachars)
-                self.__enchars = text[:i]
-                return [jasegment]
-
-            jachars, c = romaji_double_consonat_typing_rule.get(enchars, (None, None))
-            if jachars:
-                jasegment = RomajiSegment(enchars[:-len(c)], jachars)
-                self.__enchars = text[:i]
-                if c:
-                    return [jasegment, RomajiSegment(c)]
-                return [jasegment]
-
-            jachars, c = romaji_correction_rule.get(enchars, (None, None))
-            if jachars:
-                jasegment = RomajiSegment(enchars[:-len(c)], jachars)
-                self.__enchars = text[:i]
-                if c:
-                    return [jasegment, RomajiSegment(c)]
-                return [jasegment]
-
-
-
-        self.__enchars = text
-        return []
-
-    def prepend(self, enchar):
-        if enchar == u"" or enchar == u"\0":
-            return []
-
-        if self.is_finished():
-            return [RomajiSegment(enchar)]
-
-        text = enchar + self.__enchars
-        jachars = romaji_typing_rule.get(text, None)
-        if jachars:
-            self.__enchars = text
-            self.__jachars = jachars
-            return []
-
-        jachars, c = romaji_double_consonat_typing_rule.get(text, (None, None))
-        if jachars:
-            self.__enchars = c
-            return [RomajiSegment(text[0], jachars)]
-
-        for i in range(min(4, len(text)), 0, -1):
-            enchars = text[:i]
-
-            jachars = romaji_typing_rule.get(enchars, None)
-            if jachars:
-                jasegment = RomajiSegment(enchars, jachars)
-                self.__enchars = text[i:]
-                return [jasegment]
-
-            jachars, c = romaji_double_consonat_typing_rule.get(enchars, (None, None))
-            if jachars:
-                self.__enchars = c + text[i:]
-                return [RomajiSegment(enchars[:-len(c)], jachars)]
-
-            jachars, c = romaji_correction_rule.get(enchars, (None, None))
-            if jachars:
-                self.__enchars = c + text[i:]
-                return [RomajiSegment(enchars[:-len(c)], jachars)]
-
-
-        self.__enchars = text
-        return []
-
-    def set_enchars(self, enchars):
-        self.__enchars = enchars
-
-    def get_enchars(self):
-        return self.__enchars
-
-    def set_jachars(self, jachars):
-        self.__jachars = jachars
-
-    def get_jachars(self):
-        return self.__jachars
-
-    def to_hiragana(self):
-        if self.__jachars:
-            return self.__jachars
-        return self.__enchars
-
-    def to_katakana(self):
-        if self.__jachars:
-            return u"".join(map(lambda c: hiragana_katakana_table[c][0], self.__jachars))
-        return self.__enchars
-
-    def to_half_width_katakana(self):
-        if self.__jachars:
-            return u"".join(map(lambda c: hiragana_katakana_table[c][1], self.__jachars))
-        return self.__enchars
-
-    def to_latin(self):
-        return self.__enchars
-
-    def to_wide_latin(self):
-        return u"".join(map(ibus.unichar_half_to_full, self.__enchars))
-
-    def is_empty(self):
-        if self.__enchars or self.__jachars:
-            return False
-        return True
