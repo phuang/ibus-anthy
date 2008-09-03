@@ -19,6 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+import sys
 import gobject
 import ibus
 import anthy
@@ -50,6 +51,7 @@ CONV_MODE_WIDE_LATIN_2, \
 CONV_MODE_WIDE_LATIN_3 = range(11)
 
 class Engine(ibus.EngineBase):
+    __typing_mode = jastring.TYPING_MODE_ROMAJI
     def __init__(self, bus, object_path):
         super(Engine, self).__init__(bus, object_path)
 
@@ -59,7 +61,6 @@ class Engine(ibus.EngineBase):
 
         # init state
         self.__input_mode = INPUT_MODE_HIRAGANA
-        self.__typing_mode = jastring.TYPING_MODE_ROMAJI
         self.__prop_dict = {}
 
         self.__lookup_table = ibus.LookupTable(page_size=9)
@@ -70,7 +71,7 @@ class Engine(ibus.EngineBase):
 
     # reset values of engine
     def __reset(self):
-        self.__preedit_ja_string = jastring.JaString(self.__typing_mode)
+        self.__preedit_ja_string = jastring.JaString(Engine.__typing_mode)
         self.__convert_chars = u""
         self.__cursor_pos = 0
         self.__need_update = False
@@ -131,7 +132,7 @@ class Engine(ibus.EngineBase):
         # props.append(ibus.Property(name = u"TypingMode.ThumbShift",
         #                     type = ibus.PROP_TYPE_RADIO,
         #                     label = _(u"Thumb shift")))
-        props[self.__typing_mode].set_state(ibus.PROP_STATE_CHECKED)
+        props[Engine.__typing_mode].set_state(ibus.PROP_STATE_CHECKED)
 
         for prop in props:
             self.__prop_dict[prop.name] = prop
@@ -277,64 +278,88 @@ class Engine(ibus.EngineBase):
             return False
 
     def property_activate(self, prop_name, state):
-        prop = self.__prop_dict[prop_name]
-        prop.set_state(state)
 
         if state == ibus.PROP_STATE_CHECKED:
-            if prop_name == u"InputMode.Hiragana":
-                prop = self.__prop_dict[u"InputMode"]
-                prop.label = u"あ"
-                self.__input_mode = INPUT_MODE_HIRAGANA
-                self.update_property(prop)
-                self.__reset()
-                self.__invalidate()
-            elif prop_name == u"InputMode.Katakana":
-                prop = self.__prop_dict[u"InputMode"]
-                prop.label = u"ア"
-                self.__input_mode = INPUT_MODE_KATAKANA
-                self.update_property(prop)
-                self.__reset()
-                self.__invalidate()
-            elif prop_name == u"InputMode.HalfWidthKatakana":
-                prop = self.__prop_dict[u"InputMode"]
-                prop.label = u"_ｱ"
-                self.__input_mode = INPUT_MODE_HALF_WIDTH_KATAKANA
-                self.update_property(prop)
-                self.__reset()
-                self.__invalidate()
-            elif prop_name == u"InputMode.Latin":
-                prop = self.__prop_dict[u"InputMode"]
-                self.__input_mode = INPUT_MODE_LATIN
-                prop.label = u"_A"
-                self.update_property(prop)
-                self.__reset()
-                self.__invalidate()
-            elif prop_name == u"InputMode.WideLatin":
-                prop = self.__prop_dict[u"InputMode"]
-                prop.label = u"Ａ"
-                self.__input_mode = INPUT_MODE_WIDE_LATIN
-                self.update_property(prop)
-                self.__reset()
-                self.__invalidate()
-            elif prop_name == u"TypingMode.Romaji":
-                prop = self.__prop_dict[u"TypingMode"]
-                prop.label = u"R"
-                self.__typing_mode = jastring.TYPING_MODE_ROMAJI
-                self.update_property(prop)
-                self.__reset()
-                self.__invalidate()
-            elif prop_name == u"TypingMode.Kana":
-                prop = self.__prop_dict[u"TypingMode"]
-                prop.label = u"か"
-                self.__typing_mode = jastring.TYPING_MODE_KANA
-                self.update_property(prop)
-                self.__reset()
-                self.__invalidate()
-            else:
-                pass
+            if self.__input_mode_activate(prop_name, state):
+                return
+            if self.__typing_mode_activate(prop_name, state):
+                return
+        else:
+            self.__prop_dict[prop_name].set_state(state)
+
+    def __input_mode_activate(self, prop_name, state):
+        if not prop_name.startswith(u"InputMode."):
+            return False
+
+        input_modes = {
+            u"InputMode.Hiragana" : (INPUT_MODE_HIRAGANA, u"あ"),
+            u"InputMode.Katakana" : (INPUT_MODE_KATAKANA, u"ア"),
+            u"InputMode.HalfWidthKatakana" : (INPUT_MODE_HALF_WIDTH_KATAKANA, u"_ｱ"),
+            u"InputMode.Latin" : (INPUT_MODE_LATIN, u"_A"),
+            u"InputMode.WideLatin" : (INPUT_MODE_WIDE_LATIN, u"Ａ"),
+        }
+
+        if prop_name not in input_modes:
+            print >> sys.stderr, "Unknow prop_name = %s" % prop_name
+            return True
+        self.__prop_dict[prop_name].set_state(state)
+
+        mode, label = input_modes[prop_name]
+        if self.__input_mode == mode:
+            return True
+
+        self.__input_mode = mode
+        prop = self.__prop_dict[u"InputMode"]
+        prop.label = label
+        self.update_property(prop)
+
+        self.__reset()
+        self.__invalidate()
+
+    def __typing_mode_activate(self, prop_name, state):
+        if not prop_name.startswith(u"TypingMode."):
+            return False
+
+        typing_modes = {
+            u"TypingMode.Romaji" : (jastring.TYPING_MODE_ROMAJI, u"R"),
+            u"TypingMode.Kana" : (jastring.TYPING_MODE_KANA, u"か"),
+        }
+
+        if prop_name not in typing_modes:
+            print >> sys.stderr, "Unknow prop_name = %s" % prop_name
+            return True
+        self.__prop_dict[prop_name].set_state(state)
+
+        mode, label = typing_modes[prop_name]
+
+        Engine.__typing_mode = mode
+        prop = self.__prop_dict[u"TypingMode"]
+        prop.label = label
+        self.update_property(prop)
+
+        self.__reset()
+        self.__invalidate()
+
+    def __refresh_typing_mode_property(self):
+        prop = self.__prop_dict[u"TypingMode"]
+        modes = {
+            jastring.TYPING_MODE_ROMAJI : (u"TypingMode.Romaji", u"R"),
+            jastring.TYPING_MODE_KANA : (u"TypingMode.Kana", u"か"),
+        }
+        prop_name, label = modes.get(Engine.__typing_mode, (None, None))
+        if prop_name == None or label == None:
+            return
+        _prop = self.__prop_dict[prop_name]
+        _prop.set_state(ibus.PROP_STATE_CHECKED)
+        self.update_property(_prop)
+        prop.label = label
+        self.update_property(prop)
 
     def focus_in(self):
         self.register_properties(self.__prop_list)
+        self.__refresh_typing_mode_property()
+        self.__reset()
+        self.__invalidate()
 
     def focus_out(self):
         pass
