@@ -23,15 +23,21 @@ from ibus import unichar_half_to_full
 from tables import *
 
 class Segment(object):
-    def __init__(self, enchars, jachars):
+    def __init__(self, enchars=u"", jachars=u""):
         self._enchars = enchars
         self._jachars = jachars
 
     def append(self, enchar):
-        raise NotImplementedError("append is not implemented")
+        raise NotImplementedError("append() is not implemented")
 
     def prepend(self, enchar):
-        raise NotImplementedError("prepend is not implemented")
+        raise NotImplementedError("prepend() is not implemented")
+
+    def pop(self, index=-1):
+        raise NotImplementedError("pop() is not implemented")
+
+    def is_finished(self):
+        raise NotImplementedError("is_finised() is not implemented")
 
     def set_enchars(self, enchars):
         self.enchars = enchars
