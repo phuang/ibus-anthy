@@ -37,10 +37,6 @@ INPUT_MODE_HALF_WIDTH_KATAKANA, \
 INPUT_MODE_LATIN, \
 INPUT_MODE_WIDE_LATIN = range(5)
 
-TYPING_MODE_ROMAJI, \
-TYPING_MODE_KANA, \
-TYPING_MODE_THUMB_SHIFT = range(3)
-
 CONV_MODE_OFF, \
 CONV_MODE_ANTHY, \
 CONV_MODE_HIRAGANA, \
@@ -63,7 +59,7 @@ class Engine(ibus.EngineBase):
 
         # init state
         self.__input_mode = INPUT_MODE_HIRAGANA
-        self.__typing_method = TYPING_MODE_ROMAJI
+        self.__typing_mode = jastring.TYPING_MODE_ROMAJI
         self.__prop_dict = {}
 
         self.__lookup_table = ibus.LookupTable(page_size=9)
@@ -74,7 +70,7 @@ class Engine(ibus.EngineBase):
 
     # reset values of engine
     def __reset(self):
-        self.__preedit_ja_string = jastring.JaString()
+        self.__preedit_ja_string = jastring.JaString(self.__typing_mode)
         self.__convert_chars = u""
         self.__cursor_pos = 0
         self.__need_update = False
@@ -84,41 +80,66 @@ class Engine(ibus.EngineBase):
         self.__lookup_table_visible = False
 
     def __init_props(self):
-        props = ibus.PropList()
+        anthy_props = ibus.PropList()
 
         # init input mode properties
-        mode_prop = ibus.Property(name = u"InputMode",
+        input_mode_prop = ibus.Property(name = u"InputMode",
                             type = ibus.PROP_TYPE_MENU,
                             label = u"あ",
                             tooltip = _(u"Switch input mode"))
-        self.__prop_dict[u"InputMode"] = mode_prop
+        self.__prop_dict[u"InputMode"] = input_mode_prop
 
-        mode_props = ibus.PropList()
-        mode_props.append(ibus.Property(name = u"InputMode.Hiragana",
+        props = ibus.PropList()
+        props.append(ibus.Property(name = u"InputMode.Hiragana",
                                         type = ibus.PROP_TYPE_RADIO,
                                         label = _(u"Hiragana")))
-        mode_props.append(ibus.Property(name = u"InputMode.Katakana",
-                                        type = ibus.PROP_TYPE_RADIO,
-                                        label = _(u"Katakana")))
-        mode_props.append(ibus.Property(name = u"InputMode.HalfWidthKatakana",
-                                        type = ibus.PROP_TYPE_RADIO,
-                                        label = _(u"Half width katakana")))
-        mode_props.append(ibus.Property(name = u"InputMode.Latin",
-                                        type = ibus.PROP_TYPE_RADIO,
-                                        label = _(u"Latin")))
-        mode_props.append(ibus.Property(name = u"InputMode.WideLatin",
-                                        type = ibus.PROP_TYPE_RADIO,
-                                        label = _(u"Wide Latin")))
+        props.append(ibus.Property(name = u"InputMode.Katakana",
+                             type = ibus.PROP_TYPE_RADIO,
+                             label = _(u"Katakana")))
+        props.append(ibus.Property(name = u"InputMode.HalfWidthKatakana",
+                             type = ibus.PROP_TYPE_RADIO,
+                             label = _(u"Half width katakana")))
+        props.append(ibus.Property(name = u"InputMode.Latin",
+                             type = ibus.PROP_TYPE_RADIO,
+                             label = _(u"Latin")))
+        props.append(ibus.Property(name = u"InputMode.WideLatin",
+                             type = ibus.PROP_TYPE_RADIO,
+                             label = _(u"Wide Latin")))
 
-        mode_props[self.__input_mode].set_state(ibus.PROP_STATE_CHECKED)
+        props[self.__input_mode].set_state(ibus.PROP_STATE_CHECKED)
 
-        for prop in mode_props:
+        for prop in props:
             self.__prop_dict[prop.name] = prop
 
-        mode_prop.set_sub_props(mode_props)
-        props.append(mode_prop)
+        input_mode_prop.set_sub_props(props)
+        anthy_props.append(input_mode_prop)
 
-        return props
+        # typing input mode properties
+        typing_mode_prop = ibus.Property(name = u"TypingMode",
+                            type = ibus.PROP_TYPE_MENU,
+                            label = u"R",
+                            tooltip = _(u"Switch typing mode"))
+        self.__prop_dict[u"TypingMode"] = typing_mode_prop
+
+        props = ibus.PropList()
+        props.append(ibus.Property(name = u"TypingMode.Romaji",
+                            type = ibus.PROP_TYPE_RADIO,
+                            label = _(u"Romaji")))
+        props.append(ibus.Property(name = u"TypingMode.Kana",
+                            type = ibus.PROP_TYPE_RADIO,
+                            label = _(u"Katakana")))
+        # props.append(ibus.Property(name = u"TypingMode.ThumbShift",
+        #                     type = ibus.PROP_TYPE_RADIO,
+        #                     label = _(u"Thumb shift")))
+        props[self.__typing_mode].set_state(ibus.PROP_STATE_CHECKED)
+
+        for prop in props:
+            self.__prop_dict[prop.name] = prop
+
+        typing_mode_prop.set_sub_props(props)
+        anthy_props.append(typing_mode_prop)
+
+        return anthy_props
 
     def page_up(self):
         # only process cursor down in convert mode
@@ -295,6 +316,22 @@ class Engine(ibus.EngineBase):
                 self.update_property(prop)
                 self.__reset()
                 self.__invalidate()
+            elif prop_name == u"TypingMode.Romaji":
+                prop = self.__prop_dict[u"TypingMode"]
+                prop.label = u"R"
+                self.__typing_mode = jastring.TYPING_MODE_ROMAJI
+                self.update_property(prop)
+                self.__reset()
+                self.__invalidate()
+            elif prop_name == u"TypingMode.Kana":
+                prop = self.__prop_dict[u"TypingMode"]
+                prop.label = u"か"
+                self.__typing_mode = jastring.TYPING_MODE_KANA
+                self.update_property(prop)
+                self.__reset()
+                self.__invalidate()
+            else:
+                pass
 
     def focus_in(self):
         self.register_properties(self.__prop_list)

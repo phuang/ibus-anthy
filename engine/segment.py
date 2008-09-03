@@ -58,12 +58,12 @@ class Segment(object):
 
     def to_katakana(self):
         if self._jachars:
-            return u"".join(map(lambda c: hiragana_katakana_table[c][0], self._jachars))
+            return u"".join(map(lambda c: hiragana_katakana_table.get(c, (c, c, c))[0], self._jachars))
         return self._enchars
 
     def to_half_width_katakana(self):
         if self._jachars:
-            return u"".join(map(lambda c: hiragana_katakana_table[c][1], self._jachars))
+            return u"".join(map(lambda c: hiragana_katakana_table.get(c, (c, c, c))[1], self._jachars))
         return self._enchars
 
     def to_latin(self):

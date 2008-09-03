@@ -20,14 +20,24 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import romaji
+import kana
+
+TYPING_MODE_ROMAJI, \
+TYPING_MODE_KANA, \
+TYPING_MODE_THUMB_SHIFT = range(3)
 
 class JaString:
-    def __init__(self):
+    def __init__(self, mode=TYPING_MODE_ROMAJI):
+        self.__mode = mode
         self.reset()
 
     def reset(self):
         self.__cursor = 0
         self.__segments = list()
+
+    def set_mode(self, mode):
+        self.__mode = mode
+        self.reset()
 
     def insert(self, c):
         segment_before = None
@@ -44,7 +54,10 @@ class JaString:
             new_segments = segment_after.prepend(c)
         else:
             if c != u"\0" and c != u"":
-                new_segments = [romaji.RomajiSegment(c)]
+                if self.__mode == TYPING_MODE_ROMAJI:
+                    new_segments = [romaji.RomajiSegment(c)]
+                elif self.__mode == TYPING_MODE_KANA:
+                    new_segments = [kana.KanaSegment(c)]
         if new_segments:
             self.__segments[self.__cursor:self.__cursor] = new_segments
             self.__cursor += len(new_segments)
