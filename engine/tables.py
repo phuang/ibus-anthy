@@ -464,41 +464,6 @@ kana_voiced_consonant_rule = {
     u"ほ[" : u"ぽ",
 }
 
-symbols_set = set([
-    u",",
-    u".",
-    u"!",
-    u"\"",
-    u"#",
-    u"$",
-    u"%",
-    u"&",
-    u"'",
-    u"(",
-    u")",
-    u"~",
-    u"-",
-    u"=",
-    u"^",
-    u"\\",
-    u"|",
-    u"`",
-    u"@",
-    u"{",
-    u"[",
-    u"+",
-    u";",
-    u"*",
-    u":",
-    u"}",
-    u"]",
-    u"<",
-    u">",
-    u"?",
-    u"/",
-    u"_",
-])
-
 #hiragana, katakana, half_katakana
 hiragana_katakana_table = {
     u"あ" : (u"ア", u"ｱ"),

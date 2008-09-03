@@ -244,9 +244,7 @@ class Engine(ibus.EngineBase):
             return self.__on_key_right()
         elif keyval >= keysyms.F6 and keyval <= keysyms.F9:
             return self.__on_key_conv(keyval - keysyms.F6)
-        elif keyval in xrange(keysyms.a, keysyms.z + 1) or \
-            keyval in xrange(keysyms.A, keysyms.Z + 1) or \
-            unichr(keyval) in symbols_set:
+        elif keyval >= keysyms.exclam and keyval <= keysyms.asciitilde:
             return self.__on_key_common(keyval)
         else:
             if not self.__preedit_ja_string.is_empty():
@@ -652,11 +650,10 @@ class Engine(ibus.EngineBase):
         elif self.__input_mode == INPUT_MODE_WIDE_LATIN:
             #  Input Wide Latin chars
             char = unichr(keyval)
-            if char in symbols_set:
-                char = romaji_typing_rule[char]
-            else:
-                char = ibus.unichar_half_to_full(char)
-            self.__commit_string(char)
+            wide_char = half_symbol_rule.get(char, None)
+            if wide_char == None:
+                wide_char = ibus.unichar_half_to_full(char)
+            self.__commit_string(wide_char)
             return True
 
         # Input Japanese
