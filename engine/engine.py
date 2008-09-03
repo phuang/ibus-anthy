@@ -803,7 +803,7 @@ class JaSegment:
             self.__jachars = jachars
             return []
 
-        jachars, c = double_consonat_typing_rule.get(text, (None, None))
+        jachars, c = romaji_double_consonat_typing_rule.get(text, (None, None))
         if jachars:
             self.__enchars = text[0]
             self.__jachars = jachars
@@ -818,13 +818,13 @@ class JaSegment:
                 self.__enchars = text[:i]
                 return [jasegment]
 
-            jachars, c = double_consonat_typing_rule.get(enchars, (None, None))
+            jachars, c = romaji_double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
                 jasegment = JaSegment(enchars[:-len(c)], jachars)
                 self.__enchars = text[:i]
                 return [jasegment, JaSegment(c)]
 
-            jachars, c = correction_rule.get(enchars, (None, None))
+            jachars, c = romaji_correction_rule.get(enchars, (None, None))
             if jachars:
                 jasegment = JaSegment(enchars[:-len(c)], jachars)
                 self.__enchars = text[:i]
@@ -849,7 +849,7 @@ class JaSegment:
             self.__jachars = jachars
             return []
 
-        jachars, c = double_consonat_typing_rule.get(text, (None, None))
+        jachars, c = romaji_double_consonat_typing_rule.get(text, (None, None))
         if jachars:
             self.__enchars = c
             return [JaSegment(text[0], jachars)]
@@ -863,12 +863,12 @@ class JaSegment:
                 self.__enchars = text[i:]
                 return [jasegment]
 
-            jachars, c = double_consonat_typing_rule.get(enchars, (None, None))
+            jachars, c = romaji_double_consonat_typing_rule.get(enchars, (None, None))
             if jachars:
                 self.__enchars = c + text[i:]
                 return [JaSegment(enchars[:-len(c)], jachars)]
 
-            jachars, c = correction_rule.get(enchars, (None, None))
+            jachars, c = romaji_correction_rule.get(enchars, (None, None))
             if jachars:
                 self.__enchars = c + text[i:]
                 return [JaSegment(enchars[:-len(c)], jachars)]
