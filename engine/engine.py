@@ -128,7 +128,7 @@ class Engine(ibus.EngineBase):
                             label = _(u"Romaji")))
         props.append(ibus.Property(name = u"TypingMode.Kana",
                             type = ibus.PROP_TYPE_RADIO,
-                            label = _(u"Katakana")))
+                            label = _(u"Kana")))
         # props.append(ibus.Property(name = u"TypingMode.ThumbShift",
         #                     type = ibus.PROP_TYPE_RADIO,
         #                     label = _(u"Thumb shift")))
