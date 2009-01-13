@@ -228,6 +228,7 @@ romaji_typing_rule = {
 
 symbol_rule = {
     # symbols
+    u" "  : u"　",
     u","  : u"、",
     u"."  : u"。",
     u"!"  : u"！",
