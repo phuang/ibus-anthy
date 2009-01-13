@@ -56,6 +56,12 @@ class RomajiSegment(segment.Segment):
             self._jachars = jachars
             return [RomajiSegment(c)]
 
+        jachars, c = romaji_correction_rule.get(text, (None, None))
+        if jachars:
+            self._enchars = text[0]
+            self._jachars = jachars
+            return [RomajiSegment(c)]
+
         for i in range(-min(4, len(text)), 0):
             enchars = text[i:]
 
@@ -103,6 +109,11 @@ class RomajiSegment(segment.Segment):
             return []
 
         jachars, c = romaji_double_consonat_typing_rule.get(text, (None, None))
+        if jachars:
+            self._enchars = c
+            return [RomajiSegment(text[0], jachars)]
+
+        jachars, c = romaji_correction_rule.get(text, (None, None))
         if jachars:
             self._enchars = c
             return [RomajiSegment(text[0], jachars)]
