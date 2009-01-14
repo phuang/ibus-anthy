@@ -568,6 +568,15 @@ class Engine(ibus.EngineBase):
         return True
 
     def __on_key_space(self):
+        if self.__input_mode == INPUT_MODE_WIDE_LATIN:
+            #  Input Wide Latin chars
+            char = unichr(keysyms.space)
+            wide_char = symbol_rule.get(char, None)
+            if wide_char == None:
+                wide_char = ibus.unichar_half_to_full(char)
+            self.__commit_string(wide_char)
+            return True
+
         if self.__preedit_ja_string.is_empty():
             return False
 
