@@ -51,7 +51,6 @@ _anthy_la_CFLAGS = \
 _anthy_la_LDFLAGS = \
 	@ANTHY_LIBS@ \
 	@PYTHON_LIBS@ \
-	-rpath $(anthydir) \
 	-avoid-version \
 	-module \
 	$(NULL)
