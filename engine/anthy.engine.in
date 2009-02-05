@@ -1,6 +1,0 @@
-Exec=@prefix@/bin/ibus-engine-anthy
-Name=anthy
-Lang=ja
-Icon=@prefix@/share/@PACKAGE@/icons/ibus-anthy.png
-Author=Huang Peng <shawn.p.huang@gmail.com>
-Credits=

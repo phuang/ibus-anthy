@@ -49,10 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 # %dir %{python_sitearch}/ibus
 %{python_sitearch}/anthy.py*
 %{python_sitearch}/_anthy.so
-%dir %{_datadir}/@PACKAGE@
-%{_bindir}/ibus-engine-anthy
-%{_datadir}/@PACKAGE@/*
-%{_datadir}/ibus/engine/anthy.engine
+%{_libexecdir}/ibus-engine-anthy
+%{_datadir}/@PACKAGE@
+%{_datadir}/ibus/component/*
 
 %changelog
 * Fri Aug 08 2008 Huang Peng <shawn.p.huang@gmail.com> - @VERSION@-1

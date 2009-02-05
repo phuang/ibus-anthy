@@ -55,9 +55,9 @@ _anthy_la_LDFLAGS = \
 	-module \
 	$(NULL)
 
-bin_SCRIPTS = ibus-engine-anthy
-engine_DATA = anthy.engine
-enginedir = $(datadir)/ibus/engine
+libexec_SCRIPTS = ibus-engine-anthy
+engine_DATA = anthy.xml
+enginedir = $(datadir)/ibus/component
 
 anthy.py anthy_wrap.c: anthy.i
 	$(SWIG) -python -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
@@ -66,13 +66,13 @@ test:
 	$(ENV) \
 		DBUS_DEBUG=true \
 		IBUS_ANTHY_PKGDATADIR=$(abs_top_srcdir) \
-		PYTHONPATH=$(builddir)/.libs \
+		PYTHONPATH=$(builddir)/.libs:@pyexecdir@ \
 		$(PYTHON) \
 		$(srcdir)/main.py
 
 EXTRA_DIST = \
 	anthy.i \
-	anthy.engine.in \
+	anthy.xml.in \
 	ibus-engine-anthy.in \
 	$(NULL)
 

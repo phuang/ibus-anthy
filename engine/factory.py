@@ -39,14 +39,12 @@ class EngineFactory(ibus.EngineFactoryBase):
     CREDITS = "GPLv2"
 
     def __init__(self, bus):
-        self.__info = [
-            self.NAME,
-            self.LANG,
-            self.ICON,
-            self.AUTHORS,
-            self.CREDITS
-            ]
+        self.__bus = bus
+        self.__id = 0
+        super(EngineFactory, self).__init__(bus)
 
-        super(EngineFactory, self).__init__(self.__info, engine.Engine, ENGINE_PATH, bus, FACTORY_PATH)
-
-
+    def create_engine(self, engine_name):
+        if engine_name == "anthy":
+            self.__id += 1
+            return engine.Engine(self.__bus, "/org/freedesktop/IBus/Anthy/%d" % self.__id)
+        return super(EngineFactory, self).create_engine(engine_name)

@@ -84,63 +84,69 @@ class Engine(ibus.EngineBase):
         anthy_props = ibus.PropList()
 
         # init input mode properties
-        input_mode_prop = ibus.Property(name = u"InputMode",
-                            type = ibus.PROP_TYPE_MENU,
-                            label = u"あ",
-                            tooltip = _(u"Switch input mode"))
+        input_mode_prop = ibus.Property(key=u"InputMode",
+                                        type=ibus.PROP_TYPE_MENU,
+                                        label=u"あ",
+                                        tooltip=_(u"Switch input mode"))
         self.__prop_dict[u"InputMode"] = input_mode_prop
 
         props = ibus.PropList()
-        props.append(ibus.Property(name = u"InputMode.Hiragana",
-                                        type = ibus.PROP_TYPE_RADIO,
-                                        label = _(u"Hiragana")))
-        props.append(ibus.Property(name = u"InputMode.Katakana",
-                             type = ibus.PROP_TYPE_RADIO,
-                             label = _(u"Katakana")))
-        props.append(ibus.Property(name = u"InputMode.HalfWidthKatakana",
-                             type = ibus.PROP_TYPE_RADIO,
-                             label = _(u"Half width katakana")))
-        props.append(ibus.Property(name = u"InputMode.Latin",
-                             type = ibus.PROP_TYPE_RADIO,
-                             label = _(u"Latin")))
-        props.append(ibus.Property(name = u"InputMode.WideLatin",
-                             type = ibus.PROP_TYPE_RADIO,
-                             label = _(u"Wide Latin")))
+        props.append(ibus.Property(key=u"InputMode.Hiragana",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Hiragana")))
+        props.append(ibus.Property(key=u"InputMode.Katakana",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Katakana")))
+        props.append(ibus.Property(key=u"InputMode.HalfWidthKatakana",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Half width katakana")))
+        props.append(ibus.Property(key=u"InputMode.Latin",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Latin")))
+        props.append(ibus.Property(key=u"InputMode.WideLatin",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Wide Latin")))
 
         props[self.__input_mode].set_state(ibus.PROP_STATE_CHECKED)
 
         for prop in props:
-            self.__prop_dict[prop.name] = prop
+            self.__prop_dict[prop.key] = prop
 
         input_mode_prop.set_sub_props(props)
         anthy_props.append(input_mode_prop)
 
         # typing input mode properties
-        typing_mode_prop = ibus.Property(name = u"TypingMode",
-                            type = ibus.PROP_TYPE_MENU,
-                            label = u"R",
-                            tooltip = _(u"Switch typing mode"))
+        typing_mode_prop = ibus.Property(key=u"TypingMode",
+                                         type=ibus.PROP_TYPE_MENU,
+                                         label=u"R",
+                                         tooltip=_(u"Switch typing mode"))
         self.__prop_dict[u"TypingMode"] = typing_mode_prop
 
         props = ibus.PropList()
-        props.append(ibus.Property(name = u"TypingMode.Romaji",
-                            type = ibus.PROP_TYPE_RADIO,
-                            label = _(u"Romaji")))
-        props.append(ibus.Property(name = u"TypingMode.Kana",
-                            type = ibus.PROP_TYPE_RADIO,
-                            label = _(u"Kana")))
+        props.append(ibus.Property(key=u"TypingMode.Romaji",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Romaji")))
+        props.append(ibus.Property(key=u"TypingMode.Kana",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Kana")))
         # props.append(ibus.Property(name = u"TypingMode.ThumbShift",
         #                     type = ibus.PROP_TYPE_RADIO,
         #                     label = _(u"Thumb shift")))
         props[Engine.__typing_mode].set_state(ibus.PROP_STATE_CHECKED)
 
         for prop in props:
-            self.__prop_dict[prop.name] = prop
+            self.__prop_dict[prop.key] = prop
 
         typing_mode_prop.set_sub_props(props)
         anthy_props.append(typing_mode_prop)
 
         return anthy_props
+
+    def update_preedit(self, string, attrs, cursor_pos, visible):
+        self.update_preedit_text(ibus.Text(string, attrs), cursor_pos, visible)
+
+    def update_aux_string(self, string, attrs, visible):
+        self.update_auxiliary_text(ibus.Text(string, attrs), visible)
 
     def page_up(self):
         # only process cursor down in convert mode
@@ -150,7 +156,7 @@ class Engine(ibus.EngineBase):
         if not self.__lookup_table.page_up():
             return False
 
-        candidate = self.__lookup_table.get_current_candidate()[0]
+        candidate = self.__lookup_table.get_current_candidate().text
         index = self.__lookup_table.get_cursor_pos()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
@@ -164,7 +170,7 @@ class Engine(ibus.EngineBase):
         if not self.__lookup_table.page_down():
             return False
 
-        candidate = self.__lookup_table.get_current_candidate()[0]
+        candidate = self.__lookup_table.get_current_candidate().text
         index = self.__lookup_table.get_cursor_pos()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
@@ -178,7 +184,7 @@ class Engine(ibus.EngineBase):
         if not self.__lookup_table.cursor_up():
             return False
 
-        candidate = self.__lookup_table.get_current_candidate()[0]
+        candidate = self.__lookup_table.get_current_candidate().text
         index = self.__lookup_table.get_cursor_pos()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
@@ -192,7 +198,7 @@ class Engine(ibus.EngineBase):
         if not self.__lookup_table.cursor_down():
             return False
 
-        candidate = self.__lookup_table.get_current_candidate()[0]
+        candidate = self.__lookup_table.get_current_candidate().text
         index = self.__lookup_table.get_cursor_pos()
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
@@ -200,7 +206,7 @@ class Engine(ibus.EngineBase):
 
     def __commit_string(self, text):
         self.__reset()
-        self.commit_string(text)
+        self.commit_text(ibus.Text(text))
         self.__invalidate()
 
     def __shrink_segment(self, relative_size):
@@ -217,7 +223,9 @@ class Engine(ibus.EngineBase):
         self.__invalidate()
         return True
 
-    def process_key_event(self, keyval, is_press, state):
+    def process_key_event(self, keyval, state):
+
+        is_press = (state & modifier.RELEASE_MASK) == 0
 
         state = state & (modifier.SHIFT_MASK | \
                 modifier.CONTROL_MASK | \
@@ -413,7 +421,7 @@ class Engine(ibus.EngineBase):
         for i in xrange(0, seg_stat.nr_candidate):
             buf = self.__context.get_segment(self.__cursor_pos, i)
             candidate = unicode(buf, "utf-8")
-            self.__lookup_table.append_candidate(candidate)
+            self.__lookup_table.append_candidate(ibus.Text(candidate))
 
 
     def __invalidate(self):
@@ -670,7 +678,7 @@ class Engine(ibus.EngineBase):
         candidates = self.__lookup_table.get_canidates_in_current_page()
         if self.__lookup_table.set_cursor_pos_in_current_page(index):
             index = self.__lookup_table.get_cursor_pos()
-            candidate = self.__lookup_table.get_current_candidate()[0]
+            candidate = self.__lookup_table.get_current_candidate().text
             self.__segments[self.__cursor_pos] = index, candidate
             self.__lookup_table_visible = False
             self.__on_key_right()
