@@ -62,6 +62,14 @@ enginedir = $(datadir)/ibus/component
 anthy.py anthy_wrap.c: anthy.i
 	$(SWIG) -python -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
 
+anthy.xml: anthy.xml.in
+	( \
+		libexecdir=${libexecdir}; \
+		pkgdatadir=${pkgdatadir}; \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \
+	) > $@
+
 test:
 	$(ENV) \
 		DBUS_DEBUG=true \
@@ -72,11 +80,12 @@ test:
 
 EXTRA_DIST = \
 	anthy.i \
-	anthy.xml.in \
+	anthy.xml.in.in \
 	ibus-engine-anthy.in \
 	$(NULL)
 
 CLEANFILES = \
+	anthy.xml \
 	anthy.py \
 	anthy_wrap.* \
 	*.pyc \

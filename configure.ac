@@ -97,7 +97,7 @@ Makefile
 ibus-anthy.spec
 engine/Makefile
 engine/ibus-engine-anthy
-engine/anthy.xml
+engine/anthy.xml.in
 icons/Makefile
 m4/Makefile
 ])

@@ -3,7 +3,7 @@
 <component>
 	<name>org.freedesktop.IBus.Anthy</name>
 	<description>Anthy Component</description>
-	<exec>@prefix@/libexec/ibus-engine-anthy --ibus</exec>
+	<exec>${libexecdir}/ibus-engine-anthy --ibus</exec>
 	<version>@VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 	<license>GPL</license>
@@ -17,7 +17,7 @@
 			<language>ja</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<icon>@prefix@/share/ibus-anthy/icons/ibus-anthy.png</icon>
+			<icon>${pkgdatadir}/icons/ibus-anthy.png</icon>
 			<layout>us</layout>
 			<longname>Anthy</longname>
 			<description>Anthy Input Method</description>
