@@ -675,7 +675,7 @@ class Engine(ibus.EngineBase):
             return True
         index = keyval - keysyms._1
 
-        candidates = self.__lookup_table.get_canidates_in_current_page()
+        candidates = self.__lookup_table.get_candidates_in_current_page()
         if self.__lookup_table.set_cursor_pos_in_current_page(index):
             index = self.__lookup_table.get_cursor_pos()
             candidate = self.__lookup_table.get_current_candidate().text
