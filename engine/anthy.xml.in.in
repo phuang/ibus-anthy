@@ -21,7 +21,7 @@
 			<layout>us</layout>
 			<longname>Anthy</longname>
 			<description>Anthy Input Method</description>
-			<priority>99</priority>
+			<rank>99</rank>
 		</engine>
 	</engines>
 </component>
