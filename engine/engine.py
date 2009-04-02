@@ -224,7 +224,14 @@ class Engine(ibus.EngineBase):
         return True
 
     def process_key_event(self, keyval, state):
+        try:
+            return self.process_key_event_internal(keyval, state)
+        except:
+            import traceback
+            traceback.print_exc()
+            return False
 
+    def process_key_event_internal(self, keyval, state):
         is_press = (state & modifier.RELEASE_MASK) == 0
 
         state = state & (modifier.SHIFT_MASK | \
@@ -276,6 +283,10 @@ class Engine(ibus.EngineBase):
             return self.__on_key_left()
         elif keyval == keysyms.Right:
             return self.__on_key_right()
+        elif keyval == keysyms.Muhenkan: # or keyval == keysyms.F11:
+            return self.__on_key_muhenka()
+        elif keyval == keysyms.Henkan: # or keyval == keysyms.F12:
+            return self.__on_key_henkan()
         elif keyval >= keysyms.F6 and keyval <= keysyms.F9:
             return self.__on_key_conv(keyval - keysyms.F6)
         elif keyval >= keysyms.exclam and keyval <= keysyms.asciitilde:
@@ -573,6 +584,35 @@ class Engine(ibus.EngineBase):
             self.__preedit_ja_string.remove_after()
 
         self.__invalidate()
+        return True
+
+    def __on_key_muhenka(self):
+        if self.__preedit_ja_string.is_empty():
+            return False
+        
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            self.__end_anthy_convert()
+        
+        new_mode = CONV_MODE_HIRAGANA
+        if self.__convert_mode < CONV_MODE_WIDE_LATIN_3 and \
+           self.__convert_mode >= CONV_MODE_HIRAGANA :
+            self.__convert_mode += 1
+        else:
+            self.__convert_mode = CONV_MODE_HIRAGANA
+
+        self.__invalidate()
+        
+        return True
+
+    def __on_key_henkan(self):
+        if self.__preedit_ja_string.is_empty():
+            return False
+        if self.__convert_mode != CONV_MODE_ANTHY:
+            self.__begin_anthy_convert()
+            self.__invalidate()
+        elif self.__convert_mode == CONV_MODE_ANTHY:
+            self.__lookup_table_visible = True
+            self.cursor_down()
         return True
 
     def __on_key_space(self):
