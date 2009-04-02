@@ -283,9 +283,11 @@ class Engine(ibus.EngineBase):
             return self.__on_key_left()
         elif keyval == keysyms.Right:
             return self.__on_key_right()
+        elif keyval == keysyms.Hiragana_Katakana: # or keyval == keysyms.F11:
+            return self.__on_key_hiragana_katakana()
         elif keyval == keysyms.Muhenkan: # or keyval == keysyms.F11:
             return self.__on_key_muhenka()
-        elif keyval == keysyms.Henkan: # or keyval == keysyms.F12:
+        elif keyval == keysyms.Henkan: # or keyval == keysyms.F11:
             return self.__on_key_henkan()
         elif keyval >= keysyms.F6 and keyval <= keysyms.F9:
             return self.__on_key_conv(keyval - keysyms.F6)
@@ -586,13 +588,34 @@ class Engine(ibus.EngineBase):
         self.__invalidate()
         return True
 
+    def __on_key_hiragana_katakana(self):
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            self.__end_anthy_convert()
+
+        if self.__input_mode >= INPUT_MODE_HIRAGANA and \
+           self.__input_mode < INPUT_MODE_HALF_WIDTH_KATAKANA:
+            self.__input_mode += 1
+        else:
+            self.__input_mode = INPUT_MODE_HIRAGANA
+
+        modes = { INPUT_MODE_HIRAGANA: u"あ",
+                  INPUT_MODE_KATAKANA: u"ア",
+                  INPUT_MODE_HALF_WIDTH_KATAKANA: u"_ｱ" }
+
+        prop = self.__prop_dict[u"InputMode"]
+        prop.label = modes[self.__input_mode]
+        self.update_property(prop)
+
+        self.__invalidate()
+        return True
+
     def __on_key_muhenka(self):
         if self.__preedit_ja_string.is_empty():
             return False
-        
+
         if self.__convert_mode == CONV_MODE_ANTHY:
             self.__end_anthy_convert()
-        
+
         new_mode = CONV_MODE_HIRAGANA
         if self.__convert_mode < CONV_MODE_WIDE_LATIN_3 and \
            self.__convert_mode >= CONV_MODE_HIRAGANA :
@@ -601,7 +624,7 @@ class Engine(ibus.EngineBase):
             self.__convert_mode = CONV_MODE_HIRAGANA
 
         self.__invalidate()
-        
+
         return True
 
     def __on_key_henkan(self):
