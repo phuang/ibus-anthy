@@ -45,7 +45,7 @@ msgstr "入力モード切替"
 
 #: engine/engine.py:128
 msgid "Romaji"
-msgstr ""
+msgstr "ローマ字"
 
 #: engine/engine.py:131
 msgid "Kana"
