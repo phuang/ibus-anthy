@@ -640,16 +640,21 @@ class Engine(ibus.EngineBase):
 
     def __on_key_space(self):
         if self.__input_mode == INPUT_MODE_WIDE_LATIN:
-            #  Input Wide Latin chars
-            char = unichr(keysyms.space)
-            wide_char = symbol_rule.get(char, None)
-            if wide_char == None:
-                wide_char = ibus.unichar_half_to_full(char)
+            # Input Wide space U+3000
+            wide_char = symbol_rule[unichr(keysyms.space)]
             self.__commit_string(wide_char)
             return True
 
         if self.__preedit_ja_string.is_empty():
-            return False
+            if self.__input_mode in (INPUT_MODE_HIRAGANA, INPUT_MODE_KATAKANA):
+                # Input Wide space U+3000
+                wide_char = symbol_rule[unichr(keysyms.space)]
+                self.__commit_string(wide_char)
+                return True
+            else:
+                # Input Half space U+0020
+                self.__commit_string(unichr(keysyms.space))
+                return True
 
         if self.__convert_mode != CONV_MODE_ANTHY:
             self.__begin_anthy_convert()
