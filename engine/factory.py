@@ -19,32 +19,45 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-import os
-from os import path
 import ibus
 import engine
+import os
 
 from gettext import dgettext
 _  = lambda a : dgettext("ibus-anthy", a)
 N_ = lambda a : a
 
-FACTORY_PATH = "/com/redhat/IBus/engines/Anthy/Factory"
-ENGINE_PATH = "/com/redhat/IBus/engines/Anthy/Engine/"
 
 class EngineFactory(ibus.EngineFactoryBase):
+    FACTORY_PATH = "/com/redhat/IBus/engines/Anthy/Factory"
+    ENGINE_PATH = "/com/redhat/IBus/engines/Anthy/Engine"
     NAME = _("Anthy")
     LANG = "ja"
-    ICON = path.join(os.getenv("IBUS_ANTHY_PKGDATADIR"), "icons/ibus-anthy.png")
+    ICON = os.getenv("IBUS_ANTHY_PKGDATADIR") + "/icons/ibus-anthy.png"
     AUTHORS = "Huang Peng <shawn.p.huang@gmail.com>"
     CREDITS = "GPLv2"
 
     def __init__(self, bus):
         self.__bus = bus
-        self.__id = 0
+        engine.Engine.CONFIG_RELOADED(bus)
         super(EngineFactory, self).__init__(bus)
+
+        self.__id = 0
+        self.__config = self.__bus.get_config()
+
+        self.__config.connect("reloaded", self.__config_reloaded_cb)
+        self.__config.connect("value-changed", self.__config_value_changed_cb)
 
     def create_engine(self, engine_name):
         if engine_name == "anthy":
             self.__id += 1
-            return engine.Engine(self.__bus, "/org/freedesktop/IBus/Anthy/%d" % self.__id)
+            return engine.Engine(self.__bus, "%s/%d" % (self.ENGINE_PATH, self.__id))
+
         return super(EngineFactory, self).create_engine(engine_name)
+
+    def __config_reloaded_cb(self, config):
+        engine.Engine.CONFIG_RELOADED(self.__bus)
+
+    def __config_value_changed_cb(self, config, section, name, value):
+        engine.Engine.CONFIG_VALUE_CHANGED(self.__bus, section, name, value)
+

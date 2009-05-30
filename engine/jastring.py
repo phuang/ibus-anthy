@@ -22,6 +22,19 @@
 import romaji
 import kana
 
+from ibus import unichar_half_to_full
+
+SymbolTable = {}
+for i in range(32, 127):
+    if not chr(i).isalnum():
+        SymbolTable[unichar_half_to_full(chr(i))] = chr(i)
+
+NumberTable = {}
+for i in range(10):
+    NumberTable[unichar_half_to_full(str(i))] = str(i)
+
+PeriodTable = {u'。': u'．', u'、': u'，', u'｡': u'.', u'､': u','}
+
 TYPING_MODE_ROMAJI, \
 TYPING_MODE_KANA, \
 TYPING_MODE_THUMB_SHIFT = range(3)
@@ -95,23 +108,38 @@ class JaString:
         elif self.__cursor > len(self.__segments):
             self.__cursor = len(self.__segments)
 
-    def get_hiragana(self):
+    def _chk_text(self, s):
+        period = self._prefs.get_value('common', 'period_style')
+        symbol = self._prefs.get_value('common', 'half_width_symbol')
+        number = self._prefs.get_value('common', 'half_width_number')
+        ret = ''
+        for c in s:
+            c = c if not period else PeriodTable.get(c, c)
+            c = c if not symbol else SymbolTable.get(c, c)
+            c = c if not number else NumberTable.get(c, c)
+            ret += c
+        return ret
+
+    def get_hiragana(self, commit=False):
         conv = lambda s: s.to_hiragana()
-        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
-        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
-        return text_before + text_after, len(text_before)
+        R = lambda s: s if not (commit and s[-1:] == u'n') else s[:-1] + u'ん'
+        text_before = R(u"".join(map(conv, self.__segments[:self.__cursor])))
+        text_after = R(u"".join(map(conv, self.__segments[self.__cursor:])))
+        return self._chk_text(text_before + text_after), len(text_before)
 
-    def get_katakana(self):
+    def get_katakana(self, commit=False):
         conv = lambda s: s.to_katakana()
-        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
-        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
-        return text_before + text_after, len(text_before)
+        R = lambda s: s if not (commit and s[-1:] == u'n') else s[:-1] + u'ン'
+        text_before = R(u"".join(map(conv, self.__segments[:self.__cursor])))
+        text_after = R(u"".join(map(conv, self.__segments[self.__cursor:])))
+        return self._chk_text(text_before + text_after), len(text_before)
 
-    def get_half_width_katakana(self):
+    def get_half_width_katakana(self, commit=False):
         conv = lambda s: s.to_half_width_katakana()
-        text_before = u"".join(map(conv, self.__segments[:self.__cursor]))
-        text_after = u"".join(map(conv, self.__segments[self.__cursor:]))
-        return text_before + text_after, len(text_before)
+        R = lambda s: s if not (commit and s[-1:] == u'n') else s[:-1] + u'ﾝ'
+        text_before = R(u"".join(map(conv, self.__segments[:self.__cursor])))
+        text_after = R(u"".join(map(conv, self.__segments[self.__cursor:])))
+        return self._chk_text(text_before + text_after), len(text_before)
 
     def get_latin(self):
         conv = lambda s: s.to_latin()

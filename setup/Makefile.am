@@ -1,6 +1,6 @@
 # vim:set noet ts=4:
 #
-# ibus-anthy - The Anthy engine for IBus
+# ibus-pinyin - The PinYin engine for IBus
 #
 # Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
 #
@@ -18,49 +18,28 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-SUBDIRS = \
-	engine \
-	setup \
-	icons \
-	m4 \
-	po \
+setup_anthy_PYTHON = \
+	prefs.py \
+	anthyprefs.py \
+	main.py \
+	setup.glade \
 	$(NULL)
 
-ACLOCAL_AMFLAGS = -I m4
+setup_anthydir = $(datadir)/ibus-anthy/setup
+
+libexec_SCRIPTS = ibus-setup-anthy
+
+CLEANFILES = \
+	*.pyc \
+	$(NULL)
 
 EXTRA_DIST = \
-	autogen.sh \
-	ibus-anthy.spec.in \
-	python-config.py \
+	ibus-setup-anthy.in \
 	$(NULL)
 
-noinst_DIST = \
-	$(NULL)
+test:
+	$(ENV) DBUS_DEBUG=true \
+		   LANG=en_US \
+		   PYTHONPATH=$(abs_top_srcdir):$(pyexecdir) \
+		   $(PYTHON) $(srcdir)/main.py
 
-
-DISTCLEANFILES = \
-	po/stamp-it \
-	$(NULL)
-
-rpm: dist @PACKAGE_NAME@.spec
-	rpmbuild -bb \
-			--define "_sourcedir `pwd`" \
-			--define "_builddir `pwd`" \
-			--define "_srcrpmdir `pwd`" \
-			--define "_rpmdir `pwd`" \
-			--define "_specdir `pwd`" \
-			@PACKAGE_NAME@.spec
-
-srpm: dist @PACKAGE_NAME@.spec
-	rpmbuild -bs \
-			--define "_sourcedir `pwd`" \
-			--define "_builddir `pwd`" \
-			--define "_srcrpmdir `pwd`" \
-			--define "_rpmdir `pwd`" \
-			--define "_specdir `pwd`" \
-			@PACKAGE_NAME@.spec
-
-clean-rpm:
-	$(RM) -r "`uname -i`"
-
-clean-local: clean-rpm

@@ -19,6 +19,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+import os
+from os import path
 import sys
 import gobject
 import ibus
@@ -27,6 +29,9 @@ from tables import *
 from ibus import keysyms
 from ibus import modifier
 import jastring
+
+sys.path.append(path.join(os.getenv('IBUS_ANTHY_PKGDATADIR'), 'setup'))
+from anthyprefs import AnthyPrefs
 
 from gettext import dgettext
 _  = lambda a : dgettext("ibus-anthy", a)
@@ -43,15 +48,34 @@ CONV_MODE_ANTHY, \
 CONV_MODE_HIRAGANA, \
 CONV_MODE_KATAKANA, \
 CONV_MODE_HALF_WIDTH_KATAKANA, \
+CONV_MODE_LATIN_0, \
 CONV_MODE_LATIN_1, \
 CONV_MODE_LATIN_2, \
 CONV_MODE_LATIN_3, \
+CONV_MODE_WIDE_LATIN_0, \
 CONV_MODE_WIDE_LATIN_1, \
 CONV_MODE_WIDE_LATIN_2, \
-CONV_MODE_WIDE_LATIN_3 = range(11)
+CONV_MODE_WIDE_LATIN_3 = range(13)
+
+KP_Table = {}
+for k, v in zip(['KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
+                 'KP_Multiply', 'KP_Separator', 'KP_Space', 'KP_Subtract'],
+                ['plus', 'period', 'slash', 'Return', 'equal',
+                 'asterisk', 'comma', 'space', 'minus']):
+    KP_Table[keysyms.__getattribute__(k)] = keysyms.__getattribute__(v)
+for s in dir(keysyms):
+    if s.startswith('KP_'):
+        v = keysyms.name_to_keycode(s[3:])
+        if v:
+            KP_Table[keysyms.name_to_keycode(s)] = v
 
 class Engine(ibus.EngineBase):
     __typing_mode = jastring.TYPING_MODE_ROMAJI
+
+    __setup_pid = 0
+    __prefs = None
+    __keybind = {}
+
     def __init__(self, bus, object_path):
         super(Engine, self).__init__(bus, object_path)
 
@@ -63,8 +87,19 @@ class Engine(ibus.EngineBase):
         self.__input_mode = INPUT_MODE_HIRAGANA
         self.__prop_dict = {}
 
-        self.__lookup_table = ibus.LookupTable(page_size=9, round=True)
+#        self.__lookup_table = ibus.LookupTable(page_size=9, round=True)
+        size = self.__prefs.get_value('common', 'page_size')
+        self.__lookup_table = ibus.LookupTable(page_size=size, round=True)
         self.__prop_list = self.__init_props()
+
+        mode = self.__prefs.get_value('common', 'input_mode')
+        mode = 'InputMode.' + ['Hiragana', 'Katakana', 'HalfWidthKatakana',
+                               'Latin', 'WideLatin'][mode]
+        self.__input_mode_activate(mode, ibus.PROP_STATE_CHECKED)
+
+        mode = self.__prefs.get_value('common', 'typing_method')
+        mode = 'TypingMode.' + ['Romaji', 'Kana'][mode]
+        self.__input_mode_activate(mode, ibus.PROP_STATE_CHECKED)
 
         # use reset to init values
         self.__reset()
@@ -139,6 +174,9 @@ class Engine(ibus.EngineBase):
 
         typing_mode_prop.set_sub_props(props)
         anthy_props.append(typing_mode_prop)
+
+        anthy_props.append(ibus.Property(key=u"setup",
+                                         tooltip=_(u"Configure Anthy")))
 
         return anthy_props
 
@@ -225,7 +263,8 @@ class Engine(ibus.EngineBase):
 
     def process_key_event(self, keyval, state):
         try:
-            return self.process_key_event_internal(keyval, state)
+#            return self.process_key_event_internal(keyval, state)
+            return self.process_key_event_internal2(keyval, state)
         except:
             import traceback
             traceback.print_exc()
@@ -234,8 +273,8 @@ class Engine(ibus.EngineBase):
     def process_key_event_internal(self, keyval, state):
         is_press = (state & modifier.RELEASE_MASK) == 0
 
-        state = state & (modifier.SHIFT_MASK | \
-                modifier.CONTROL_MASK | \
+        state = state & (modifier.SHIFT_MASK |
+                modifier.CONTROL_MASK |
                 modifier.MOD1_MASK)
 
         # ignore key release events
@@ -308,7 +347,10 @@ class Engine(ibus.EngineBase):
             if self.__typing_mode_activate(prop_name, state):
                 return
         else:
-            self.__prop_dict[prop_name].set_state(state)
+            if prop_name == 'setup':
+                self.__start_setup()
+            else:
+                self.__prop_dict[prop_name].set_state(state)
 
     def __input_mode_activate(self, prop_name, state):
         if not prop_name.startswith(u"InputMode."):
@@ -381,11 +423,16 @@ class Engine(ibus.EngineBase):
     def focus_in(self):
         self.register_properties(self.__prop_list)
         self.__refresh_typing_mode_property()
-        self.__reset()
-        self.__invalidate()
+#        self.__reset()
+#        self.__invalidate()
 
     def focus_out(self):
-        pass
+        mode = self.__prefs.get_value('common', 'behivior_on_focus_out')
+        if mode == 0:
+            self.__reset()
+            self.__invalidate()
+        elif mode == 1:
+            self.__on_key_return()
 
     # begine convert
     def __begin_anthy_convert(self):
@@ -393,9 +440,8 @@ class Engine(ibus.EngineBase):
             return
         self.__convert_mode = CONV_MODE_ANTHY
 
-        self.__preedit_ja_string.insert(u"\0")
-
-        text, cursor = self.__preedit_ja_string.get_hiragana()
+#        text, cursor = self.__preedit_ja_string.get_hiragana()
+        text, cursor = self.__preedit_ja_string.get_hiragana(True)
 
         self.__context.set_string(text.encode("utf8"))
         conv_stat = anthy.anthy_conv_stat()
@@ -443,13 +489,17 @@ class Engine(ibus.EngineBase):
         self.__need_update = True
         gobject.idle_add(self.__update, priority = gobject.PRIORITY_LOW)
 
-    def __get_preedit(self):
+#    def __get_preedit(self):
+    def __get_preedit(self, commit=False):
         if self.__input_mode == INPUT_MODE_HIRAGANA:
-            text, cursor = self.__preedit_ja_string.get_hiragana()
+#            text, cursor = self.__preedit_ja_string.get_hiragana()
+            text, cursor = self.__preedit_ja_string.get_hiragana(commit)
         elif self.__input_mode == INPUT_MODE_KATAKANA:
-            text, cursor = self.__preedit_ja_string.get_katakana()
+#            text, cursor = self.__preedit_ja_string.get_katakana()
+            text, cursor = self.__preedit_ja_string.get_katakana(commit)
         elif self.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA:
-            text, cursor = self.__preedit_ja_string.get_half_width_katakana()
+#            text, cursor = self.__preedit_ja_string.get_half_width_katakana()
+            text, cursor = self.__preedit_ja_string.get_half_width_katakana(commit)
         else:
             text, cursor = u"", 0
         return text, cursor
@@ -472,11 +522,18 @@ class Engine(ibus.EngineBase):
             self.__update_anthy_convert_chars()
             return
         if self.__convert_mode == CONV_MODE_HIRAGANA:
-            text, cursor = self.__preedit_ja_string.get_hiragana()
+#            text, cursor = self.__preedit_ja_string.get_hiragana()
+            text, cursor = self.__preedit_ja_string.get_hiragana(True)
         elif self.__convert_mode == CONV_MODE_KATAKANA:
-            text, cursor = self.__preedit_ja_string.get_katakana()
+#            text, cursor = self.__preedit_ja_string.get_katakana()
+            text, cursor = self.__preedit_ja_string.get_katakana(True)
         elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
-            text, cursor = self.__preedit_ja_string.get_half_width_katakana()
+#            text, cursor = self.__preedit_ja_string.get_half_width_katakana()
+            text, cursor = self.__preedit_ja_string.get_half_width_katakana(True)
+        elif self.__convert_mode == CONV_MODE_LATIN_0:
+            text, cursor = self.__preedit_ja_string.get_latin()
+            if text == text.lower():
+                self.__convert_mode = CONV_MODE_LATIN_1
         elif self.__convert_mode == CONV_MODE_LATIN_1:
             text, cursor = self.__preedit_ja_string.get_latin()
             text = text.lower()
@@ -486,6 +543,10 @@ class Engine(ibus.EngineBase):
         elif self.__convert_mode == CONV_MODE_LATIN_3:
             text, cursor = self.__preedit_ja_string.get_latin()
             text = text.capitalize()
+        elif self.__convert_mode == CONV_MODE_WIDE_LATIN_0:
+            text, cursor = self.__preedit_ja_string.get_wide_latin()
+            if text == text.lower():
+                self.__convert_mode = CONV_MODE_WIDE_LATIN_1
         elif self.__convert_mode == CONV_MODE_WIDE_LATIN_1:
             text, cursor = self.__preedit_ja_string.get_wide_latin()
             text = text.lower()
@@ -545,7 +606,8 @@ class Engine(ibus.EngineBase):
             return False
 
         if self.__convert_mode == CONV_MODE_OFF:
-            text, cursor = self.__get_preedit()
+#            text, cursor = self.__get_preedit()
+            text, cursor = self.__get_preedit(True)
             self.__commit_string(text)
         elif self.__convert_mode == CONV_MODE_ANTHY:
             i = 0
@@ -638,8 +700,8 @@ class Engine(ibus.EngineBase):
             self.cursor_down()
         return True
 
-    def __on_key_space(self):
-        if self.__input_mode == INPUT_MODE_WIDE_LATIN:
+    def __on_key_space(self, wide=False):
+        if self.__input_mode == INPUT_MODE_WIDE_LATIN or wide:
             # Input Wide space U+3000
             wide_char = symbol_rule[unichr(keysyms.space)]
             self.__commit_string(wide_char)
@@ -740,7 +802,7 @@ class Engine(ibus.EngineBase):
             return False
 
         if keyval == keysyms._0:
-            return True
+            keyval = keysyms._9 + 1
         index = keyval - keysyms._1
 
         candidates = self.__lookup_table.get_candidates_in_current_page()
@@ -773,19 +835,26 @@ class Engine(ibus.EngineBase):
                 self.__convert_mode == CONV_MODE_ANTHY:
                 self.__convert_mode = CONV_MODE_HALF_WIDTH_KATAKANA
             else:
-                if self.__convert_mode >= CONV_MODE_LATIN_1 and self.__convert_mode <= CONV_MODE_LATIN_3:
+                if CONV_MODE_LATIN_0 <= self.__convert_mode <= CONV_MODE_LATIN_3:
                     self.__convert_mode += 1
                     if self.__convert_mode > CONV_MODE_LATIN_3:
                         self.__convert_mode = CONV_MODE_LATIN_1
                 else:
-                    self.__convert_mode = CONV_MODE_LATIN_1
+                    self.__convert_mode = CONV_MODE_LATIN_0
         elif mode == 3:
-            if self.__convert_mode >= CONV_MODE_WIDE_LATIN_1 and self.__convert_mode <= CONV_MODE_WIDE_LATIN_3:
+            if CONV_MODE_WIDE_LATIN_0 <= self.__convert_mode <= CONV_MODE_WIDE_LATIN_3:
                 self.__convert_mode += 1
                 if self.__convert_mode > CONV_MODE_WIDE_LATIN_3:
                     self.__convert_mode = CONV_MODE_WIDE_LATIN_1
             else:
-                self.__convert_mode = CONV_MODE_WIDE_LATIN_1
+                self.__convert_mode = CONV_MODE_WIDE_LATIN_0
+        elif mode == 4:
+            if CONV_MODE_LATIN_0 <= self.__convert_mode <= CONV_MODE_LATIN_3:
+                self.__convert_mode += 1
+                if self.__convert_mode > CONV_MODE_LATIN_3:
+                    self.__convert_mode = CONV_MODE_LATIN_1
+            else:
+                self.__convert_mode = CONV_MODE_LATIN_0
         else:
             print >> sys.stderr, "Unkown convert mode (%d)!" % mode
             return False
@@ -803,7 +872,7 @@ class Engine(ibus.EngineBase):
         elif self.__input_mode == INPUT_MODE_WIDE_LATIN:
             #  Input Wide Latin chars
             char = unichr(keyval)
-            wide_char = symbol_rule.get(char, None)
+            wide_char = None#symbol_rule.get(char, None)
             if wide_char == None:
                 wide_char = ibus.unichar_half_to_full(char)
             self.__commit_string(wide_char)
@@ -821,4 +890,425 @@ class Engine(ibus.EngineBase):
         self.__preedit_ja_string.insert(unichr(keyval))
         self.__invalidate()
         return True
+
+#=======================================================================
+    @classmethod
+    def CONFIG_RELOADED(cls, bus):
+        print 'RELOADED'
+        if not cls.__prefs:
+            cls.__prefs = AnthyPrefs(bus)
+
+        keybind = {}
+        for k in cls.__prefs.keys('shortcut/default'):
+            cmd = '_Engine__cmd_' + k
+            for s in cls.__prefs.get_value('shortcut/default', k):
+                keybind.setdefault(cls._s_to_key(s), []).append(cmd)
+        cls.__keybind = keybind
+
+        jastring.JaString._prefs = cls.__prefs
+
+    @classmethod
+    def CONFIG_VALUE_CHANGED(cls, bus, section, name, value):
+        print 'VALUE_CHAMGED =', section, name, value
+        section = section[len(cls.__prefs._prefix) + 1:]
+        if section.startswith('shortcut/'):
+            cmd = '_Engine__cmd_' + name
+            old = cls.__prefs.get_value('shortcut/default', name)
+            value = value if value != [''] else []
+            for s in set(old).difference(value):
+                cls.__keybind.get(cls._s_to_key(s), []).remove(cmd)
+
+            keys = cls.__prefs.keys('shortcut/default')
+            for s in set(value).difference(old):
+                cls.__keybind.setdefault(cls._s_to_key(s), []).append(cmd)
+                cls.__keybind.get(cls._s_to_key(s)).sort(
+                    lambda a, b: cmp(keys.index(a[13:]), keys.index(b[13:])))
+
+            cls.__prefs.set_value('shortcut/default', name, value)
+        elif section == 'common':
+            cls.__prefs.set_value(section, name, value)
+
+    @classmethod
+    def _s_to_key(cls, s):
+        keyval = keysyms.name_to_keycode(s.split('+')[-1])
+        s = s.lower()
+        state = ('shift+' in s and modifier.SHIFT_MASK or 0) | (
+                 'ctrl+' in s and modifier.CONTROL_MASK or 0) | (
+                 'alt+' in s and modifier.MOD1_MASK or 0)
+        return cls._mk_key(keyval, state)
+
+    @staticmethod
+    def _mk_key(keyval, state):
+        if state & (modifier.CONTROL_MASK | modifier.MOD1_MASK):
+            if unichr(keyval) in u'!"#$%^\'()*+,-./:;<=>?@[\]^_`{|}~':
+                state |= modifier.SHIFT_MASK
+            elif keysyms.a <= keyval <= keysyms.z:
+                keyval -= (keysyms.a - keysyms.A)
+
+        return repr([int(state), int(keyval)])
+
+    def process_key_event_internal2(self, keyval, state):
+
+        is_press = (state & modifier.RELEASE_MASK) == 0
+
+        state = state & (modifier.SHIFT_MASK |
+                         modifier.CONTROL_MASK |
+                         modifier.MOD1_MASK)
+
+        # ignore key release events
+        if not is_press:
+            return False
+
+        if keyval in KP_Table and self.__prefs.get_value('common',
+                                                         'ten_key_mode'):
+            keyval = KP_Table[keyval]
+
+        key = self._mk_key(keyval, state)
+        for cmd in self.__keybind.get(key, []):
+            print 'cmd =', cmd
+            try:
+                if getattr(self, cmd)(keyval, state):
+                    return True
+            except:
+                print >> sys.stderr, 'Unknow command = %s' % cmd
+
+        if state & (modifier.CONTROL_MASK | modifier.MOD1_MASK):
+            return False
+
+        if (keysyms.exclam <= keyval <= keysyms.asciitilde or
+            keyval == keysyms.yen):
+            ret = self.__on_key_common(keyval)
+            if (unichr(keyval) in u',.' and
+                self.__prefs.get_value('common', 'behivior_on_period')):
+                return self.__cmd_convert(keyval, state)
+            return ret
+        else:
+            if not self.__preedit_ja_string.is_empty():
+                return True
+            return False
+
+    #mode_keys
+    def __set_input_mode(self, mode):
+        if not self.__preedit_ja_string.is_empty():
+            return False
+
+        self.__input_mode_activate(mode, ibus.PROP_STATE_CHECKED)
+
+        return True
+
+    def __cmd_on_off(self, keyval, state):
+        if self.__input_mode == INPUT_MODE_LATIN:
+            return self.__set_input_mode(u'InputMode.Hiragana')
+        else:
+            return self.__set_input_mode(u'InputMode.Latin')
+
+    def __cmd_circle_input_mode(self, keyval, state):
+        modes = {
+            INPUT_MODE_HIRAGANA: u"InputMode.Katakana",
+            INPUT_MODE_KATAKANA: u"InputMode.HalfWidthKatakana",
+            INPUT_MODE_HALF_WIDTH_KATAKANA: u"InputMode.Latin",
+            INPUT_MODE_LATIN: u"InputMode.WideLatin",
+            INPUT_MODE_WIDE_LATIN: u"InputMode.Hiragana"
+        }
+        return self.__set_input_mode(modes[self.__input_mode])
+
+    def __cmd_circle_kana_mode(self, keyval, state):
+        modes = {
+            INPUT_MODE_HIRAGANA: u"InputMode.Katakana",
+            INPUT_MODE_KATAKANA: u"InputMode.HalfWidthKatakana",
+            INPUT_MODE_HALF_WIDTH_KATAKANA: u"InputMode.Hiragana",
+            INPUT_MODE_LATIN: u"InputMode.Hiragana",
+            INPUT_MODE_WIDE_LATIN: u"InputMode.Hiragana"
+        }
+        return self.__set_input_mode(modes[self.__input_mode])
+
+    def __cmd_latin_mode(self, keyval, state):
+        return self.__set_input_mode(u'InputMode.Latin')
+
+    def __cmd_wide_latin_mode(self, keyval, state):
+        return self.__set_input_mode(u'InputMode.WideLatin')
+
+    def __cmd_hiragana_mode(self, keyval, state):
+        return self.__set_input_mode(u'InputMode.Hiragana')
+
+    def __cmd_katakana_mode(self, keyval, state):
+        return self.__set_input_mode(u'InputMode.Katakana')
+
+    def __cmd_half_katakana(self, keyval, state):
+        return self.__set_input_mode(u'InputMode.HalfWidthKatakana')
+
+    def __cmd_cancel_pseudo_ascii_mode_key(self, keyval, state):
+        pass
+
+    def __cmd_circle_typing_method(self, keyval, state):
+        if not self.__preedit_ja_string.is_empty():
+            return False
+
+        modes = {
+            jastring.TYPING_MODE_KANA: u"TypingMode.Romaji",
+            jastring.TYPING_MODE_ROMAJI: u"TypingMode.Kana",
+        }
+        self.__typing_mode_activate(modes[self.__typing_mode],
+                                    ibus.PROP_STATE_CHECKED)
+        return True
+
+    #edit_keys
+    def __cmd_insert_space(self, keyval, state):
+        if self.__input_mode in [INPUT_MODE_LATIN,
+                                 INPUT_MODE_HALF_WIDTH_KATAKANA]:
+            return self.__cmd_insert_half_space(keyval, state)
+        else:
+            return self.__cmd_insert_wide_space(keyval, state)
+
+    def __cmd_insert_alternate_space(self, keyval, state):
+        if not self.__input_mode in [INPUT_MODE_LATIN,
+                                     INPUT_MODE_HALF_WIDTH_KATAKANA]:
+            return self.__cmd_insert_half_space(keyval, state)
+        else:
+            return self.__cmd_insert_wide_space(keyval, state)
+
+    def __cmd_insert_half_space(self, keyval, state):
+        if not self.__preedit_ja_string.is_empty():
+            return False
+        self.__commit_string(unichr(keysyms.space))
+        return True
+
+    def __cmd_insert_wide_space(self, keyval, state):
+        if not self.__preedit_ja_string.is_empty():
+            return False
+        char = unichr(keysyms.space)
+        wide_char = symbol_rule.get(char, None)
+        if wide_char == None:
+            wide_char = ibus.unichar_half_to_full(char)
+        self.__commit_string(wide_char)
+        return True
+
+    def __cmd_backspace(self, keyval, state):
+        return self.__on_key_back_space()
+
+    def __cmd_delete(self, keyval, state):
+        return self.__on_key_delete()
+
+    def __cmd_commit(self, keyval, state):
+        return self.__on_key_return()
+
+    def __cmd_convert(self, keyval, state):
+        if self.__preedit_ja_string.is_empty() or \
+                self.__input_mode != INPUT_MODE_HIRAGANA:
+            return False
+        if self.__convert_mode != CONV_MODE_ANTHY:
+            self.__begin_anthy_convert()
+            self.__invalidate()
+        elif self.__convert_mode == CONV_MODE_ANTHY:
+            self.__lookup_table_visible = True
+            self.cursor_down()
+        return True
+
+    def __cmd_predict(self, keyval, state):
+        pass
+
+    def __cmd_cancel(self, keyval, state):
+        if not self.__preedit_ja_string.is_empty() and \
+                self.__convert_mode == CONV_MODE_OFF:
+            return self.__on_key_escape()
+        return False
+
+    def __cmd_cancel_all(self, keyval, state):
+        return self.__cmd_cancel(keyval, state)
+
+    def __cmd_reconvert(self, keyval, state):
+        pass
+
+    def __cmd_do_nothing(self, keyval, state):
+        return True
+
+    #caret_keys
+    def __move_caret(self, i):
+        if self.__lookup_table_visible:
+            return False
+
+        if self.__preedit_ja_string.is_empty():
+            return False
+
+        if self.__convert_mode == CONV_MODE_OFF:
+            self.__preedit_ja_string.move_cursor(
+                -len(self.__preedit_ja_string.get_latin()[0]) if i == 0 else
+                i if i in [-1, 1] else
+                len(self.__preedit_ja_string.get_latin()[0]))
+            self.__invalidate()
+            return True
+
+        return False
+
+    def __cmd_move_caret_first(self, keyval, state):
+        return self.__move_caret(0)
+
+    def __cmd_move_caret_last(self, keyval, state):
+        return self.__move_caret(2)
+
+    def __cmd_move_caret_forward(self, keyval, state):
+        return self.__move_caret(1)
+
+    def __cmd_move_caret_backward(self, keyval, state):
+        return self.__move_caret(-1)
+
+    #segments_keys
+    def __select_segment(self, i):
+        if self.__preedit_ja_string.is_empty():
+            return False
+
+        if self.__convert_mode == CONV_MODE_OFF:
+            return False
+        elif self.__convert_mode != CONV_MODE_ANTHY:
+            return True
+
+        pos = 0 if i == 0 else \
+              self.__cursor_pos + i if i in [-1, 1] else \
+              len(self.__segments) - 1
+
+        if 0 <= pos < len(self.__segments) and pos != self.__cursor_pos:
+            self.__cursor_pos = pos
+            self.__lookup_table_visible = False
+            self.__fill_lookup_table()
+            self.__invalidate()
+
+        return True
+
+    def __cmd_select_first_segment(self, keyval, state):
+        if self.__lookup_table_visible:
+            return False
+
+        return self.__select_segment(0)
+
+    def __cmd_select_last_segment(self, keyval, state):
+        if self.__lookup_table_visible:
+            return False
+
+        return self.__select_segment(2)
+
+    def __cmd_select_next_segment(self, keyval, state):
+        return self.__select_segment(1)
+
+    def __cmd_select_prev_segment(self, keyval, state):
+        return self.__select_segment(-1)
+
+    def __cmd_shrink_segment(self, keyval, state):
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            self.__shrink_segment(-1)
+            return True
+
+    def __cmd_expand_segment(self, keyval, state):
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            self.__shrink_segment(1)
+            return True
+
+    def __cmd_commit_first_segment(self, keyval, state):
+        pass
+
+    def __cmd_commit_selected_segment(self, keyval, state):
+        pass
+
+    #candidates_keys
+    def __select_candidate(self, pos):
+        if not self.__lookup_table_visible:
+            return False
+
+        if not self.__lookup_table.set_cursor_pos_in_current_page(pos):
+            return False
+
+        candidate = self.__lookup_table.get_current_candidate().text
+        index = self.__lookup_table.get_cursor_pos()
+        self.__segments[self.__cursor_pos] = index, candidate
+        self.__invalidate()
+        return True
+
+    def __cmd_select_first_candidate(self, keyval, state):
+        return self.__select_candidate(0)
+
+    def __cmd_select_last_candidate(self, keyval, state):
+        return self.__select_candidate(self.__lookup_table.get_page_size() - 1)
+
+    def __cmd_select_next_candidate(self, keyval, state):
+        return self.__on_key_down()
+
+    def __cmd_select_prev_candidate(self, keyval, state):
+        return self.__on_key_up()
+
+    def __cmd_candidates_page_up(self, keyval, state):
+        return self.__on_key_page_up()
+
+    def __cmd_candidates_page_down(self, keyval, state):
+        return self.__on_key_page_down()
+
+    #direct_select_keys
+    def __cmd_select_candidates_1(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_2(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_3(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_4(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_5(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_6(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_7(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_8(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_9(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_0(self, keyval, state):
+        return self.__on_key_number(keyval)
+
+    #convert_keys
+    def __cmd_convert_to_char_type_forward(self, keyval, state):
+        pass
+
+    def __cmd_convert_to_char_type_backward(self, keyval, state):
+        pass
+
+    def __cmd_convert_to_hiragana(self, keyval, state):
+        return self.__on_key_conv(0)
+
+    def __cmd_convert_to_katakana(self, keyval, state):
+        return self.__on_key_conv(1)
+
+    def __cmd_convert_to_half(self, keyval, state):
+        return self.__on_key_conv(2)
+
+    def __cmd_convert_to_half_katakana(self, keyval, state):
+        return self.__on_key_conv(2)
+
+    def __cmd_convert_to_wide_latin(self, keyval, state):
+        return self.__on_key_conv(3)
+
+    def __cmd_convert_to_latin(self, keyval, state):
+        return self.__on_key_conv(4)
+
+    #dictonary_keys
+    def __cmd_dict_admin(self, keyval, state):
+        pass
+
+    def __cmd_add_word(self, keyval, state):
+        pass
+
+    def __start_setup(self):
+        if Engine.__setup_pid != 0:
+            pid, state = os.waitpid(Engine.__setup_pid, os.P_NOWAIT)
+            if pid != Engine.__setup_pid:
+                return
+            Engine.__setup_pid = 0
+        setup_cmd = path.join(os.getenv('LIBEXECDIR'), "ibus-setup-anthy")
+        Engine.__setup_pid = os.spawnl(os.P_NOWAIT, setup_cmd, "ibus-setup-anthy")
 

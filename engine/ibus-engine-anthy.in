@@ -21,9 +21,11 @@
 prefix=@prefix@
 datarootdir=@datarootdir@
 exec_prefix=@exec_prefix@
+libexecdir=@libexecdir@
 pyexecdir=@pyexecdir@
 export PYTHONPATH=@pyexecdir@:$PYTHONPATH
 export IBUS_PREFIX=@prefix@
 export IBUS_ANTHY_PKGDATADIR=@datarootdir@/@PACKAGE@
+export LIBEXECDIR=$libexecdir
 exec python @datarootdir@/@PACKAGE@/engine/main.py $@
 

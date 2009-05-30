@@ -3,3 +3,5 @@
 ./engine/tables.py
 ./engine/engine.py
 ./engine/factory.py
+./setup/main.py
+./setup/setup.glade

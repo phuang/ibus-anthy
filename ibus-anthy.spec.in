@@ -50,6 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitearch}/anthy.py*
 %{python_sitearch}/_anthy.so
 %{_libexecdir}/ibus-engine-anthy
+%{_libexecdir}/ibus-setup-anthy
 %{_datadir}/@PACKAGE@
 %{_datadir}/ibus/component/*
 

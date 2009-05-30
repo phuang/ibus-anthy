@@ -98,6 +98,8 @@ ibus-anthy.spec
 engine/Makefile
 engine/ibus-engine-anthy
 engine/anthy.xml.in
+setup/Makefile
+setup/ibus-setup-anthy
 icons/Makefile
 m4/Makefile
 ])
