@@ -1108,10 +1108,15 @@ class Engine(ibus.EngineBase):
         pass
 
     def __cmd_cancel(self, keyval, state):
-        if not self.__preedit_ja_string.is_empty() and \
-                self.__convert_mode == CONV_MODE_OFF:
+        if self.__preedit_ja_string.is_empty():
+            return False
+
+        if self.__convert_mode == CONV_MODE_OFF:
             return self.__on_key_escape()
-        return False
+        else:
+            self.__end_convert()
+            self.__invalidate()
+            return True
 
     def __cmd_cancel_all(self, keyval, state):
         return self.__cmd_cancel(keyval, state)
