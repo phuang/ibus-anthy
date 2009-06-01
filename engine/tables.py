@@ -21,7 +21,7 @@
 
 # string, result, cont
 romaji_typing_rule = {
-    u"-" : u"－",
+    u"-" : u"ー",
     u"a" : u"あ",
     u"i" : u"い",
     u"u" : u"う",
@@ -439,7 +439,7 @@ kana_typing_rule = {
     u"?" : u"・",
     u"_" : u"ろ",
 
-    u"¥" : u"－",
+    u"¥" : u"ー",
 }
 
 kana_voiced_consonant_rule = {
