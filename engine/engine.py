@@ -967,6 +967,9 @@ class Engine(ibus.EngineBase):
 
         if (keysyms.exclam <= keyval <= keysyms.asciitilde or
             keyval == keysyms.yen):
+            if (keyval == keysyms._0 and state == modifier.SHIFT_MASK and
+                self.__typing_mode == jastring.TYPING_MODE_KANA):
+                keyval = keysyms.asciitilde
             ret = self.__on_key_common(keyval)
             if (unichr(keyval) in u',.' and
                 self.__prefs.get_value('common', 'behivior_on_period')):
