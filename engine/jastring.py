@@ -22,7 +22,7 @@
 import romaji
 import kana
 
-from ibus import unichar_half_to_full
+from segment import unichar_half_to_full
 
 SymbolTable = {}
 for i in range(32, 127):
