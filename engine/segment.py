@@ -19,8 +19,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-from ibus import unichar_half_to_full
+#from ibus import unichar_half_to_full
+from ibus import unichar_half_to_full as h_to_f
 from tables import *
+
+def unichar_half_to_full(c):
+    tdl = {'"': u'\u201d', "'": u'\u2019', '`': u'\u2018'}
+    return tdl[c] if c in tdl else h_to_f(c)
 
 class Segment(object):
     def __init__(self, enchars=u"", jachars=u""):

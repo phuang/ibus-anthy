@@ -29,6 +29,7 @@ from tables import *
 from ibus import keysyms
 from ibus import modifier
 import jastring
+from segment import unichar_half_to_full
 
 sys.path.append(path.join(os.getenv('IBUS_ANTHY_PKGDATADIR'), 'setup'))
 from anthyprefs import AnthyPrefs
@@ -829,18 +830,7 @@ class Engine(ibus.EngineBase):
         elif mode == 2:
             if self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
                 return True
-            if self.__convert_mode == CONV_MODE_HIRAGANA or \
-                self.__convert_mode == CONV_MODE_KATAKANA or \
-                self.__convert_mode == CONV_MODE_OFF or \
-                self.__convert_mode == CONV_MODE_ANTHY:
-                self.__convert_mode = CONV_MODE_HALF_WIDTH_KATAKANA
-            else:
-                if CONV_MODE_LATIN_0 <= self.__convert_mode <= CONV_MODE_LATIN_3:
-                    self.__convert_mode += 1
-                    if self.__convert_mode > CONV_MODE_LATIN_3:
-                        self.__convert_mode = CONV_MODE_LATIN_1
-                else:
-                    self.__convert_mode = CONV_MODE_LATIN_0
+            self.__convert_mode = CONV_MODE_HALF_WIDTH_KATAKANA
         elif mode == 3:
             if CONV_MODE_WIDE_LATIN_0 <= self.__convert_mode <= CONV_MODE_WIDE_LATIN_3:
                 self.__convert_mode += 1
@@ -874,7 +864,7 @@ class Engine(ibus.EngineBase):
             char = unichr(keyval)
             wide_char = None#symbol_rule.get(char, None)
             if wide_char == None:
-                wide_char = ibus.unichar_half_to_full(char)
+                wide_char = unichar_half_to_full(char)
             self.__commit_string(wide_char)
             return True
 
@@ -1079,7 +1069,7 @@ class Engine(ibus.EngineBase):
         char = unichr(keysyms.space)
         wide_char = symbol_rule.get(char, None)
         if wide_char == None:
-            wide_char = ibus.unichar_half_to_full(char)
+            wide_char = unichar_half_to_full(char)
         self.__commit_string(wide_char)
         return True
 
