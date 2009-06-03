@@ -23,6 +23,9 @@ from ibus import unichar_half_to_full
 from tables import *
 import segment
 
+def romaji_correction_rule_get(k, d):
+    return (u'ん', k[1:2]) if k[0:1] == u'n' and not k[1:2] in u"aiueony'" else d
+
 class RomajiSegment(segment.Segment):
     def __init__(self, enchars=u"", jachars=u""):
         if not jachars:
@@ -56,7 +59,8 @@ class RomajiSegment(segment.Segment):
             self._jachars = jachars
             return [RomajiSegment(c)]
 
-        jachars, c = romaji_correction_rule.get(text, (None, None))
+#        jachars, c = romaji_correction_rule.get(text, (None, None))
+        jachars, c = romaji_correction_rule_get(text, (None, None))
         if jachars:
             self._enchars = text[0]
             self._jachars = jachars
@@ -81,7 +85,8 @@ class RomajiSegment(segment.Segment):
                     return [jasegment, RomajiSegment(c)]
                 return [jasegment]
 
-            jachars, c = romaji_correction_rule.get(enchars, (None, None))
+#            jachars, c = romaji_correction_rule.get(enchars, (None, None))
+            jachars, c = romaji_correction_rule_get(enchars, (None, None))
             if jachars:
                 jasegment = RomajiSegment(enchars[:-len(c)], jachars)
                 self._enchars = text[:i]
@@ -113,7 +118,8 @@ class RomajiSegment(segment.Segment):
             self._enchars = c
             return [RomajiSegment(text[0], jachars)]
 
-        jachars, c = romaji_correction_rule.get(text, (None, None))
+#        jachars, c = romaji_correction_rule.get(text, (None, None))
+        jachars, c = romaji_correction_rule_get(text, (None, None))
         if jachars:
             self._enchars = c
             return [RomajiSegment(text[0], jachars)]
@@ -134,7 +140,8 @@ class RomajiSegment(segment.Segment):
                 self._enchars = c + text[i:]
                 return [RomajiSegment(enchars[:-len(c)], jachars)]
 
-            jachars, c = romaji_correction_rule.get(enchars, (None, None))
+#            jachars, c = romaji_correction_rule.get(enchars, (None, None))
+            jachars, c = romaji_correction_rule_get(enchars, (None, None))
             if jachars:
                 self._enchars = c + text[i:]
                 return [RomajiSegment(enchars[:-len(c)], jachars)]
