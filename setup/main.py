@@ -1,5 +1,6 @@
 from os import path
 import gtk
+import pango
 from gtk import glade
 from ibus import keysyms, modifier
 from gettext import dgettext
@@ -36,8 +37,10 @@ class AnthySetup(object):
         tv = xml.get_widget('shortcut')
         tv.append_column(gtk.TreeViewColumn('Command',
                                              gtk.CellRendererText(), text=0))
+        renderer = gtk.CellRendererText()
+        renderer.set_property("ellipsize", pango.ELLIPSIZE_END)
         tv.append_column(gtk.TreeViewColumn('Shortcut',
-                                             gtk.CellRendererText(), text=1))
+                                             renderer, text=1))
         tv.get_selection().connect_after('changed',
                                           self.on_selection_changed, 0)
         ls = gtk.ListStore(str, str)
