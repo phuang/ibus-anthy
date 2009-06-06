@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-05-28 10:22+0900\n"
+"POT-Creation-Date: 2009-06-06 11:48+0900\n"
 "PO-Revision-Date: 2009-03-16 12:31+1000\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -15,43 +15,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: engine/engine.py:125
+#: engine/engine.py:126
 msgid "Switch input mode"
 msgstr "入力モード切替"
 
-#: engine/engine.py:131
+#: engine/engine.py:132
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: engine/engine.py:134
+#: engine/engine.py:135
 msgid "Katakana"
 msgstr "カタカナ"
 
-#: engine/engine.py:137
+#: engine/engine.py:138
 msgid "Half width katakana"
 msgstr "半角カタカナ"
 
-#: engine/engine.py:140
+#: engine/engine.py:141
 msgid "Latin"
 msgstr "英数"
 
-#: engine/engine.py:143
+#: engine/engine.py:144
 msgid "Wide Latin"
 msgstr "全角英数"
 
-#: engine/engine.py:157
+#: engine/engine.py:158
 msgid "Switch typing mode"
 msgstr "入力モード切替"
 
-#: engine/engine.py:163
+#: engine/engine.py:164
 msgid "Romaji"
 msgstr "ローマ字"
 
-#: engine/engine.py:166
+#: engine/engine.py:167
 msgid "Kana"
 msgstr "かな"
 
-#: engine/engine.py:179
+#: engine/engine.py:180
 msgid "Configure Anthy"
 msgstr "Anthyの設定"
 
@@ -59,35 +59,35 @@ msgstr "Anthyの設定"
 msgid "Anthy"
 msgstr "Anthy"
 
-#: setup/main.py:72
+#: setup/main.py:80
 msgid "Confirm"
 msgstr "確認"
 
-#: setup/main.py:73
+#: setup/main.py:81
 msgid "Are you sure to close Setup?"
 msgstr "この設定ツールを終了します。よろしいですか？"
 
-#: setup/main.py:86
+#: setup/main.py:94
 msgid "Notice!"
 msgstr "注意！"
 
-#: setup/main.py:87
+#: setup/main.py:95
 msgid "Are you sure to close Setup without save configure?"
 msgstr "変更を保存せずに終了します。よろしいですか？"
 
-#: setup/main.py:166
+#: setup/main.py:194
 msgid "Please press a key (or a key combination)"
 msgstr "キーを入力してください"
 
-#: setup/main.py:167
+#: setup/main.py:195
 msgid "The dialog willbe closed when the key is released"
 msgstr "このダイアログはキーリリース時に閉じられます"
 
-#: setup/main.py:186
+#: setup/main.py:214
 msgid "Invalid keysym"
 msgstr "無効なキーシンボル"
 
-#: setup/main.py:187
+#: setup/main.py:215
 msgid "This keysym is not valid"
 msgstr "このキーシンボルは有効ではありません"
 
@@ -95,15 +95,15 @@ msgstr "このキーシンボルは有効ではありません"
 msgid "Setup - IBus-Anthy"
 msgstr "IBus-Anthyの設定"
 
-#: setup/setup.glade:43
-msgid ""
-"Romaji\n"
-"Kana"
-msgstr ""
-"ローマ字\n"
-"かな"
+#: setup/setup.glade:44
+msgid "_Input Mode:"
+msgstr "入力モード(_I):"
 
-#: setup/setup.glade:58
+#: setup/setup.glade:57
+msgid "_Typing Method:"
+msgstr "入力タイプ(_T):"
+
+#: setup/setup.glade:71
 msgid ""
 "Hiragana\n"
 "Katakana\n"
@@ -117,19 +117,59 @@ msgstr ""
 "英数\n"
 "全角英数"
 
-#: setup/setup.glade:75
-msgid "_Typing Method:"
-msgstr "入力タイプ(_T):"
-
-#: setup/setup.glade:90
-msgid "_Input Mode:"
-msgstr "入力モード(_I):"
+#: setup/setup.glade:87
+msgid ""
+"Romaji\n"
+"Kana"
+msgstr ""
+"ローマ字\n"
+"かな"
 
 #: setup/setup.glade:106
 msgid "<b>Initial Setting</b>"
 msgstr "<b>初期値の設定</b>"
 
-#: setup/setup.glade:140
+#: setup/setup.glade:141
+msgid "_Period Style:"
+msgstr "句読点スタイル(_P):"
+
+#: setup/setup.glade:154
+msgid "Ten _Key Type:"
+msgstr "テンキータイプ(_K):"
+
+#: setup/setup.glade:168
+msgid ""
+"Ten Key Mode\n"
+"Usual Mode\n"
+msgstr ""
+"テンキーコードのまま\n"
+"非テンキーコードに変換\n"
+
+#: setup/setup.glade:184
+msgid ""
+"、。\n"
+"，．\n"
+msgstr ""
+"、。\n"
+"，．\n"
+
+#: setup/setup.glade:199
+msgid "_Behavior on Period:"
+msgstr "句読点入力時のふるまい(_B):"
+
+#: setup/setup.glade:214
+msgid "Behaivior on _Focus Out:"
+msgstr "フォーカスアウト時のふるまい(_F):"
+
+#: setup/setup.glade:228
+msgid ""
+"Do Nothing\n"
+"Auto Convert"
+msgstr ""
+"何もしない\n"
+"自動変換"
+
+#: setup/setup.glade:243
 msgid ""
 "Clear\n"
 "Commit\n"
@@ -139,61 +179,21 @@ msgstr ""
 "確定\n"
 "保持\n"
 
-#: setup/setup.glade:157
-msgid ""
-"Do Nothing\n"
-"Auto Convert"
-msgstr ""
-"何もしない\n"
-"自動変換"
-
-#: setup/setup.glade:173
-msgid "Behaivior on _Focus Out:"
-msgstr "フォーカスアウト時のふるまい(_F):"
-
-#: setup/setup.glade:188
-msgid "_Behavior on Period:"
-msgstr "句読点入力時のふるまい(_B):"
-
-#: setup/setup.glade:202
-msgid ""
-"、。\n"
-"，．\n"
-msgstr ""
-"、。\n"
-"，．\n"
-
-#: setup/setup.glade:216
-msgid ""
-"Ten Key Mode\n"
-"Usual Mode\n"
-msgstr ""
-"テンキーコードのまま\n"
-"非テンキーコードに変換\n"
-
-#: setup/setup.glade:233
-msgid "Ten _Key Type:"
-msgstr "テンキータイプ(_K):"
-
-#: setup/setup.glade:248
-msgid "_Period Style:"
-msgstr "句読点スタイル(_P):"
-
 #: setup/setup.glade:264
 msgid "<b>Behaivior</b>"
 msgstr "<b>ふるまい</b>"
 
 #: setup/setup.glade:298
-msgid "Half Width _Symbol"
-msgstr "常に記号を半角にする(_S)"
+msgid "Half Width _Number"
+msgstr "常に数字を半角にする(_N)"
 
 #: setup/setup.glade:319
 msgid "Candidate _Window Page Size:"
 msgstr "候補ウインドウの項目数(_W):"
 
 #: setup/setup.glade:350
-msgid "Half Width _Number"
-msgstr "常に数字を半角にする(_N)"
+msgid "Half Width _Symbol"
+msgstr "常に記号を半角にする(_S)"
 
 #: setup/setup.glade:370
 msgid "<b>Other</b>"
@@ -203,19 +203,26 @@ msgstr "<b>その他</b>"
 msgid "Co_mmon"
 msgstr "全般(_M)"
 
-#: setup/setup.glade:407
-msgid "_Key Customize"
-msgstr "キーカスタマイズ(_K)"
+#: setup/setup.glade:410
+msgid "_Shortcut Type:"
+msgstr "ショートカットタイプ(_S):"
 
-#: setup/setup.glade:471
+#: setup/setup.glade:424
+msgid ""
+"Default\n"
+"ATOK\n"
+"Wnn\n"
+msgstr ""
+
+#: setup/setup.glade:495
 msgid "De_fault"
 msgstr "デフォルト(_F)"
 
-#: setup/setup.glade:515
+#: setup/setup.glade:539
 msgid "Key bin_ding"
 msgstr "キー割当(_D)"
 
-#: setup/setup.glade:528
+#: setup/setup.glade:552
 msgid ""
 "<span size='xx-large'><b>IBus-Anthy</b></span>\n"
 "\n"
@@ -225,34 +232,37 @@ msgid ""
 "\n"
 msgstr ""
 
-#: setup/setup.glade:546
+#: setup/setup.glade:570
 msgid "Abo_ut"
 msgstr "このプログラムについて(_U)"
 
-#: setup/setup.glade:617
+#: setup/setup.glade:641
 msgid "Edit Shortcut"
 msgstr "ショートカットの編集"
 
-#: setup/setup.glade:652
+#: setup/setup.glade:676
 msgid "Key Code:"
 msgstr "キーコード:"
 
-#: setup/setup.glade:673
+#: setup/setup.glade:697
 msgid "..."
 msgstr "..."
 
-#: setup/setup.glade:698
+#: setup/setup.glade:722
 msgid "Modifier:"
 msgstr "キー修飾:"
 
-#: setup/setup.glade:712
+#: setup/setup.glade:736
 msgid "A_lternate"
 msgstr ""
 
-#: setup/setup.glade:722
+#: setup/setup.glade:746
 msgid "Co_ntrol"
 msgstr ""
 
-#: setup/setup.glade:735
+#: setup/setup.glade:759
 msgid "_Shift"
 msgstr ""
+
+#~ msgid "_Key Customize"
+#~ msgstr "キーカスタマイズ(_K)"

@@ -38,17 +38,30 @@
                             <property name="column_spacing">8</property>
                             <property name="row_spacing">4</property>
                             <child>
-                              <widget class="GtkComboBox" id="typing_method">
+                              <widget class="GtkLabel" id="label9">
                                 <property name="visible">True</property>
-                                <property name="items" translatable="yes">Romaji
-Kana</property>
-                                <signal name="changed" handler="on_cb_changed"/>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">_Input Mode:</property>
+                                <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">input_mode</property>
                               </widget>
                               <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
+                                <property name="x_options">GTK_FILL</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label21">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">_Typing Method:</property>
+                                <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">typing_method</property>
+                              </widget>
+                              <packing>
                                 <property name="top_attach">1</property>
                                 <property name="bottom_attach">2</property>
+                                <property name="x_options">GTK_FILL</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
@@ -69,30 +82,17 @@ Wide Latin</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label21">
+                              <widget class="GtkComboBox" id="typing_method">
                                 <property name="visible">True</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">_Typing Method:</property>
-                                <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">typing_method</property>
+                                <property name="items" translatable="yes">Romaji
+Kana</property>
+                                <signal name="changed" handler="on_cb_changed"/>
                               </widget>
                               <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                                 <property name="top_attach">1</property>
                                 <property name="bottom_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"></property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label9">
-                                <property name="visible">True</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">_Input Mode:</property>
-                                <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">input_mode</property>
-                              </widget>
-                              <packing>
-                                <property name="x_options">GTK_FILL</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
@@ -135,78 +135,30 @@ Wide Latin</property>
                             <property name="column_spacing">8</property>
                             <property name="row_spacing">4</property>
                             <child>
-                              <widget class="GtkComboBox" id="behivior_on_focus_out">
-                                <property name="visible">True</property>
-                                <property name="items" translatable="yes">Clear
-Commit
-Hold
-</property>
-                                <signal name="changed" handler="on_cb_changed"/>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
-                                <property name="y_options"></property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkComboBox" id="behivior_on_period">
-                                <property name="visible">True</property>
-                                <property name="items" translatable="yes">Do Nothing
-Auto Convert</property>
-                                <signal name="changed" handler="on_cb_changed"/>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="y_options"></property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label23">
+                              <widget class="GtkLabel" id="label12">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Behaivior on _Focus Out:</property>
+                                <property name="label" translatable="yes">_Period Style:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">behivior_on_focus_out</property>
+                                <property name="mnemonic_widget">period_style</property>
                               </widget>
                               <packing>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
                                 <property name="x_options">GTK_FILL</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label24">
+                              <widget class="GtkLabel" id="label26">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">_Behavior on Period:</property>
+                                <property name="label" translatable="yes">Ten _Key Type:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">behivior_on_period</property>
+                                <property name="mnemonic_widget">ten_key_mode</property>
                               </widget>
                               <packing>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
                                 <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"></property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkComboBox" id="period_style">
-                                <property name="visible">True</property>
-                                <property name="items" translatable="yes">、。
-，．
-</property>
-                                <signal name="changed" handler="on_cb_changed"/>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
@@ -227,30 +179,78 @@ Usual Mode
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label26">
+                              <widget class="GtkComboBox" id="period_style">
                                 <property name="visible">True</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Ten _Key Type:</property>
-                                <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">ten_key_mode</property>
+                                <property name="items" translatable="yes">、。
+，．
+</property>
+                                <signal name="changed" handler="on_cb_changed"/>
                               </widget>
                               <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label24">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">_Behavior on Period:</property>
+                                <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">behivior_on_period</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
                                 <property name="x_options">GTK_FILL</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label12">
+                              <widget class="GtkLabel" id="label23">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">_Period Style:</property>
+                                <property name="label" translatable="yes">Behaivior on _Focus Out:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">period_style</property>
+                                <property name="mnemonic_widget">behivior_on_focus_out</property>
                               </widget>
                               <packing>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
                                 <property name="x_options">GTK_FILL</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkComboBox" id="behivior_on_period">
+                                <property name="visible">True</property>
+                                <property name="items" translatable="yes">Do Nothing
+Auto Convert</property>
+                                <signal name="changed" handler="on_cb_changed"/>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkComboBox" id="behivior_on_focus_out">
+                                <property name="visible">True</property>
+                                <property name="items" translatable="yes">Clear
+Commit
+Hold
+</property>
+                                <signal name="changed" handler="on_cb_changed"/>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
@@ -293,18 +293,18 @@ Usual Mode
                             <property name="column_spacing">8</property>
                             <property name="row_spacing">4</property>
                             <child>
-                              <widget class="GtkCheckButton" id="half_width_symbol">
+                              <widget class="GtkCheckButton" id="half_width_number">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Half Width _Symbol</property>
+                                <property name="label" translatable="yes">Half Width _Number</property>
                                 <property name="use_underline">True</property>
                                 <property name="response_id">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_ck_toggled"/>
-                                <accelerator key="S" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
+                                <accelerator key="N" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
                               </widget>
                               <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
@@ -345,18 +345,18 @@ Usual Mode
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkCheckButton" id="half_width_number">
+                              <widget class="GtkCheckButton" id="half_width_symbol">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Half Width _Number</property>
+                                <property name="label" translatable="yes">Half Width _Symbol</property>
                                 <property name="use_underline">True</property>
                                 <property name="response_id">0</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_ck_toggled"/>
-                                <accelerator key="N" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
+                                <accelerator key="S" modifiers="GDK_MOD1_MASK" signal="grab_focus"/>
                               </widget>
                               <packing>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
@@ -401,12 +401,36 @@ Usual Mode
                 <property name="border_width">4</property>
                 <property name="spacing">4</property>
                 <child>
-                  <widget class="GtkLabel" id="label28">
+                  <widget class="GtkHBox" id="hbox1">
                     <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">_Key Customize</property>
-                    <property name="use_underline">True</property>
-                    <property name="mnemonic_widget">shortcut</property>
+                    <property name="spacing">8</property>
+                    <child>
+                      <widget class="GtkLabel" id="label4">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">_Shortcut Type:</property>
+                        <property name="use_underline">True</property>
+                        <property name="wrap_mode">PANGO_WRAP_WORD_CHAR</property>
+                        <property name="mnemonic_widget">shortcut_type</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkComboBox" id="shortcut_type">
+                        <property name="visible">True</property>
+                        <property name="items" translatable="yes">Default
+ATOK
+Wnn
+</property>
+                        <signal name="changed" handler="on_shortcut_type_changed"/>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>

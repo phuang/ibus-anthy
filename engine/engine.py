@@ -888,12 +888,7 @@ class Engine(ibus.EngineBase):
         if not cls.__prefs:
             cls.__prefs = AnthyPrefs(bus)
 
-        keybind = {}
-        for k in cls.__prefs.keys('shortcut/default'):
-            cmd = '_Engine__cmd_' + k
-            for s in cls.__prefs.get_value('shortcut/default', k):
-                keybind.setdefault(cls._s_to_key(s), []).append(cmd)
-        cls.__keybind = keybind
+        cls.__keybind = cls._mk_keybind()
 
         jastring.JaString._prefs = cls.__prefs
 
@@ -901,22 +896,45 @@ class Engine(ibus.EngineBase):
     def CONFIG_VALUE_CHANGED(cls, bus, section, name, value):
         print 'VALUE_CHAMGED =', section, name, value
         section = section[len(cls.__prefs._prefix) + 1:]
-        if section.startswith('shortcut/'):
+        if section == cls._get_shortcut_type():
             cmd = '_Engine__cmd_' + name
-            old = cls.__prefs.get_value('shortcut/default', name)
+            sec = cls._get_shortcut_type()
+            old = cls.__prefs.get_value(sec, name)
             value = value if value != [''] else []
             for s in set(old).difference(value):
                 cls.__keybind.get(cls._s_to_key(s), []).remove(cmd)
 
-            keys = cls.__prefs.keys('shortcut/default')
+            keys = cls.__prefs.keys(sec)
             for s in set(value).difference(old):
                 cls.__keybind.setdefault(cls._s_to_key(s), []).append(cmd)
                 cls.__keybind.get(cls._s_to_key(s)).sort(
                     lambda a, b: cmp(keys.index(a[13:]), keys.index(b[13:])))
 
-            cls.__prefs.set_value('shortcut/default', name, value)
+            cls.__prefs.set_value(sec, name, value)
         elif section == 'common':
             cls.__prefs.set_value(section, name, value)
+            if name == 'shortcut_type':
+                cls.__keybind = cls._mk_keybind()
+        else:
+            cls.__prefs.set_value(sec, name, value)
+
+    @classmethod
+    def _mk_keybind(cls):
+        keybind = {}
+        sec = cls._get_shortcut_type()
+        for k in cls.__prefs.keys(sec):
+            cmd = '_Engine__cmd_' + k
+            for s in cls.__prefs.get_value(sec, k):
+                keybind.setdefault(cls._s_to_key(s), []).append(cmd)
+        return keybind
+
+    @classmethod
+    def _get_shortcut_type(cls):
+        try:
+            t = 'shortcut/' + cls.__prefs.get_value('common', 'shortcut_type')
+        except:
+            t = 'shortcut/default'
+        return t
 
     @classmethod
     def _s_to_key(cls, s):

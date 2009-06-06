@@ -31,6 +31,11 @@ class AnthySetup(object):
                      'half_width_symbol', 'half_width_number']:
             xml.get_widget(name).set_active(prefs.get_value('common', name))
 
+        l = ['default', 'atok', 'wnn']
+        s_type = prefs.get_value('common', 'shortcut_type')
+        s_type = s_type if s_type in l else 'default'
+        xml.get_widget('shortcut_type').set_active(l.index(s_type))
+
         xml.get_widget('page_size').set_value(prefs.get_value('common',
                                                               'page_size'))
 
@@ -44,7 +49,7 @@ class AnthySetup(object):
         tv.get_selection().connect_after('changed',
                                           self.on_selection_changed, 0)
         ls = gtk.ListStore(str, str)
-        sec = 'shortcut/default'
+        sec = 'shortcut/' + s_type
         for k in self.prefs.keys(sec):
             ls.append([k, l_to_s(self.prefs.get_value(sec, k))])
         tv.set_model(ls)
@@ -125,18 +130,38 @@ class AnthySetup(object):
         if id == gtk.RESPONSE_OK:
             new = l_to_s([m[i][0] for i in range(len(m))])
             if new != ls.get(it, 1)[0]:
-                self.prefs.set_value('shortcut/default', ls.get(it, 0)[0], s_to_l(new))
+                sec = self._get_shortcut_sec()
+                self.prefs.set_value(sec, ls.get(it, 0)[0], s_to_l(new))
                 ls.set(it, 1, new)
                 self.xml.get_widget('btn_apply').set_sensitive(True)
 
     def on_btn_default_clicked(self, widget):
         ls, it = self.xml.get_widget('shortcut').get_selection().get_selected()
-        sec = 'shortcut/default'
+        sec = self._get_shortcut_sec()
         new = l_to_s(self.prefs.default[sec][ls.get(it, 0)[0]])
         if new != ls.get(it, 1)[0]:
             self.prefs.set_value(sec, ls.get(it, 0)[0], s_to_l(new))
             ls.set(it, 1, new)
             self.xml.get_widget('btn_apply').set_sensitive(True)
+
+    def _get_shortcut_sec(self):
+        l = ['default', 'atok', 'wnn']
+        s_type = self.xml.get_widget('shortcut_type').get_active_text().lower()
+        return 'shortcut/' + s_type if s_type in l else 'default'
+
+    def on_shortcut_type_changed(self, widget):
+        ls = self.xml.get_widget('shortcut').get_model()
+        ls.clear()
+
+        for a in widget.get_model():
+            print a[0]
+
+        sec = self._get_shortcut_sec()
+        for k in self.prefs.keys(sec):
+            ls.append([k, l_to_s(self.prefs.get_value(sec, k))])
+
+        self.prefs.set_value('common', widget.name, sec[len('shortcut/'):])
+        self.xml.get_widget('btn_apply').set_sensitive(True)
 
     def on_shortcut_key_release_event(self, widget, event):
         if event.hardware_keycode in [36, 65]:
