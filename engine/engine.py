@@ -56,7 +56,8 @@ CONV_MODE_LATIN_3, \
 CONV_MODE_WIDE_LATIN_0, \
 CONV_MODE_WIDE_LATIN_1, \
 CONV_MODE_WIDE_LATIN_2, \
-CONV_MODE_WIDE_LATIN_3 = range(13)
+CONV_MODE_WIDE_LATIN_3, \
+CONV_MODE_PREDICTION = range(14)
 
 KP_Table = {}
 for k, v in zip(['KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
@@ -217,7 +218,8 @@ class Engine(ibus.EngineBase):
 
     def cursor_up(self):
         # only process cursor down in convert mode
-        if self.__convert_mode != CONV_MODE_ANTHY:
+#        if self.__convert_mode != CONV_MODE_ANTHY:
+        if self.__convert_mode != CONV_MODE_ANTHY and self.__convert_mode != CONV_MODE_PREDICTION:
             return False
 
         if not self.__lookup_table.cursor_up():
@@ -231,7 +233,8 @@ class Engine(ibus.EngineBase):
 
     def cursor_down(self):
         # only process cursor down in convert mode
-        if self.__convert_mode != CONV_MODE_ANTHY:
+#        if self.__convert_mode != CONV_MODE_ANTHY:
+        if self.__convert_mode != CONV_MODE_ANTHY and self.__convert_mode != CONV_MODE_PREDICTION:
             return False
 
         if not self.__lookup_table.cursor_down():
@@ -472,6 +475,19 @@ class Engine(ibus.EngineBase):
         self.__end_anthy_convert()
 
     def __fill_lookup_table(self):
+        if self.__convert_mode == CONV_MODE_PREDICTION:
+            seg_stat = anthy.anthy_prediction_stat()
+            self.__context.get_prediction_stat(seg_stat)
+
+            # fill lookup_table
+            self.__lookup_table.clean()
+            for i in xrange(0, seg_stat.nr_prediction):
+                buf = self.__context.get_prediction(i)
+                candidate = unicode(buf, "utf-8")
+                self.__lookup_table.append_candidate(ibus.Text(candidate))
+
+            return
+
         # get segment stat
         seg_stat = anthy.anthy_segment_stat()
         self.__context.get_segment_stat(self.__cursor_pos, seg_stat)
@@ -519,7 +535,8 @@ class Engine(ibus.EngineBase):
             self.__lookup_table_visible)
 
     def __update_convert_chars(self):
-        if self.__convert_mode == CONV_MODE_ANTHY:
+#        if self.__convert_mode == CONV_MODE_ANTHY:
+        if self.__convert_mode == CONV_MODE_ANTHY or self.__convert_mode == CONV_MODE_PREDICTION:
             self.__update_anthy_convert_chars()
             return
         if self.__convert_mode == CONV_MODE_HIRAGANA:
@@ -614,6 +631,9 @@ class Engine(ibus.EngineBase):
             i = 0
             for seg_index, text in self.__segments:
                 self.__context.commit_segment(i, seg_index)
+            self.__commit_string(self.__convert_chars)
+        elif self.__convert_mode == CONV_MODE_PREDICTION:
+            self.__context.commit_prediction(self.__segments[0][0])
             self.__commit_string(self.__convert_chars)
         else:
             self.__commit_string(self.__convert_chars)
@@ -998,9 +1018,31 @@ class Engine(ibus.EngineBase):
                 return True
             return False
 
-    #mode_keys
+    def _chk_mode(self, mode):
+        if '0' in mode and self.__preedit_ja_string.is_empty():
+            return True
+
+        if self.__convert_mode == CONV_MODE_OFF:
+            if '1' in mode and not self.__preedit_ja_string.is_empty():
+                return True
+        elif self.__convert_mode == CONV_MODE_ANTHY:
+            if '2' in mode and not self.__lookup_table_visible:
+                return True
+        elif self.__convert_mode == CONV_MODE_PREDICTION:
+            if '3' in mode and not self.__lookup_table_visible:
+                return True
+        else:
+            if '4' in mode:
+                return True
+
+        if '5' in mode and self.__lookup_table_visible:
+            return True
+
+        return False
+
+    #mod_keys
     def __set_input_mode(self, mode):
-        if not self.__preedit_ja_string.is_empty():
+        if not self._chk_mode('0'):
             return False
 
         self.__input_mode_activate(mode, ibus.PROP_STATE_CHECKED)
@@ -1048,11 +1090,11 @@ class Engine(ibus.EngineBase):
     def __cmd_half_katakana(self, keyval, state):
         return self.__set_input_mode(u'InputMode.HalfWidthKatakana')
 
-    def __cmd_cancel_pseudo_ascii_mode_key(self, keyval, state):
-        pass
+#    def __cmd_cancel_pseudo_ascii_mode_key(self, keyval, state):
+#        pass
 
     def __cmd_circle_typing_method(self, keyval, state):
-        if not self.__preedit_ja_string.is_empty():
+        if not self._chk_mode('0'):
             return False
 
         modes = {
@@ -1079,12 +1121,18 @@ class Engine(ibus.EngineBase):
             return self.__cmd_insert_wide_space(keyval, state)
 
     def __cmd_insert_half_space(self, keyval, state):
+        if not self._chk_mode('0'):
+            return False
+
         if not self.__preedit_ja_string.is_empty():
             return False
         self.__commit_string(unichr(keysyms.space))
         return True
 
     def __cmd_insert_wide_space(self, keyval, state):
+        if not self._chk_mode('0'):
+            return False
+
         if not self.__preedit_ja_string.is_empty():
             return False
         char = unichr(keysyms.space)
@@ -1095,31 +1143,65 @@ class Engine(ibus.EngineBase):
         return True
 
     def __cmd_backspace(self, keyval, state):
+        if not self._chk_mode('12345'):
+            return False
+
         return self.__on_key_back_space()
 
     def __cmd_delete(self, keyval, state):
+        if not self._chk_mode('12345'):
+            return False
+
         return self.__on_key_delete()
 
     def __cmd_commit(self, keyval, state):
+        if not self._chk_mode('12345'):
+            return False
+
         return self.__on_key_return()
 
     def __cmd_convert(self, keyval, state):
-        if self.__preedit_ja_string.is_empty() or \
-                self.__input_mode != INPUT_MODE_HIRAGANA:
+        if not self._chk_mode('14'):
             return False
-        if self.__convert_mode != CONV_MODE_ANTHY:
-            self.__begin_anthy_convert()
-            self.__invalidate()
-        elif self.__convert_mode == CONV_MODE_ANTHY:
-            self.__lookup_table_visible = True
-            self.cursor_down()
+
+        self.__begin_anthy_convert()
+        self.__invalidate()
+
         return True
 
     def __cmd_predict(self, keyval, state):
-        pass
+        if not self._chk_mode('14'):
+            return False
+
+        text, cursor = self.__preedit_ja_string.get_hiragana(True)
+
+        self.__context.set_prediction_string(text.encode("utf8"))
+        ps = anthy.anthy_prediction_stat()
+        self.__context.get_prediction_stat(ps)
+
+#        for i in range(ps.nr_prediction):
+#            print self.__context.get_prediction(i)
+
+        buf = self.__context.get_prediction(0)
+        if not buf:
+            return False
+
+        text = unicode(buf, "utf-8")
+        self.__segments.append((0, text))
+
+        self.__convert_mode = CONV_MODE_PREDICTION
+        self.__cursor_pos = 0
+        self.__fill_lookup_table()
+        self.__lookup_table_visible = False
+        self.__invalidate()
+
+        return True
 
     def __cmd_cancel(self, keyval, state):
-        if self.__preedit_ja_string.is_empty():
+        return self.__cmd_cancel_all(keyval, state)
+
+    def __cmd_cancel_all(self, keyval, state):
+        if not self._chk_mode('12345'):
             return False
 
         if self.__convert_mode == CONV_MODE_OFF:
@@ -1129,21 +1211,15 @@ class Engine(ibus.EngineBase):
             self.__invalidate()
             return True
 
-    def __cmd_cancel_all(self, keyval, state):
-        return self.__cmd_cancel(keyval, state)
-
     def __cmd_reconvert(self, keyval, state):
         pass
 
-    def __cmd_do_nothing(self, keyval, state):
-        return True
+#    def __cmd_do_nothing(self, keyval, state):
+#        return True
 
     #caret_keys
     def __move_caret(self, i):
-        if self.__lookup_table_visible:
-            return False
-
-        if self.__preedit_ja_string.is_empty():
+        if not self._chk_mode('1'):
             return False
 
         if self.__convert_mode == CONV_MODE_OFF:
@@ -1170,13 +1246,8 @@ class Engine(ibus.EngineBase):
 
     #segments_keys
     def __select_segment(self, i):
-        if self.__preedit_ja_string.is_empty():
+        if not self._chk_mode('25'):
             return False
-
-        if self.__convert_mode == CONV_MODE_OFF:
-            return False
-        elif self.__convert_mode != CONV_MODE_ANTHY:
-            return True
 
         pos = 0 if i == 0 else \
               self.__cursor_pos + i if i in [-1, 1] else \
@@ -1191,15 +1262,9 @@ class Engine(ibus.EngineBase):
         return True
 
     def __cmd_select_first_segment(self, keyval, state):
-        if self.__lookup_table_visible:
-            return False
-
         return self.__select_segment(0)
 
     def __cmd_select_last_segment(self, keyval, state):
-        if self.__lookup_table_visible:
-            return False
-
         return self.__select_segment(2)
 
     def __cmd_select_next_segment(self, keyval, state):
@@ -1209,11 +1274,17 @@ class Engine(ibus.EngineBase):
         return self.__select_segment(-1)
 
     def __cmd_shrink_segment(self, keyval, state):
+        if not self._chk_mode('25'):
+            return False
+
         if self.__convert_mode == CONV_MODE_ANTHY:
             self.__shrink_segment(-1)
             return True
 
     def __cmd_expand_segment(self, keyval, state):
+        if not self._chk_mode('25'):
+            return False
+
         if self.__convert_mode == CONV_MODE_ANTHY:
             self.__shrink_segment(1)
             return True
@@ -1226,7 +1297,7 @@ class Engine(ibus.EngineBase):
 
     #candidates_keys
     def __select_candidate(self, pos):
-        if not self.__lookup_table_visible:
+        if not self._chk_mode('5'):
             return False
 
         if not self.__lookup_table.set_cursor_pos_in_current_page(pos):
@@ -1245,79 +1316,152 @@ class Engine(ibus.EngineBase):
         return self.__select_candidate(self.__lookup_table.get_page_size() - 1)
 
     def __cmd_select_next_candidate(self, keyval, state):
+        if not self._chk_mode('235'):
+            return False
+
         return self.__on_key_down()
 
     def __cmd_select_prev_candidate(self, keyval, state):
+        if not self._chk_mode('235'):
+            return False
+
         return self.__on_key_up()
 
     def __cmd_candidates_page_up(self, keyval, state):
+        if not self._chk_mode('5'):
+            return False
+
         return self.__on_key_page_up()
 
     def __cmd_candidates_page_down(self, keyval, state):
+        if not self._chk_mode('5'):
+            return False
+
         return self.__on_key_page_down()
 
     #direct_select_keys
-    def __cmd_select_candidates_1(self, keyval, state):
+    def __select_candidates(self, keyval):
+        if not self._chk_mode('5'):
+            return False
+
         return self.__on_key_number(keyval)
+
+    def __cmd_select_candidates_1(self, keyval, state):
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_2(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_3(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_4(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_5(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_6(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_7(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_8(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_9(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     def __cmd_select_candidates_0(self, keyval, state):
-        return self.__on_key_number(keyval)
+        return self.__select_candidates(keyval)
 
     #convert_keys
     def __cmd_convert_to_char_type_forward(self, keyval, state):
-        pass
+        if self.__convert_mode == CONV_MODE_KATAKANA:
+            return self.__cmd_convert_to_half(keyval, state)
+        elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
+            return self.__cmd_convert_to_latin(keyval, state)
+        elif CONV_MODE_LATIN_0 <= self.__convert_mode <= CONV_MODE_LATIN_3:
+            return self.__cmd_convert_to_wide_latin(keyval, state)
+        elif (CONV_MODE_WIDE_LATIN_0 <= self.__convert_mode
+                                     <= CONV_MODE_WIDE_LATIN_3):
+            return self.__cmd_convert_to_hiragana(keyval, state)
+        else:
+            return self.__cmd_convert_to_katakana(keyval, state)
 
     def __cmd_convert_to_char_type_backward(self, keyval, state):
-        pass
+        if self.__convert_mode == CONV_MODE_KATAKANA:
+            return self.__cmd_convert_to_hiragana(keyval, state)
+        elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
+            return self.__cmd_convert_to_katakana(keyval, state)
+        elif CONV_MODE_LATIN_0 <= self.__convert_mode <= CONV_MODE_LATIN_3:
+            return self.__cmd_convert_to_half(keyval, state)
+        elif (CONV_MODE_WIDE_LATIN_0 <= self.__convert_mode
+                                     <= CONV_MODE_WIDE_LATIN_3):
+            return self.__cmd_convert_to_latin(keyval, state)
+        else:
+            return self.__cmd_convert_to_wide_latin(keyval, state)
 
     def __cmd_convert_to_hiragana(self, keyval, state):
+        if not self._chk_mode('1234'):
+            return False
+
         return self.__on_key_conv(0)
 
     def __cmd_convert_to_katakana(self, keyval, state):
+        if not self._chk_mode('1234'):
+            return False
+
         return self.__on_key_conv(1)
 
     def __cmd_convert_to_half(self, keyval, state):
+        if not self._chk_mode('1234'):
+            return False
+
         return self.__on_key_conv(2)
 
     def __cmd_convert_to_half_katakana(self, keyval, state):
+        if not self._chk_mode('1234'):
+            return False
+
         return self.__on_key_conv(2)
 
     def __cmd_convert_to_wide_latin(self, keyval, state):
+        if not self._chk_mode('1234'):
+            return False
+
         return self.__on_key_conv(3)
 
     def __cmd_convert_to_latin(self, keyval, state):
+        if not self._chk_mode('1234'):
+            return False
+
         return self.__on_key_conv(4)
 
     #dictonary_keys
     def __cmd_dict_admin(self, keyval, state):
-        pass
+        if not self._chk_mode('0'):
+            return False
+
+        path = self.__prefs.get_value('common', 'dict_admin_command')
+        os.spawnl(os.P_NOWAIT, *path)
+        return True
 
     def __cmd_add_word(self, keyval, state):
-        pass
+        if not self._chk_mode('0'):
+            return False
+
+        path = self.__prefs.get_value('common', 'add_word_command')
+        os.spawnl(os.P_NOWAIT, *path)
+        return True
+
+    def __cmd_start_setup(self, keyval, state):
+        if not self._chk_mode('0'):
+            return False
+
+        self.__start_setup()
+        return True
 
     def __start_setup(self):
         if Engine.__setup_pid != 0:
