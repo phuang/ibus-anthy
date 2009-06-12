@@ -218,7 +218,7 @@ class Engine(ibus.EngineBase):
 
     def cursor_up(self):
         # only process cursor down in convert mode
-#        if self.__convert_mode != CONV_MODE_ANTHY:
+        # if self.__convert_mode != CONV_MODE_ANTHY:
         if self.__convert_mode != CONV_MODE_ANTHY and self.__convert_mode != CONV_MODE_PREDICTION:
             return False
 
@@ -233,7 +233,7 @@ class Engine(ibus.EngineBase):
 
     def cursor_down(self):
         # only process cursor down in convert mode
-#        if self.__convert_mode != CONV_MODE_ANTHY:
+        # if self.__convert_mode != CONV_MODE_ANTHY:
         if self.__convert_mode != CONV_MODE_ANTHY and self.__convert_mode != CONV_MODE_PREDICTION:
             return False
 
@@ -245,6 +245,13 @@ class Engine(ibus.EngineBase):
         self.__segments[self.__cursor_pos] = index, candidate
         self.__invalidate()
         return True
+
+    def candidate_clicked(self, index, button, state):
+        if index == 9:
+            keyval = keysyms._0
+        else:
+            keyval = keysyms._1 + index
+        self.__on_key_number(keyval)
 
     def __commit_string(self, text):
         self.__reset()
