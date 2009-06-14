@@ -18,7 +18,7 @@
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<icon>${pkgdatadir}/icons/ibus-anthy.png</icon>
-			<layout>us</layout>
+			<layout>jp</layout>
 			<longname>Anthy</longname>
 			<description>Anthy Input Method</description>
 			<rank>99</rank>
