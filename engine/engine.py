@@ -272,7 +272,7 @@ class Engine(ibus.EngineBase):
         self.__invalidate()
         return True
 
-    def process_key_event(self, keyval, state):
+    def process_key_event(self, keyval, keycode, state):
         try:
 #            return self.process_key_event_internal(keyval, state)
             return self.process_key_event_internal2(keyval, state)
