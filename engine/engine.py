@@ -272,14 +272,22 @@ class Engine(ibus.EngineBase):
         self.__invalidate()
         return True
 
-    def process_key_event(self, keyval, keycode, state):
-        try:
-#            return self.process_key_event_internal(keyval, state)
-            return self.process_key_event_internal2(keyval, state)
-        except:
-            import traceback
-            traceback.print_exc()
-            return False
+    if ibus.get_version() >= '1.2.0':
+        def process_key_event(self, keyval, keycode, state):
+            try:
+                return self.process_key_event_internal2(keyval, keycode, state)
+            except:
+                import traceback
+                traceback.print_exc()
+                return False
+    else:
+        def process_key_event(self, keyval, state):
+            try:
+                return self.process_key_event_internal2(keyval, 0, state)
+            except:
+                import traceback
+                traceback.print_exc()
+                return False
 
     def process_key_event_internal(self, keyval, state):
         is_press = (state & modifier.RELEASE_MASK) == 0
@@ -982,7 +990,7 @@ class Engine(ibus.EngineBase):
 
         return repr([int(state), int(keyval)])
 
-    def process_key_event_internal2(self, keyval, state):
+    def process_key_event_internal2(self, keyval, keycode, state):
 
         is_press = (state & modifier.RELEASE_MASK) == 0
 
@@ -1012,9 +1020,11 @@ class Engine(ibus.EngineBase):
 
         if (keysyms.exclam <= keyval <= keysyms.asciitilde or
             keyval == keysyms.yen):
-            if (keyval == keysyms._0 and state == modifier.SHIFT_MASK and
-                self.__typing_mode == jastring.TYPING_MODE_KANA):
-                keyval = keysyms.asciitilde
+            if self.__typing_mode == jastring.TYPING_MODE_KANA:
+                if keyval == keysyms._0 and state == modifier.SHIFT_MASK:
+                    keyval = keysyms.asciitilde
+                elif keyval == keysyms.backslash and keycode == 132 - 8:
+                    keyval = keysyms.yen
             ret = self.__on_key_common(keyval)
             if (unichr(keyval) in u',.' and
                 self.__prefs.get_value('common', 'behivior_on_period')):
