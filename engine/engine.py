@@ -1023,7 +1023,7 @@ class Engine(ibus.EngineBase):
             if self.__typing_mode == jastring.TYPING_MODE_KANA:
                 if keyval == keysyms._0 and state == modifier.SHIFT_MASK:
                     keyval = keysyms.asciitilde
-                elif keyval == keysyms.backslash and keycode == 132 - 8:
+                elif keyval == keysyms.backslash and keycode in [132-8, 133-8]:
                     keyval = keysyms.yen
             ret = self.__on_key_common(keyval)
             if (unichr(keyval) in u',.' and
