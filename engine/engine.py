@@ -646,6 +646,7 @@ class Engine(ibus.EngineBase):
             i = 0
             for seg_index, text in self.__segments:
                 self.__context.commit_segment(i, seg_index)
+                i += 1
             self.__commit_string(self.__convert_chars)
         elif self.__convert_mode == CONV_MODE_PREDICTION:
             self.__context.commit_prediction(self.__segments[0][0])
@@ -908,6 +909,7 @@ class Engine(ibus.EngineBase):
             i = 0
             for seg_index, text in self.__segments:
                 self.__context.commit_segment(i, seg_index)
+                i += 1
             self.__commit_string(self.__convert_chars)
         elif self.__convert_mode != CONV_MODE_OFF:
             self.__commit_string(self.__convert_chars)
