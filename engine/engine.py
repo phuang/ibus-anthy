@@ -607,12 +607,10 @@ class Engine(ibus.EngineBase):
     def __update_anthy_convert_chars(self):
         self.__convert_chars = u""
         pos = 0
-        i = 0
-        for seg_index, text in self.__segments:
+        for i, (seg_index, text) in enumerate(self.__segments):
             self.__convert_chars += text
             if i < self.__cursor_pos:
                 pos += len(text)
-            i += 1
         attrs = ibus.AttrList()
         attrs.append(ibus.AttributeUnderline(
             ibus.ATTR_UNDERLINE_SINGLE, 0, len(self.__convert_chars)))
@@ -643,10 +641,8 @@ class Engine(ibus.EngineBase):
             text, cursor = self.__get_preedit(True)
             self.__commit_string(text)
         elif self.__convert_mode == CONV_MODE_ANTHY:
-            i = 0
-            for seg_index, text in self.__segments:
+            for i, (seg_index, text) in enumerate(self.__segments):
                 self.__context.commit_segment(i, seg_index)
-                i += 1
             self.__commit_string(self.__convert_chars)
         elif self.__convert_mode == CONV_MODE_PREDICTION:
             self.__context.commit_prediction(self.__segments[0][0])
@@ -906,10 +902,8 @@ class Engine(ibus.EngineBase):
 
         # Input Japanese
         if self.__convert_mode == CONV_MODE_ANTHY:
-            i = 0
-            for seg_index, text in self.__segments:
+            for i, (seg_index, text) in enumerate(self.__segments):
                 self.__context.commit_segment(i, seg_index)
-                i += 1
             self.__commit_string(self.__convert_chars)
         elif self.__convert_mode != CONV_MODE_OFF:
             self.__commit_string(self.__convert_chars)
