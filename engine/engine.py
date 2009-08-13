@@ -30,7 +30,11 @@ from ibus import keysyms
 from ibus import modifier
 import jastring
 from segment import unichar_half_to_full
-from gtk import clipboard_get
+
+try:
+    from gtk import clipboard_get
+except ImportError:
+    clipboard_get = lambda a : None
 
 sys.path.append(path.join(os.getenv('IBUS_ANTHY_PKGDATADIR'), 'setup'))
 from anthyprefs import AnthyPrefs
