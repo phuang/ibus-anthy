@@ -31,6 +31,11 @@ from ibus import modifier
 import jastring
 from segment import unichar_half_to_full
 
+try:
+    from gtk import clipboard_get
+except ImportError:
+    clipboard_get = lambda a : None
+
 sys.path.append(path.join(os.getenv('IBUS_ANTHY_PKGDATADIR'), 'setup'))
 from anthyprefs import AnthyPrefs
 
@@ -58,6 +63,8 @@ CONV_MODE_WIDE_LATIN_1, \
 CONV_MODE_WIDE_LATIN_2, \
 CONV_MODE_WIDE_LATIN_3, \
 CONV_MODE_PREDICTION = range(14)
+
+CLIPBOARD_RECONVERT = range(1)
 
 KP_Table = {}
 for k, v in zip(['KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
@@ -182,6 +189,14 @@ class Engine(ibus.EngineBase):
 
         return anthy_props
 
+    def __get_clipboard(self, clipboard, text, data):
+        clipboard_text = clipboard.wait_for_text ()
+
+        if data == CLIPBOARD_RECONVERT:
+            self.__update_reconvert(clipboard_text)
+
+        return clipboard_text
+
     def update_preedit(self, string, attrs, cursor_pos, visible):
         self.update_preedit_text(ibus.Text(string, attrs), cursor_pos, visible)
 
@@ -272,14 +287,22 @@ class Engine(ibus.EngineBase):
         self.__invalidate()
         return True
 
-    def process_key_event(self, keyval, state):
-        try:
-#            return self.process_key_event_internal(keyval, state)
-            return self.process_key_event_internal2(keyval, state)
-        except:
-            import traceback
-            traceback.print_exc()
-            return False
+    if ibus.get_version() >= '1.2.0':
+        def process_key_event(self, keyval, keycode, state):
+            try:
+                return self.process_key_event_internal2(keyval, keycode, state)
+            except:
+                import traceback
+                traceback.print_exc()
+                return False
+    else:
+        def process_key_event(self, keyval, state):
+            try:
+                return self.process_key_event_internal2(keyval, 0, state)
+            except:
+                import traceback
+                traceback.print_exc()
+                return False
 
     def process_key_event_internal(self, keyval, state):
         is_press = (state & modifier.RELEASE_MASK) == 0
@@ -599,12 +622,10 @@ class Engine(ibus.EngineBase):
     def __update_anthy_convert_chars(self):
         self.__convert_chars = u""
         pos = 0
-        i = 0
-        for seg_index, text in self.__segments:
+        for i, (seg_index, text) in enumerate(self.__segments):
             self.__convert_chars += text
             if i < self.__cursor_pos:
                 pos += len(text)
-            i += 1
         attrs = ibus.AttrList()
         attrs.append(ibus.AttributeUnderline(
             ibus.ATTR_UNDERLINE_SINGLE, 0, len(self.__convert_chars)))
@@ -635,8 +656,7 @@ class Engine(ibus.EngineBase):
             text, cursor = self.__get_preedit(True)
             self.__commit_string(text)
         elif self.__convert_mode == CONV_MODE_ANTHY:
-            i = 0
-            for seg_index, text in self.__segments:
+            for i, (seg_index, text) in enumerate(self.__segments):
                 self.__context.commit_segment(i, seg_index)
             self.__commit_string(self.__convert_chars)
         elif self.__convert_mode == CONV_MODE_PREDICTION:
@@ -897,8 +917,7 @@ class Engine(ibus.EngineBase):
 
         # Input Japanese
         if self.__convert_mode == CONV_MODE_ANTHY:
-            i = 0
-            for seg_index, text in self.__segments:
+            for i, (seg_index, text) in enumerate(self.__segments):
                 self.__context.commit_segment(i, seg_index)
             self.__commit_string(self.__convert_chars)
         elif self.__convert_mode != CONV_MODE_OFF:
@@ -982,7 +1001,7 @@ class Engine(ibus.EngineBase):
 
         return repr([int(state), int(keyval)])
 
-    def process_key_event_internal2(self, keyval, state):
+    def process_key_event_internal2(self, keyval, keycode, state):
 
         is_press = (state & modifier.RELEASE_MASK) == 0
 
@@ -1012,9 +1031,11 @@ class Engine(ibus.EngineBase):
 
         if (keysyms.exclam <= keyval <= keysyms.asciitilde or
             keyval == keysyms.yen):
-            if (keyval == keysyms._0 and state == modifier.SHIFT_MASK and
-                self.__typing_mode == jastring.TYPING_MODE_KANA):
-                keyval = keysyms.asciitilde
+            if self.__typing_mode == jastring.TYPING_MODE_KANA:
+                if keyval == keysyms._0 and state == modifier.SHIFT_MASK:
+                    keyval = keysyms.asciitilde
+                elif keyval == keysyms.backslash and keycode in [132-8, 133-8]:
+                    keyval = keysyms.yen
             ret = self.__on_key_common(keyval)
             if (unichr(keyval) in u',.' and
                 self.__prefs.get_value('common', 'behivior_on_period')):
@@ -1219,7 +1240,43 @@ class Engine(ibus.EngineBase):
             return True
 
     def __cmd_reconvert(self, keyval, state):
-        pass
+        if not self.__preedit_ja_string.is_empty():
+            # if user has inputed some chars
+            return False
+
+        # Use gtk.Clipboard.request_text() instead of
+        # gtk.Clipboard.wait_for_text() because DBus is timed out.
+        clipboard = clipboard_get ("PRIMARY")
+        if clipboard:
+            clipboard.request_text (self.__get_clipboard, CLIPBOARD_RECONVERT)
+
+        return True
+
+    def __update_reconvert(self, clipboard_text):
+        if clipboard_text == None:
+            return False
+
+        self.__convert_chars = unicode (clipboard_text, "utf-8")
+        for i in xrange(0, len(self.__convert_chars)):
+            keyval = self.__convert_chars[i]
+            self.__preedit_ja_string.insert(unichr(ord (keyval)))
+
+        self.__context.set_string(self.__convert_chars.encode("utf-8"))
+        conv_stat = anthy.anthy_conv_stat()
+        self.__context.get_stat(conv_stat)
+
+        for i in xrange(0, conv_stat.nr_segment):
+            buf = self.__context.get_segment(i, 0)
+            text = unicode(buf, "utf-8")
+            self.__segments.append((0, text))
+
+        self.__convert_mode = CONV_MODE_ANTHY
+        self.__cursor_pos = 0
+        self.__fill_lookup_table()
+        self.__lookup_table_visible = False
+        self.__invalidate()
+
+        return True
 
 #    def __cmd_do_nothing(self, keyval, state):
 #        return True
@@ -1296,11 +1353,55 @@ class Engine(ibus.EngineBase):
             self.__shrink_segment(1)
             return True
 
+    def __commit_nth_segment(self, commit_index, keyval, state):
+
+        if commit_index >= len(self.__segments):
+            return False
+
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            for i in xrange(0, commit_index + 1):
+                (seg_index, text) = self.__segments[i]
+                self.commit_text(ibus.Text(text))
+
+            text, cursor = self.__get_preedit()
+            commit_length = 0
+            for i in xrange(0, commit_index + 1):
+                buf = self.__context.get_segment(i, -1)
+                commit_length += len(unicode(buf, "utf-8"))
+            self.__preedit_ja_string.move_cursor(commit_length - cursor)
+            for i in xrange(0, commit_length):
+                self.__preedit_ja_string.remove_before()
+            self.__preedit_ja_string.move_cursor(cursor - commit_length)
+
+            del self.__segments[0:commit_index + 1]
+
+        if len(self.__segments) == 0:
+            self.__reset()
+        else:
+            if self.__cursor_pos > commit_index:
+                self.__cursor_pos -= (commit_index + 1)
+            else:
+                self.__cursor_pos = 0
+            (seg_index, text) = self.__segments[self.__cursor_pos]
+            self.__convert_chars = text
+            self.__context.set_string(text.encode ("utf-8"))
+
+        self.__lookup_table.clean()
+        self.__lookup_table.show_cursor (False)
+        self.__lookup_table_visible = False
+        self.update_aux_string(u"", ibus.AttrList(),
+            self.__lookup_table_visible)
+        self.__fill_lookup_table()
+        self.__invalidate()
+        self.__update_input_chars()
+
+        return True
+
     def __cmd_commit_first_segment(self, keyval, state):
-        pass
+        return self.__commit_nth_segment(0, keyval, state)
 
     def __cmd_commit_selected_segment(self, keyval, state):
-        pass
+        return self.__commit_nth_segment(self.__cursor_pos, keyval, state)
 
     #candidates_keys
     def __select_candidate(self, pos):
