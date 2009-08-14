@@ -1512,37 +1512,37 @@ class Engine(ibus.EngineBase):
             return self.__cmd_convert_to_wide_latin(keyval, state)
 
     def __cmd_convert_to_hiragana(self, keyval, state):
-        if not self._chk_mode('1234'):
+        if not self._chk_mode('12345'):
             return False
 
         return self.__on_key_conv(0)
 
     def __cmd_convert_to_katakana(self, keyval, state):
-        if not self._chk_mode('1234'):
+        if not self._chk_mode('12345'):
             return False
 
         return self.__on_key_conv(1)
 
     def __cmd_convert_to_half(self, keyval, state):
-        if not self._chk_mode('1234'):
+        if not self._chk_mode('12345'):
             return False
 
         return self.__on_key_conv(2)
 
     def __cmd_convert_to_half_katakana(self, keyval, state):
-        if not self._chk_mode('1234'):
+        if not self._chk_mode('12345'):
             return False
 
         return self.__on_key_conv(2)
 
     def __cmd_convert_to_wide_latin(self, keyval, state):
-        if not self._chk_mode('1234'):
+        if not self._chk_mode('12345'):
             return False
 
         return self.__on_key_conv(3)
 
     def __cmd_convert_to_latin(self, keyval, state):
-        if not self._chk_mode('1234'):
+        if not self._chk_mode('12345'):
             return False
 
         return self.__on_key_conv(4)
