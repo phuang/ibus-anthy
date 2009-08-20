@@ -41,5 +41,6 @@ test:
 	$(ENV) DBUS_DEBUG=true \
 		   LANG=en_US \
 		   PYTHONPATH=$(abs_top_srcdir):$(pyexecdir) \
+		   IBUS_LOCALEDIR=@localedir@ \
 		   $(PYTHON) $(srcdir)/main.py
 

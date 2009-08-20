@@ -1,9 +1,9 @@
-from os import path
+from os import path, getenv
 import gtk
 import pango
 from gtk import glade
 from ibus import keysyms, modifier
-from gettext import dgettext
+from gettext import dgettext, bindtextdomain
 
 from anthyprefs import AnthyPrefs
 
@@ -21,6 +21,9 @@ class AnthySetup(object):
     def __init__(self):
         self.prefs = prefs = AnthyPrefs()
 
+        localedir = getenv("IBUS_LOCALEDIR")
+        bindtextdomain("ibus-anthy", localedir)
+        glade.bindtextdomain("ibus-anthy", localedir)
         glade.textdomain("ibus-anthy")
         glade_file = path.join(path.dirname(__file__), "setup.glade")
         self.xml = xml = glade.XML(glade_file)
