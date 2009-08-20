@@ -108,7 +108,7 @@ class Engine(ibus.EngineBase):
 
         mode = self.__prefs.get_value('common', 'typing_method')
         mode = 'TypingMode.' + ['Romaji', 'Kana'][mode]
-        self.__input_mode_activate(mode, ibus.PROP_STATE_CHECKED)
+        self.__typing_mode_activate(mode, ibus.PROP_STATE_CHECKED)
 
         # use reset to init values
         self.__reset()
