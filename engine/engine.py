@@ -107,7 +107,7 @@ class Engine(ibus.EngineBase):
         self.__input_mode_activate(mode, ibus.PROP_STATE_CHECKED)
 
         mode = self.__prefs.get_value('common', 'typing_method')
-        mode = 'TypingMode.' + ['Romaji', 'Kana'][mode]
+        mode = 'TypingMode.' + ['Romaji', 'Kana', 'ThumbShift'][mode]
         self.__input_mode_activate(mode, ibus.PROP_STATE_CHECKED)
 
         # use reset to init values
@@ -123,6 +123,9 @@ class Engine(ibus.EngineBase):
         self.__segments = list()
         self.__lookup_table.clean()
         self.__lookup_table_visible = False
+        self._MM = 0
+        self._SS = 0
+        self._H = 0
 
     def __init_props(self):
         anthy_props = ibus.PropList()
@@ -173,9 +176,9 @@ class Engine(ibus.EngineBase):
         props.append(ibus.Property(key=u"TypingMode.Kana",
                                    type=ibus.PROP_TYPE_RADIO,
                                    label=_(u"Kana")))
-        # props.append(ibus.Property(name = u"TypingMode.ThumbShift",
-        #                     type = ibus.PROP_TYPE_RADIO,
-        #                     label = _(u"Thumb shift")))
+        props.append(ibus.Property(key=u"TypingMode.ThumbShift",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Thumb shift")))
         props[Engine.__typing_mode].set_state(ibus.PROP_STATE_CHECKED)
 
         for prop in props:
@@ -422,6 +425,7 @@ class Engine(ibus.EngineBase):
         typing_modes = {
             u"TypingMode.Romaji" : (jastring.TYPING_MODE_ROMAJI, u"R"),
             u"TypingMode.Kana" : (jastring.TYPING_MODE_KANA, u"か"),
+            u"TypingMode.ThumbShift" : (jastring.TYPING_MODE_THUMB_SHIFT, u"親"),
         }
 
         if prop_name not in typing_modes:
@@ -444,6 +448,7 @@ class Engine(ibus.EngineBase):
         modes = {
             jastring.TYPING_MODE_ROMAJI : (u"TypingMode.Romaji", u"R"),
             jastring.TYPING_MODE_KANA : (u"TypingMode.Kana", u"か"),
+            jastring.TYPING_MODE_THUMB_SHIFT : (u"TypingMode.ThumbShift", u"親"),
         }
         prop_name, label = modes.get(Engine.__typing_mode, (None, None))
         if prop_name == None or label == None:
@@ -1004,7 +1009,125 @@ class Engine(ibus.EngineBase):
 
         return repr([int(state), int(keyval)])
 
+    def process_key_event_thumb(self, keyval, keycode, state):
+        import gtk
+        import thumb
+
+        def on_timeout(keyval):
+            if self._MM:
+                insert(thumb.table[self._MM][self._SS])
+            else:
+                cmd_exec([0, RS(), LS()][self._SS])
+            self._H = None
+
+        def start(t):
+            self._H = gobject.timeout_add(t, on_timeout, keyval)
+
+        def stop():
+            if self._H:
+                gobject.source_remove(self._H)
+                self._H = None
+                return True
+            return False
+
+        def insert(keyval):
+            try:
+                ret = self.__on_key_common(ord(keyval))
+                if (keyval in u',.、。' and
+                    self.__prefs.get_value('common', 'behivior_on_period')):
+                    return self.__cmd_convert(keyval, state)
+                return ret
+            except:
+                pass
+
+        def cmd_exec(keyval, state=0):
+            key = self._mk_key(keyval, state)
+            for cmd in self.__keybind.get(key, []):
+                print 'cmd =', cmd
+                try:
+                    if getattr(self, cmd)(keyval, state):
+                        return True
+                except:
+                    print >> sys.stderr, 'Unknow command = %s' % cmd
+            return False
+
+        def RS():
+            return self.__prefs.get_value('common', 'thumb_rs')
+
+        def LS():
+            return self.__prefs.get_value('common', 'thumb_ls')
+
+        def T1():
+            return self.__prefs.get_value('common', 'thumb_t1')
+
+        def T2():
+            return self.__prefs.get_value('common', 'thumb_t2')
+
+        state = state & (modifier.SHIFT_MASK |
+                         modifier.CONTROL_MASK |
+                         modifier.MOD1_MASK |
+                         modifier.RELEASE_MASK)
+
+        if keyval in KP_Table and self.__prefs.get_value('common',
+                                                         'ten_key_mode'):
+            keyval = KP_Table[keyval]
+
+        if state & modifier.RELEASE_MASK:
+            if keyval == self._MM:
+                if stop():
+                    insert(thumb.table[self._MM][self._SS])
+                self._MM = 0
+            elif (1 if keyval == RS() else 2) == self._SS:
+                if stop():
+                    cmd_exec([0, RS(), LS()][self._SS])
+                self._SS = 0
+        else:
+            if keyval in [LS(), RS()] and state == 0:
+                if self._SS:
+                    stop()
+                    cmd_exec([0, RS(), LS()][self._SS])
+                    self._SS = 1 if keyval == RS() else 2
+                    start(T1())
+                elif self._MM:
+                    stop()
+                    insert(thumb.table[self._MM][1 if keyval == RS() else 2])
+                else:
+                    self._SS = 1 if keyval == RS() else 2
+                    start(T1())
+            elif keyval in thumb.table.keys() and state == 0:
+                if self._MM:
+                    stop()
+                    insert(thumb.table[self._MM][self._SS])
+                    start(T2())
+                    self._MM = keyval
+                elif self._SS:
+                    stop()
+                    insert(thumb.table[keyval][self._SS])
+                else:
+                    if cmd_exec(keyval, state):
+                        return True
+                    start(T2())
+                    self._MM = keyval
+            else:
+                if self._MM:
+                    stop()
+                    insert(thumb.table[self._MM][self._SS])
+                elif self._SS:
+                    stop()
+                    cmd_exec([0, RS(), LS()][self._SS])
+                if 0x21 <= keyval <= 0x7e and state & (modifier.CONTROL_MASK | modifier.MOD1_MASK) == 0:
+                    insert(thumb.shift_table.get(keyval, unichr(keyval)))
+                else:
+                    ret = cmd_exec(keyval, state)
+                    if ret or not self.__preedit_ja_string.is_empty():
+                        return True
+                    return False
+        return True
+
     def process_key_event_internal2(self, keyval, keycode, state):
+        if self.__typing_mode == jastring.TYPING_MODE_THUMB_SHIFT and \
+           self.__input_mode not in [INPUT_MODE_LATIN, INPUT_MODE_WIDE_LATIN]:
+            return self.process_key_event_thumb(keyval, keycode, state)
 
         is_press = (state & modifier.RELEASE_MASK) == 0
 
@@ -1129,7 +1252,8 @@ class Engine(ibus.EngineBase):
             return False
 
         modes = {
-            jastring.TYPING_MODE_KANA: u"TypingMode.Romaji",
+            jastring.TYPING_MODE_THUMB_SHIFT: u"TypingMode.Romaji",
+            jastring.TYPING_MODE_KANA: u"TypingMode.ThumbShift",
             jastring.TYPING_MODE_ROMAJI: u"TypingMode.Kana",
         }
         self.__typing_mode_activate(modes[self.__typing_mode],

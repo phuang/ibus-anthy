@@ -21,6 +21,7 @@
 
 import romaji
 import kana
+import thumb
 
 from segment import unichar_half_to_full
 
@@ -71,6 +72,8 @@ class JaString:
                     new_segments = [romaji.RomajiSegment(c)]
                 elif self.__mode == TYPING_MODE_KANA:
                     new_segments = [kana.KanaSegment(c)]
+                elif self.__mode == TYPING_MODE_THUMB_SHIFT:
+                    new_segments = [thumb.ThumbShiftSegment(c)]
         if new_segments:
             self.__segments[self.__cursor:self.__cursor] = new_segments
             self.__cursor += len(new_segments)
