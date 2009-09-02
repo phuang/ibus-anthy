@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import gtk
 
 from prefs import Prefs
 
@@ -113,6 +114,11 @@ _config = {
 
         'dict_admin_command': ['/usr/bin/kasumi', 'kasumi'],
         'add_word_command': ['/usr/bin/kasumi', 'kasumi', '-a'],
+
+        'thumb_rs': gtk.keysyms.Henkan,
+        'thumb_ls': gtk.keysyms.Muhenkan,
+        'thumb_t1': 100,
+        'thumb_t2': 75,
     }
 }
 
