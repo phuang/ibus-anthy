@@ -85,7 +85,8 @@ Wide Latin</property>
                               <widget class="GtkComboBox" id="typing_method">
                                 <property name="visible">True</property>
                                 <property name="items" translatable="yes">Romaji
-Kana</property>
+Kana
+Thumb shift</property>
                                 <signal name="changed" handler="on_cb_changed"/>
                               </widget>
                               <packing>

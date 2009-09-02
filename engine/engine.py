@@ -989,10 +989,7 @@ class Engine(ibus.EngineBase):
 
     @classmethod
     def _s_to_key(cls, s):
-        k = s.split('+')[-1]
-        if k in '1234567890':
-            k = u'_' + k
-        keyval = keysyms.name_to_keycode(k)
+        keyval = keysyms.name_to_keycode(s.split('+')[-1])
         s = s.lower()
         state = ('shift+' in s and modifier.SHIFT_MASK or 0) | (
                  'ctrl+' in s and modifier.CONTROL_MASK or 0) | (

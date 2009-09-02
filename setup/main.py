@@ -43,11 +43,11 @@ class AnthySetup(object):
                                                               'page_size'))
 
         tv = xml.get_widget('shortcut')
-        tv.append_column(gtk.TreeViewColumn('Command',
+        tv.append_column(gtk.TreeViewColumn(_("Command"),
                                              gtk.CellRendererText(), text=0))
         renderer = gtk.CellRendererText()
         renderer.set_property("ellipsize", pango.ELLIPSIZE_END)
-        tv.append_column(gtk.TreeViewColumn('Shortcut',
+        tv.append_column(gtk.TreeViewColumn(_("Shortcut"),
                                              renderer, text=1))
         tv.get_selection().connect_after('changed',
                                           self.on_selection_changed, 0)
