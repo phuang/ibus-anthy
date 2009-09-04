@@ -405,6 +405,7 @@ class Engine(ibus.EngineBase):
             print >> sys.stderr, "Unknow prop_name = %s" % prop_name
             return True
         self.__prop_dict[prop_name].set_state(state)
+        self.update_property(self.__prop_dict[prop_name])
 
         mode, label = input_modes[prop_name]
         if self.__input_mode == mode:
@@ -432,6 +433,7 @@ class Engine(ibus.EngineBase):
             print >> sys.stderr, "Unknow prop_name = %s" % prop_name
             return True
         self.__prop_dict[prop_name].set_state(state)
+        self.update_property(self.__prop_dict[prop_name])
 
         mode, label = typing_modes[prop_name]
 
