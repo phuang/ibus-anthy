@@ -1114,11 +1114,12 @@ class Engine(ibus.EngineBase):
                 elif self._SS:
                     stop()
                     cmd_exec([0, RS(), LS()][self._SS])
-                if 0x21 <= keyval <= 0x7e and state & (modifier.CONTROL_MASK | modifier.MOD1_MASK) == 0:
+                if cmd_exec(keyval, state):
+                    return True
+                elif 0x21 <= keyval <= 0x7e and state & (modifier.CONTROL_MASK | modifier.MOD1_MASK) == 0:
                     insert(thumb.shift_table.get(keyval, unichr(keyval)))
                 else:
-                    ret = cmd_exec(keyval, state)
-                    if ret or not self.__preedit_ja_string.is_empty():
+                    if not self.__preedit_ja_string.is_empty():
                         return True
                     return False
         return True
