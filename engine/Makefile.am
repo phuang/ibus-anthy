@@ -21,12 +21,13 @@
 engine_anthy_PYTHON = \
 	engine.py \
 	factory.py \
-	main.py \
-	tables.py \
 	jastring.py \
-	segment.py \
-	romaji.py \
 	kana.py \
+	main.py \
+	romaji.py \
+	segment.py \
+	tables.py \
+	thumb.py \
 	$(NULL)
 engine_anthydir = $(pkgdatadir)/engine
 
