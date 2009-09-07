@@ -17,7 +17,7 @@ BuildRequires:  anthy-devel
 BuildRequires:  swig
 BuildRequires:  pkgconfig
 
-Requires:   ibus
+Requires:   ibus >= 1.2.0.20090904
 Requires:   anthy
 
 %description
