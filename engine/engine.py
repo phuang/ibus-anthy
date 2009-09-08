@@ -307,7 +307,7 @@ class Engine(ibus.EngineBase):
                 traceback.print_exc()
                 return False
 
-    def process_key_event_internal(self, keyval, state):
+    '''def process_key_event_internal(self, keyval, state):
         is_press = (state & modifier.RELEASE_MASK) == 0
 
         state = state & (modifier.SHIFT_MASK |
@@ -374,7 +374,7 @@ class Engine(ibus.EngineBase):
         else:
             if not self.__preedit_ja_string.is_empty():
                 return True
-            return False
+            return False'''
 
     def property_activate(self, prop_name, state):
 
@@ -705,7 +705,7 @@ class Engine(ibus.EngineBase):
         self.__invalidate()
         return True
 
-    def __on_key_hiragana_katakana(self):
+    '''def __on_key_hiragana_katakana(self):
         if self.__convert_mode == CONV_MODE_ANTHY:
             self.__end_anthy_convert()
 
@@ -724,9 +724,9 @@ class Engine(ibus.EngineBase):
         self.update_property(prop)
 
         self.__invalidate()
-        return True
+        return True'''
 
-    def __on_key_muhenka(self):
+    '''def __on_key_muhenka(self):
         if self.__preedit_ja_string.is_empty():
             return False
 
@@ -742,9 +742,9 @@ class Engine(ibus.EngineBase):
 
         self.__invalidate()
 
-        return True
+        return True'''
 
-    def __on_key_henkan(self):
+    '''def __on_key_henkan(self):
         if self.__preedit_ja_string.is_empty():
             return False
         if self.__convert_mode != CONV_MODE_ANTHY:
@@ -753,9 +753,9 @@ class Engine(ibus.EngineBase):
         elif self.__convert_mode == CONV_MODE_ANTHY:
             self.__lookup_table_visible = True
             self.cursor_down()
-        return True
+        return True'''
 
-    def __on_key_space(self, wide=False):
+    '''def __on_key_space(self, wide=False):
         if self.__input_mode == INPUT_MODE_WIDE_LATIN or wide:
             # Input Wide space U+3000
             wide_char = symbol_rule[unichr(keysyms.space)]
@@ -779,7 +779,7 @@ class Engine(ibus.EngineBase):
         elif self.__convert_mode == CONV_MODE_ANTHY:
             self.__lookup_table_visible = True
             self.cursor_down()
-        return True
+        return True'''
 
     def __on_key_up(self):
         if self.__preedit_ja_string.is_empty():
@@ -809,7 +809,7 @@ class Engine(ibus.EngineBase):
             self.page_down()
         return True
 
-    def __on_key_left(self):
+    '''def __on_key_left(self):
         if self.__preedit_ja_string.is_empty():
             return False
 
@@ -827,7 +827,7 @@ class Engine(ibus.EngineBase):
         self.__lookup_table_visible = False
         self.__fill_lookup_table()
         self.__invalidate()
-        return True
+        return True'''
 
     def __on_key_right(self):
         if self.__preedit_ja_string.is_empty():
@@ -1638,9 +1638,28 @@ class Engine(ibus.EngineBase):
         else:
             return self.__cmd_convert_to_wide_latin(keyval, state)
 
+    def __convert_segment_to_kana(self, n):
+        modes = {
+            -2: CONV_MODE_KATAKANA,
+            -3: CONV_MODE_HIRAGANA,
+            -4: CONV_MODE_HALF_WIDTH_KATAKANA,
+        }
+
+        if self.__convert_mode == CONV_MODE_ANTHY and n in modes:
+            buf = self.__context.get_segment(self.__cursor_pos, n)
+            self.__segments[self.__cursor_pos] = n, unicode(buf, "utf-8")
+            self.__lookup_table_visible = False
+            self.__invalidate()
+            return True
+
+        return False
+
     def __cmd_convert_to_hiragana(self, keyval, state):
         if not self._chk_mode('12345'):
             return False
+
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            return self.__convert_segment_to_kana(-3)
 
         return self.__on_key_conv(0)
 
@@ -1648,17 +1667,26 @@ class Engine(ibus.EngineBase):
         if not self._chk_mode('12345'):
             return False
 
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            return self.__convert_segment_to_kana(-2)
+
         return self.__on_key_conv(1)
 
     def __cmd_convert_to_half(self, keyval, state):
         if not self._chk_mode('12345'):
             return False
 
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            return self.__convert_segment_to_kana(-4)
+
         return self.__on_key_conv(2)
 
     def __cmd_convert_to_half_katakana(self, keyval, state):
         if not self._chk_mode('12345'):
             return False
+
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            return self.__convert_segment_to_kana(-4)
 
         return self.__on_key_conv(2)
 
