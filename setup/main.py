@@ -31,7 +31,7 @@ class AnthySetup(object):
         for name in ['input_mode', 'typing_method',
                      'period_style', 'ten_key_mode',
                      'behivior_on_focus_out', 'behivior_on_period',
-                     'half_width_symbol', 'half_width_number']:
+                     'half_width_symbol', 'half_width_number', 'half_width_space']:
             xml.get_widget(name).set_active(prefs.get_value('common', name))
 
         l = ['default', 'atok', 'wnn']

@@ -1262,18 +1262,20 @@ class Engine(ibus.EngineBase):
 
     #edit_keys
     def __cmd_insert_space(self, keyval, state):
-        if self.__input_mode in [INPUT_MODE_LATIN,
-                                 INPUT_MODE_HALF_WIDTH_KATAKANA]:
+        if (self.__prefs.get_value('common', 'half_width_space') or
+            self.__input_mode in [INPUT_MODE_LATIN,
+                                  INPUT_MODE_HALF_WIDTH_KATAKANA]):
             return self.__cmd_insert_half_space(keyval, state)
         else:
             return self.__cmd_insert_wide_space(keyval, state)
 
     def __cmd_insert_alternate_space(self, keyval, state):
-        if not self.__input_mode in [INPUT_MODE_LATIN,
-                                     INPUT_MODE_HALF_WIDTH_KATAKANA]:
-            return self.__cmd_insert_half_space(keyval, state)
-        else:
+        if (self.__prefs.get_value('common', 'half_width_space') or
+            self.__input_mode in [INPUT_MODE_LATIN,
+                                  INPUT_MODE_HALF_WIDTH_KATAKANA]):
             return self.__cmd_insert_wide_space(keyval, state)
+        else:
+            return self.__cmd_insert_half_space(keyval, state)
 
     def __cmd_insert_half_space(self, keyval, state):
         if not self._chk_mode('0'):

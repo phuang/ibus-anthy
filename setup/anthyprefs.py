@@ -109,6 +109,7 @@ _config = {
         'page_size': 10,
         'half_width_symbol': False,
         'half_width_number': False,
+        'half_width_space': False,
 
         'shortcut_type': 'default',
 
