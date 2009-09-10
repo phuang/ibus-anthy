@@ -159,3 +159,13 @@ class JaString:
     def is_empty(self):
         return all(map(lambda s: s.is_empty(), self.__segments))
 
+    def get_raw(self, start, end):
+        i = 0
+        r = u''
+        for s in self.__segments:
+            if i >= end:
+                break
+            elif start <= i:
+                r += s.to_latin()
+            i += len(s.to_hiragana())
+        return r

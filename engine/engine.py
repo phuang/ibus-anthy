@@ -1692,15 +1692,45 @@ class Engine(ibus.EngineBase):
 
         return self.__on_key_conv(2)
 
+    def __convert_segment_to_latin(self, n):
+        if self.__convert_mode == CONV_MODE_ANTHY and n in [-100, -101]:
+            start = 0
+            for i in range(self.__cursor_pos):
+                start += len(unicode(self.__context.get_segment(i, -1), 'utf-8'))
+            end = start + len(unicode(self.__context.get_segment(self.__cursor_pos, -1), 'utf-8'))
+            i, s = self.__segments[self.__cursor_pos]
+            s2 = self.__preedit_ja_string.get_raw(start, end)
+            if n == -101:
+                s2 = u''.join([unichar_half_to_full(c) for c in s2])
+            if i == n:
+                if s == s2.lower():
+                    s2 = s2.upper()
+                elif s == s2.upper():
+                    s2 = s2.capitalize()
+                elif s == s2 or s == s2.capitalize():
+                    s2 = s2.lower()
+            self.__segments[self.__cursor_pos] = n, s2
+            self.__lookup_table_visible = False
+            self.__invalidate()
+            return True
+
+        return False
+
     def __cmd_convert_to_wide_latin(self, keyval, state):
         if not self._chk_mode('12345'):
             return False
+
+        if self.__convert_mode == CONV_MODE_ANTHY:
+           return self.__convert_segment_to_latin(-101)
 
         return self.__on_key_conv(3)
 
     def __cmd_convert_to_latin(self, keyval, state):
         if not self._chk_mode('12345'):
             return False
+
+        if self.__convert_mode == CONV_MODE_ANTHY:
+           return self.__convert_segment_to_latin(-100)
 
         return self.__on_key_conv(4)
 
