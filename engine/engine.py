@@ -1615,6 +1615,19 @@ class Engine(ibus.EngineBase):
 
     #convert_keys
     def __cmd_convert_to_char_type_forward(self, keyval, state):
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            n = self.__segments[self.__cursor_pos][0]
+            if n == -3:
+                return self.__convert_segment_to_kana(-2)
+            elif n == -2:
+                return self.__convert_segment_to_kana(-4)
+            elif n == -4:
+                return self.__convert_segment_to_latin(-100)
+            elif n == -100:
+                return self.__convert_segment_to_latin(-101)
+            else:
+                return self.__convert_segment_to_kana(-3)
+
         if self.__convert_mode == CONV_MODE_KATAKANA:
             return self.__cmd_convert_to_half(keyval, state)
         elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
@@ -1628,6 +1641,19 @@ class Engine(ibus.EngineBase):
             return self.__cmd_convert_to_katakana(keyval, state)
 
     def __cmd_convert_to_char_type_backward(self, keyval, state):
+        if self.__convert_mode == CONV_MODE_ANTHY:
+            n = self.__segments[self.__cursor_pos][0]
+            if n == -2:
+                return self.__convert_segment_to_kana(-3)
+            elif n == -4:
+                return self.__convert_segment_to_kana(-2)
+            elif n == -100:
+                return self.__convert_segment_to_kana(-4)
+            elif n == -101:
+                return self.__convert_segment_to_latin(-100)
+            else:
+                return self.__convert_segment_to_latin(-101)
+
         if self.__convert_mode == CONV_MODE_KATAKANA:
             return self.__cmd_convert_to_hiragana(keyval, state)
         elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
@@ -1641,13 +1667,7 @@ class Engine(ibus.EngineBase):
             return self.__cmd_convert_to_wide_latin(keyval, state)
 
     def __convert_segment_to_kana(self, n):
-        modes = {
-            -2: CONV_MODE_KATAKANA,
-            -3: CONV_MODE_HIRAGANA,
-            -4: CONV_MODE_HALF_WIDTH_KATAKANA,
-        }
-
-        if self.__convert_mode == CONV_MODE_ANTHY and n in modes:
+        if self.__convert_mode == CONV_MODE_ANTHY and -4 <= n <= -2:
             buf = self.__context.get_segment(self.__cursor_pos, n)
             self.__segments[self.__cursor_pos] = n, unicode(buf, "utf-8")
             self.__lookup_table_visible = False
