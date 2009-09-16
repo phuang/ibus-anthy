@@ -6,6 +6,7 @@
     <property name="visible">True</property>
     <property name="title" translatable="yes">Setup - IBus-Anthy</property>
     <property name="type_hint">dialog</property>
+    <signal name="delete_event" handler="on_main_delete"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -295,7 +296,7 @@ Hold
                             <property name="row_spacing">4</property>
                             <child>
                               <widget class="GtkCheckButton" id="half_width_number">
-                                <property name="label" translatable="yes">Half Width _Number</property>
+                                <property name="label" translatable="yes">Convert _numbers with the one column width</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
@@ -349,7 +350,7 @@ Hold
                             </child>
                             <child>
                               <widget class="GtkCheckButton" id="half_width_symbol">
-                                <property name="label" translatable="yes">Half Width _Symbol</property>
+                                <property name="label" translatable="yes">Convert _symbols with the one column width</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
@@ -366,7 +367,7 @@ Hold
                             </child>
                             <child>
                               <widget class="GtkCheckButton" id="half_width_space">
-                                <property name="label" translatable="yes">_Half Width Space</property>
+                                <property name="label" translatable="yes">Con_vert spaces with the one column width</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
