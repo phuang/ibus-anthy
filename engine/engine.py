@@ -25,6 +25,10 @@ import sys
 import gobject
 import ibus
 import anthy
+from anthy import NTH_UNCONVERTED_CANDIDATE
+from anthy import NTH_KATAKANA_CANDIDATE
+from anthy import NTH_HIRAGANA_CANDIDATE
+from anthy import NTH_HALFKANA_CANDIDATE
 from tables import *
 from ibus import keysyms
 from ibus import modifier
@@ -1511,7 +1515,7 @@ class Engine(ibus.EngineBase):
             text, cursor = self.__get_preedit()
             commit_length = 0
             for i in xrange(0, commit_index + 1):
-                buf = self.__context.get_segment(i, -1)
+                buf = self.__context.get_segment(i, NTH_UNCONVERTED_CANDIDATE)
                 commit_length += len(unicode(buf, "utf-8"))
             self.__preedit_ja_string.move_cursor(commit_length - cursor)
             for i in xrange(0, commit_length):
@@ -1633,16 +1637,16 @@ class Engine(ibus.EngineBase):
     def __cmd_convert_to_char_type_forward(self, keyval, state):
         if self.__convert_mode == CONV_MODE_ANTHY:
             n = self.__segments[self.__cursor_pos][0]
-            if n == -3:
-                return self.__convert_segment_to_kana(-2)
-            elif n == -2:
-                return self.__convert_segment_to_kana(-4)
-            elif n == -4:
+            if n == NTH_HIRAGANA_CANDIDATE:
+                return self.__convert_segment_to_kana(NTH_KATAKANA_CANDIDATE)
+            elif n == NTH_KATAKANA_CANDIDATE:
+                return self.__convert_segment_to_kana(NTH_HALFKANA_CANDIDATE)
+            elif n == NTH_HALFKANA_CANDIDATE:
                 return self.__convert_segment_to_latin(-100)
             elif n == -100:
                 return self.__convert_segment_to_latin(-101)
             else:
-                return self.__convert_segment_to_kana(-3)
+                return self.__convert_segment_to_kana(NTH_HIRAGANA_CANDIDATE)
 
         if self.__convert_mode == CONV_MODE_KATAKANA:
             return self.__cmd_convert_to_half(keyval, state)
@@ -1659,12 +1663,12 @@ class Engine(ibus.EngineBase):
     def __cmd_convert_to_char_type_backward(self, keyval, state):
         if self.__convert_mode == CONV_MODE_ANTHY:
             n = self.__segments[self.__cursor_pos][0]
-            if n == -2:
-                return self.__convert_segment_to_kana(-3)
-            elif n == -4:
-                return self.__convert_segment_to_kana(-2)
+            if n == NTH_KATAKANA_CANDIDATE:
+                return self.__convert_segment_to_kana(NTH_HIRAGANA_CANDIDATE)
+            elif n == NTH_HALFKANA_CANDIDATE:
+                return self.__convert_segment_to_kana(NTH_KATAKANA_CANDIDATE)
             elif n == -100:
-                return self.__convert_segment_to_kana(-4)
+                return self.__convert_segment_to_kana(NTH_HALFKANA_CANDIDATE)
             elif n == -101:
                 return self.__convert_segment_to_latin(-100)
             else:
@@ -1697,7 +1701,7 @@ class Engine(ibus.EngineBase):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
-            return self.__convert_segment_to_kana(-3)
+            return self.__convert_segment_to_kana(NTH_HIRAGANA_CANDIDATE)
 
         return self.__on_key_conv(0)
 
@@ -1706,7 +1710,7 @@ class Engine(ibus.EngineBase):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
-            return self.__convert_segment_to_kana(-2)
+            return self.__convert_segment_to_kana(NTH_KATAKANA_CANDIDATE)
 
         return self.__on_key_conv(1)
 
@@ -1715,7 +1719,7 @@ class Engine(ibus.EngineBase):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
-            return self.__convert_segment_to_kana(-4)
+            return self.__convert_segment_to_kana(NTH_HALFKANA_CANDIDATE)
 
         return self.__on_key_conv(2)
 
@@ -1724,7 +1728,7 @@ class Engine(ibus.EngineBase):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
-            return self.__convert_segment_to_kana(-4)
+            return self.__convert_segment_to_kana(NTH_HALFKANA_CANDIDATE)
 
         return self.__on_key_conv(2)
 
@@ -1732,8 +1736,8 @@ class Engine(ibus.EngineBase):
         if self.__convert_mode == CONV_MODE_ANTHY and n in [-100, -101]:
             start = 0
             for i in range(self.__cursor_pos):
-                start += len(unicode(self.__context.get_segment(i, -1), 'utf-8'))
-            end = start + len(unicode(self.__context.get_segment(self.__cursor_pos, -1), 'utf-8'))
+                start += len(unicode(self.__context.get_segment(i, NTH_UNCONVERTED_CANDIDATE), 'utf-8'))
+            end = start + len(unicode(self.__context.get_segment(self.__cursor_pos, NTH_UNCONVERTED_CANDIDATE), 'utf-8'))
             i, s = self.__segments[self.__cursor_pos]
             s2 = self.__preedit_ja_string.get_raw(start, end)
             if n == -101:
