@@ -61,6 +61,14 @@ PKG_CHECK_MODULES(ANTHY, [
     anthy
 ])
 
+AC_CHECK_DECLS([
+NTH_UNCONVERTED_CANDIDATE,
+NTH_KATAKANA_CANDIDATE,
+NTH_HIRAGANA_CANDIDATE,
+NTH_HALFKANA_CANDIDATE],,
+    AC_MSG_ERROR([Could not find NTH_*_CANDIDATE values in anthy.h]),
+    [[#include <anthy/anthy.h>]])
+
 # check swig
 AC_PATH_PROG(SWIG, swig)
 if test x"$SWIG" == x""; then

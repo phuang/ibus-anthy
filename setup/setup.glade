@@ -182,7 +182,7 @@ Usual Mode
                             <child>
                               <widget class="GtkComboBox" id="period_style">
                                 <property name="visible">True</property>
-                                <property name="items" translatable="yes">&#x3001;&#x3002;
+                                <property name="items">&#x3001;&#x3002;
 &#xFF0C;&#xFF0E;
 </property>
                                 <signal name="changed" handler="on_cb_changed"/>
@@ -740,7 +740,7 @@ URL : http://code.google.com/p/ibus/
                 </child>
                 <child>
                   <widget class="GtkButton" id="button7">
-                    <property name="label" translatable="yes">...</property>
+                    <property name="label">...</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
