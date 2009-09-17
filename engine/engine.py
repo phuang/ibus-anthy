@@ -71,16 +71,16 @@ CONV_MODE_PREDICTION = range(14)
 CLIPBOARD_RECONVERT = range(1)
 
 KP_Table = {}
-for k, v in zip(['KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
-                 'KP_Multiply', 'KP_Separator', 'KP_Space', 'KP_Subtract'],
-                ['plus', 'period', 'slash', 'Return', 'equal',
-                 'asterisk', 'comma', 'space', 'minus']):
-    KP_Table[keysyms.__getattribute__(k)] = keysyms.__getattribute__(v)
 for s in dir(keysyms):
     if s.startswith('KP_'):
         v = keysyms.name_to_keycode(s[3:])
         if v:
             KP_Table[keysyms.name_to_keycode(s)] = v
+for k, v in zip(['KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
+                 'KP_Multiply', 'KP_Separator', 'KP_Space', 'KP_Subtract'],
+                ['plus', 'period', 'slash', 'Return', 'equal',
+                 'asterisk', 'comma', 'space', 'minus']):
+    KP_Table[keysyms.__getattribute__(k)] = keysyms.__getattribute__(v)
 
 class Engine(ibus.EngineBase):
     __typing_mode = jastring.TYPING_MODE_ROMAJI

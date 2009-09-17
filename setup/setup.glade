@@ -153,7 +153,7 @@ Thumb shift</property>
                               <widget class="GtkLabel" id="label26">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Ten _Key Type:</property>
+                                <property name="label" translatable="yes">Numpad _Key Type:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">ten_key_mode</property>
                               </widget>
@@ -167,8 +167,8 @@ Thumb shift</property>
                             <child>
                               <widget class="GtkComboBox" id="ten_key_mode">
                                 <property name="visible">True</property>
-                                <property name="items" translatable="yes">Ten Key Mode
-Usual Mode
+                                <property name="items" translatable="yes">Keep Numpad Codes
+Convert Characters
 </property>
                                 <signal name="changed" handler="on_cb_changed"/>
                               </widget>
@@ -374,7 +374,7 @@ Hold
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_ck_toggled"/>
-                                <accelerator key="h" signal="activate" modifiers="GDK_MOD1_MASK"/>
+                                <accelerator key="v" signal="activate" modifiers="GDK_MOD1_MASK"/>
                               </widget>
                               <packing>
                                 <property name="top_attach">3</property>
@@ -408,7 +408,7 @@ Hold
             <child>
               <widget class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Co_mmon</property>
+                <property name="label" translatable="yes">_General</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">vbox1</property>
               </widget>
@@ -1023,6 +1023,8 @@ URL : http://code.google.com/p/ibus/
     <property name="buttons">cancel</property>
     <property name="text">Please press a key (or a key combination)</property>
     <property name="secondary_text">The dialog willbe closed when the key is released</property>
+    <signal name="key_press_event" handler="on_key_input_dialog_key_press_event"/>
+    <signal name="key_release_event" handler="on_key_input_dialog_key_release_event"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox8">
         <property name="visible">True</property>
