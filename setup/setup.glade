@@ -6,6 +6,7 @@
     <property name="visible">True</property>
     <property name="title" translatable="yes">Setup - IBus-Anthy</property>
     <property name="type_hint">dialog</property>
+    <signal name="delete_event" handler="on_main_delete"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -152,7 +153,7 @@ Thumb shift</property>
                               <widget class="GtkLabel" id="label26">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Ten _Key Type:</property>
+                                <property name="label" translatable="yes">Numpad _Key Type:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">ten_key_mode</property>
                               </widget>
@@ -166,8 +167,8 @@ Thumb shift</property>
                             <child>
                               <widget class="GtkComboBox" id="ten_key_mode">
                                 <property name="visible">True</property>
-                                <property name="items" translatable="yes">Ten Key Mode
-Usual Mode
+                                <property name="items" translatable="yes">Keep Numpad Codes
+Convert Characters
 </property>
                                 <signal name="changed" handler="on_cb_changed"/>
                               </widget>
@@ -295,7 +296,7 @@ Hold
                             <property name="row_spacing">4</property>
                             <child>
                               <widget class="GtkCheckButton" id="half_width_number">
-                                <property name="label" translatable="yes">Half Width _Number</property>
+                                <property name="label" translatable="yes">Convert _numbers with the one column width</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
@@ -349,7 +350,7 @@ Hold
                             </child>
                             <child>
                               <widget class="GtkCheckButton" id="half_width_symbol">
-                                <property name="label" translatable="yes">Half Width _Symbol</property>
+                                <property name="label" translatable="yes">Convert _symbols with the one column width</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
@@ -366,14 +367,14 @@ Hold
                             </child>
                             <child>
                               <widget class="GtkCheckButton" id="half_width_space">
-                                <property name="label" translatable="yes">_Half Width Space</property>
+                                <property name="label" translatable="yes">Con_vert spaces with the one column width</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_ck_toggled"/>
-                                <accelerator key="h" signal="activate" modifiers="GDK_MOD1_MASK"/>
+                                <accelerator key="v" signal="activate" modifiers="GDK_MOD1_MASK"/>
                               </widget>
                               <packing>
                                 <property name="top_attach">3</property>
@@ -407,7 +408,7 @@ Hold
             <child>
               <widget class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Co_mmon</property>
+                <property name="label" translatable="yes">_General</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">vbox1</property>
               </widget>
@@ -1022,6 +1023,8 @@ URL : http://code.google.com/p/ibus/
     <property name="buttons">cancel</property>
     <property name="text">Please press a key (or a key combination)</property>
     <property name="secondary_text">The dialog willbe closed when the key is released</property>
+    <signal name="key_press_event" handler="on_key_input_dialog_key_press_event"/>
+    <signal name="key_release_event" handler="on_key_input_dialog_key_release_event"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox8">
         <property name="visible">True</property>

@@ -148,32 +148,24 @@ msgid "_Period Style:"
 msgstr "句読点スタイル(_P):"
 
 #: setup/setup.glade:155
-msgid "Ten _Key Type:"
+msgid "Numpad _Key Type:"
 msgstr "テンキータイプ(_K):"
 
 #: setup/setup.glade:169
 msgid ""
-"Ten Key Mode\n"
-"Usual Mode\n"
+"Keep Numpad Codes\n"
+"Convert Characters\n"
 msgstr ""
 "テンキーコードのまま\n"
-"非テンキーコードに変換\n"
-
-#: setup/setup.glade:185
-msgid ""
-"、。\n"
-"，．\n"
-msgstr ""
-"、。\n"
-"，．\n"
+"文字を変換\n"
 
 #: setup/setup.glade:200
 msgid "_Behavior on Period:"
-msgstr "句読点入力時のふるまい(_B):"
+msgstr "句読点入力時の動作(_B):"
 
 #: setup/setup.glade:215
 msgid "Behaivior on _Focus Out:"
-msgstr "フォーカスアウト時のふるまい(_F):"
+msgstr "フォーカスアウト時の動作(_F):"
 
 #: setup/setup.glade:229
 msgid ""
@@ -195,31 +187,31 @@ msgstr ""
 
 #: setup/setup.glade:265
 msgid "<b>Behaivior</b>"
-msgstr "<b>ふるまい</b>"
+msgstr "<b>動作</b>"
 
 #: setup/setup.glade:298
-msgid "Half Width _Number"
-msgstr "常に数字を半角にする(_N)"
+msgid "Convert _numbers with the one column width"
+msgstr "数字を半角で変換する(_N)"
 
 #: setup/setup.glade:321
 msgid "Candidate _Window Page Size:"
 msgstr "候補ウインドウの項目数(_W):"
 
 #: setup/setup.glade:352
-msgid "Half Width _Symbol"
-msgstr "常に記号を半角にする(_S)"
+msgid "Convert _symbols with the one column width"
+msgstr "記号を半角で変換する(_S)"
 
 #: setup/setup.glade:369
-msgid "_Half Width Space"
-msgstr "常に空白を半角にする(_N)"
+msgid "Con_vert spaces with the one column width"
+msgstr "空白を半角で変換する(_V)"
 
 #: setup/setup.glade:391
 msgid "<b>Other</b>"
 msgstr "<b>その他</b>"
 
 #: setup/setup.glade:410
-msgid "Co_mmon"
-msgstr "全般(_M)"
+msgid "_General"
+msgstr "全般(_G)"
 
 #: setup/setup.glade:431
 msgid "_Shortcut Type:"
@@ -241,7 +233,7 @@ msgstr "デフォルト(_F)"
 
 #: setup/setup.glade:570
 msgid "Key bin_ding"
-msgstr "キー割当(_D)"
+msgstr "キー割り当て(_D)"
 
 #: setup/setup.glade:583
 msgid ""
@@ -261,7 +253,7 @@ msgstr ""
 
 #: setup/setup.glade:601
 msgid "Abo_ut"
-msgstr "このプログラムについて(_U)"
+msgstr "情報(_U)"
 
 #: setup/setup.glade:685
 msgid "Edit Shortcut"
@@ -270,10 +262,6 @@ msgstr "ショートカットの編集"
 #: setup/setup.glade:723
 msgid "Key Code:"
 msgstr "キーコード:"
-
-#: setup/setup.glade:743
-msgid "..."
-msgstr "..."
 
 #: setup/setup.glade:770
 msgid "Modifier:"
@@ -290,3 +278,13 @@ msgstr "Co_ntrol"
 #: setup/setup.glade:809
 msgid "_Shift"
 msgstr "_Shift"
+
+#~ msgid ""
+#~ "、。\n"
+#~ "，．\n"
+#~ msgstr ""
+#~ "、。\n"
+#~ "，．\n"
+
+#~ msgid "..."
+#~ msgstr "..."
