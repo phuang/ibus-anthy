@@ -19,7 +19,6 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 engine_anthy_PYTHON = \
-	compose.py \
 	engine.py \
 	factory.py \
 	jastring.py \

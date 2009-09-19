@@ -34,7 +34,6 @@ from ibus import keysyms
 from ibus import modifier
 import jastring
 from segment import unichar_half_to_full
-import compose
 
 try:
     from gtk import clipboard_get
@@ -131,7 +130,6 @@ class Engine(ibus.EngineBase):
         self._MM = 0
         self._SS = 0
         self._H = 0
-        self._compose_keys = []
 
     def __init_props(self):
         anthy_props = ibus.PropList()
@@ -1161,22 +1159,8 @@ class Engine(ibus.EngineBase):
         if state & (modifier.CONTROL_MASK | modifier.MOD1_MASK):
             return False
 
-        try:
-            if keyval not in [keysyms.Shift_L, keysyms.Shift_R,
-                              keysyms.Alt_L, keysyms.Alt_R]:
-                keyval = compose.get(self._compose_keys + [keyval])
-                self._compose_keys = []
-        except IndexError:
-            self._compose_keys.append(keyval)
-            return True
-        except:
-            if self._compose_keys:
-                self._compose_keys = []
-                return True
-
         if (keysyms.exclam <= keyval <= keysyms.asciitilde or
-#            keyval == keysyms.yen):
-            0x00a1 <= keyval <= 0x024f):
+            keyval == keysyms.yen):
             if self.__typing_mode == jastring.TYPING_MODE_KANA:
                 if keyval == keysyms._0 and state == modifier.SHIFT_MASK:
                     keyval = keysyms.asciitilde
