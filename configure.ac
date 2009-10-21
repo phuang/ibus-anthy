@@ -48,6 +48,7 @@ AC_PROG_CXX
 AC_ISC_POSIX
 AC_HEADER_STDC
 AM_PROG_LIBTOOL
+IT_PROG_INTLTOOL([0.35.0])
 
 # For dislpay Date
 m4_define(ibus_maybe_datedisplay,

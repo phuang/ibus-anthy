@@ -213,7 +213,7 @@ Convert Characters
                               <widget class="GtkLabel" id="label23">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Behaivior on _Focus Out:</property>
+                                <property name="label" translatable="yes">Behavior on _Focus Out:</property>
                                 <property name="use_underline">True</property>
                                 <property name="mnemonic_widget">behivior_on_focus_out</property>
                               </widget>
@@ -263,7 +263,7 @@ Hold
                     <child>
                       <widget class="GtkLabel" id="label17">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Behaivior&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Behavior&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>
