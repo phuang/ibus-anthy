@@ -952,10 +952,10 @@ class Engine(ibus.EngineBase):
     @classmethod
     def CONFIG_VALUE_CHANGED(cls, bus, section, name, value):
         print 'VALUE_CHAMGED =', section, name, value
-        section = section[len(cls.__prefs._prefix) + 1:]
-        if section == cls._get_shortcut_type():
+        base_sec = section[len(cls.__prefs._prefix) + 1:]
+        sec = cls._get_shortcut_type()
+        if base_sec == sec:
             cmd = '_Engine__cmd_' + name
-            sec = cls._get_shortcut_type()
             old = cls.__prefs.get_value(sec, name)
             value = value if value != [''] else []
             for s in set(old).difference(value):
@@ -968,12 +968,17 @@ class Engine(ibus.EngineBase):
                     lambda a, b: cmp(keys.index(a[13:]), keys.index(b[13:])))
 
             cls.__prefs.set_value(sec, name, value)
-        elif section == 'common':
-            cls.__prefs.set_value(section, name, value)
+        elif base_sec == 'common':
+            cls.__prefs.set_value(base_sec, name, value)
             if name == 'shortcut_type':
                 cls.__keybind = cls._mk_keybind()
+        elif section == 'panel':
+            # This value is used for ibus.config.set_value only.
+            pass
+        elif base_sec:
+            cls.__prefs.set_value(base_sec, name, value)
         else:
-            cls.__prefs.set_value(sec, name, value)
+            cls.__prefs.set_value(section, name, value)
 
     @classmethod
     def _mk_keybind(cls):
