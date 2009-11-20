@@ -150,7 +150,7 @@ class AnthySetup(object):
     def _get_shortcut_sec(self):
         l = ['default', 'atok', 'wnn']
         s_type = self.xml.get_widget('shortcut_type').get_active_text().lower()
-        return 'shortcut/' + s_type if s_type in l else 'default'
+        return 'shortcut/' + (s_type if s_type in l else 'default')
 
     def on_shortcut_type_changed(self, widget):
         ls = self.xml.get_widget('shortcut').get_model()
