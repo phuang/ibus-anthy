@@ -138,25 +138,25 @@ class Engine(ibus.EngineBase):
         input_mode_prop = ibus.Property(key=u"InputMode",
                                         type=ibus.PROP_TYPE_MENU,
                                         label=u"あ",
-                                        tooltip=_(u"Switch input mode"))
+                                        tooltip=_("Switch input mode"))
         self.__prop_dict[u"InputMode"] = input_mode_prop
 
         props = ibus.PropList()
         props.append(ibus.Property(key=u"InputMode.Hiragana",
                                    type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Hiragana")))
+                                   label=_("Hiragana")))
         props.append(ibus.Property(key=u"InputMode.Katakana",
                                    type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Katakana")))
+                                   label=_("Katakana")))
         props.append(ibus.Property(key=u"InputMode.HalfWidthKatakana",
                                    type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Half width katakana")))
+                                   label=_("Half width katakana")))
         props.append(ibus.Property(key=u"InputMode.Latin",
                                    type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Latin")))
+                                   label=_("Latin")))
         props.append(ibus.Property(key=u"InputMode.WideLatin",
                                    type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Wide Latin")))
+                                   label=_("Wide Latin")))
 
         props[self.__input_mode].set_state(ibus.PROP_STATE_CHECKED)
 
@@ -170,19 +170,19 @@ class Engine(ibus.EngineBase):
         typing_mode_prop = ibus.Property(key=u"TypingMode",
                                          type=ibus.PROP_TYPE_MENU,
                                          label=u"R",
-                                         tooltip=_(u"Switch typing mode"))
+                                         tooltip=_("Switch typing mode"))
         self.__prop_dict[u"TypingMode"] = typing_mode_prop
 
         props = ibus.PropList()
         props.append(ibus.Property(key=u"TypingMode.Romaji",
                                    type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Romaji")))
+                                   label=_("Romaji")))
         props.append(ibus.Property(key=u"TypingMode.Kana",
                                    type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Kana")))
+                                   label=_("Kana")))
         props.append(ibus.Property(key=u"TypingMode.ThumbShift",
                                    type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Thumb shift")))
+                                   label=_("Thumb shift")))
         props[Engine.__typing_mode].set_state(ibus.PROP_STATE_CHECKED)
 
         for prop in props:
@@ -192,7 +192,7 @@ class Engine(ibus.EngineBase):
         anthy_props.append(typing_mode_prop)
 
         anthy_props.append(ibus.Property(key=u"setup",
-                                         tooltip=_(u"Configure Anthy")))
+                                         tooltip=_("Configure Anthy")))
 
         return anthy_props
 
@@ -952,10 +952,10 @@ class Engine(ibus.EngineBase):
     @classmethod
     def CONFIG_VALUE_CHANGED(cls, bus, section, name, value):
         print 'VALUE_CHAMGED =', section, name, value
-        section = section[len(cls.__prefs._prefix) + 1:]
-        if section == cls._get_shortcut_type():
+        base_sec = section[len(cls.__prefs._prefix) + 1:]
+        sec = cls._get_shortcut_type()
+        if base_sec == sec:
             cmd = '_Engine__cmd_' + name
-            sec = cls._get_shortcut_type()
             old = cls.__prefs.get_value(sec, name)
             value = value if value != [''] else []
             for s in set(old).difference(value):
@@ -968,12 +968,17 @@ class Engine(ibus.EngineBase):
                     lambda a, b: cmp(keys.index(a[13:]), keys.index(b[13:])))
 
             cls.__prefs.set_value(sec, name, value)
-        elif section == 'common':
-            cls.__prefs.set_value(section, name, value)
+        elif base_sec == 'common':
+            cls.__prefs.set_value(base_sec, name, value)
             if name == 'shortcut_type':
                 cls.__keybind = cls._mk_keybind()
+        elif section == 'panel':
+            # This value is used for ibus.config.set_value only.
+            pass
+        elif base_sec:
+            cls.__prefs.set_value(base_sec, name, value)
         else:
-            cls.__prefs.set_value(sec, name, value)
+            cls.__prefs.set_value(section, name, value)
 
     @classmethod
     def _mk_keybind(cls):
