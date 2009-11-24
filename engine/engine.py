@@ -952,6 +952,11 @@ class Engine(ibus.EngineBase):
     @classmethod
     def CONFIG_VALUE_CHANGED(cls, bus, section, name, value):
         print 'VALUE_CHAMGED =', section, name, value
+
+        if not section.startswith("engine/anthy"):
+            # This value is used for ibus.config.set_value only.
+            return
+
         base_sec = section[len(cls.__prefs._prefix) + 1:]
         sec = cls._get_shortcut_type()
         if base_sec == sec:
@@ -972,9 +977,6 @@ class Engine(ibus.EngineBase):
             cls.__prefs.set_value(base_sec, name, value)
             if name == 'shortcut_type':
                 cls.__keybind = cls._mk_keybind()
-        elif section == 'panel':
-            # This value is used for ibus.config.set_value only.
-            pass
         elif base_sec:
             cls.__prefs.set_value(base_sec, name, value)
         else:
