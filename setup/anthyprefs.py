@@ -102,6 +102,7 @@ _config = {
         'typing_method': 0,
 
         'period_style': 0,
+        'symbol_style': 1,
         'ten_key_mode': 1,
         'behivior_on_focus_out': 0,
         'behivior_on_period': 0,

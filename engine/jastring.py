@@ -25,16 +25,22 @@ import thumb
 
 from segment import unichar_half_to_full
 
-SymbolTable = {}
+HalfSymbolTable = {}
 for i in range(32, 127):
     if not chr(i).isalnum():
-        SymbolTable[unichar_half_to_full(chr(i))] = chr(i)
+        HalfSymbolTable[unichar_half_to_full(chr(i))] = chr(i)
 
-NumberTable = {}
+HalfNumberTable = {}
 for i in range(10):
-    NumberTable[unichar_half_to_full(str(i))] = str(i)
+    HalfNumberTable[unichar_half_to_full(str(i))] = str(i)
 
 PeriodTable = {u'。': u'．', u'、': u'，', u'｡': u'.', u'､': u','}
+
+SymbolTable = {}
+SymbolTable[0] = {u'「': u'「', u'」': u'」', u'／': u'／'}
+SymbolTable[1] = {u'「': u'「', u'」': u'」', u'／': u'・'}
+SymbolTable[2] = {u'「': u'［', u'」': u'］', u'／': u'／'}
+SymbolTable[3] = {u'「': u'［', u'」': u'］', u'／': u'・'}
 
 TYPING_MODE_ROMAJI, \
 TYPING_MODE_KANA, \
@@ -113,13 +119,15 @@ class JaString:
 
     def _chk_text(self, s):
         period = self._prefs.get_value('common', 'period_style')
-        symbol = self._prefs.get_value('common', 'half_width_symbol')
-        number = self._prefs.get_value('common', 'half_width_number')
+        symbol = self._prefs.get_value('common', 'symbol_style')
+        half_symbol = self._prefs.get_value('common', 'half_width_symbol')
+        half_number = self._prefs.get_value('common', 'half_width_number')
         ret = ''
         for c in s:
             c = c if not period else PeriodTable.get(c, c)
-            c = c if not symbol else SymbolTable.get(c, c)
-            c = c if not number else NumberTable.get(c, c)
+            c = c if not symbol else SymbolTable[symbol].get(c, c)
+            c = c if not half_symbol else HalfSymbolTable.get(c, c)
+            c = c if not half_number else HalfNumberTable.get(c, c)
             ret += c
         return ret
 

@@ -132,7 +132,7 @@ Thumb shift</property>
                         <child>
                           <widget class="GtkTable" id="table2">
                             <property name="visible">True</property>
-                            <property name="n_rows">4</property>
+                            <property name="n_rows">5</property>
                             <property name="n_columns">2</property>
                             <property name="column_spacing">8</property>
                             <property name="row_spacing">4</property>
@@ -150,12 +150,12 @@ Thumb shift</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label26">
+                              <widget class="GtkLabel" id="label13">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Numpad _Key Type:</property>
+                                <property name="label" translatable="yes">_Symbol Style:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">ten_key_mode</property>
+                                <property name="mnemonic_widget">symbol_style</property>
                               </widget>
                               <packing>
                                 <property name="top_attach">1</property>
@@ -165,10 +165,43 @@ Thumb shift</property>
                               </packing>
                             </child>
                             <child>
+                              <widget class="GtkLabel" id="label26">
+                                <property name="visible">True</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">Numpad _Key Type:</property>
+                                <property name="use_underline">True</property>
+                                <property name="mnemonic_widget">ten_key_mode</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="x_options">GTK_FILL</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
                               <widget class="GtkComboBox" id="ten_key_mode">
                                 <property name="visible">True</property>
                                 <property name="items" translatable="yes">Keep Numpad Codes
 Convert Characters
+</property>
+                                <signal name="changed" handler="on_cb_changed"/>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkComboBox" id="symbol_style">
+                                <property name="visible">True</property>
+                                <property name="items">&#x300C;&#x300D;&#xFF0F;
+&#x300C;&#x300D;&#x30FB;
+&#xFF3B;&#xFF3D;&#xFF0F;
+&#xFF3B;&#xFF3D;&#x30FB;
 </property>
                                 <signal name="changed" handler="on_cb_changed"/>
                               </widget>
@@ -203,8 +236,8 @@ Convert Characters
                                 <property name="mnemonic_widget">behivior_on_period</property>
                               </widget>
                               <packing>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
                                 <property name="x_options">GTK_FILL</property>
                                 <property name="y_options"></property>
                               </packing>
@@ -218,8 +251,8 @@ Convert Characters
                                 <property name="mnemonic_widget">behivior_on_focus_out</property>
                               </widget>
                               <packing>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
+                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">5</property>
                                 <property name="x_options">GTK_FILL</property>
                                 <property name="y_options"></property>
                               </packing>
@@ -234,8 +267,8 @@ Auto Convert</property>
                               <packing>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
@@ -251,8 +284,8 @@ Hold
                               <packing>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
+                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">5</property>
                                 <property name="y_options"></property>
                               </packing>
                             </child>
