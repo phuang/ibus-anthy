@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-10-21 15:34+0900\n"
+"POT-Creation-Date: 2009-11-24 16:06+0900\n"
 "PO-Revision-Date: 2009-10-13 11:31+0200\n"
 "Last-Translator: Humbert Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-francophone@kde.org>\n"
@@ -254,29 +254,34 @@ msgid "Setup - IBus-Anthy"
 msgstr "Configuration – IBus-Anthy"
 
 #: ../setup/setup.glade.h:47
+#, fuzzy
+msgid "Sy_mbol Style:"
+msgstr "Style de _Ponctuation :"
+
+#: ../setup/setup.glade.h:48
 msgid "_Behavior on Period:"
 msgstr "_Comportement lors de la ponctuation :"
 
-#: ../setup/setup.glade.h:48
+#: ../setup/setup.glade.h:49
 msgid "_General"
 msgstr "_Général"
 
-#: ../setup/setup.glade.h:49
+#: ../setup/setup.glade.h:50
 msgid "_Input Mode:"
 msgstr "Méthode d'E_ntrée :"
 
-#: ../setup/setup.glade.h:50
+#: ../setup/setup.glade.h:51
 msgid "_Period Style:"
 msgstr "Style de _Ponctuation :"
 
-#: ../setup/setup.glade.h:51
+#: ../setup/setup.glade.h:52
 msgid "_Shift"
 msgstr "_Majuscule"
 
-#: ../setup/setup.glade.h:52
+#: ../setup/setup.glade.h:53
 msgid "_Shortcut Type:"
 msgstr "Type de _Raccourcis :"
 
-#: ../setup/setup.glade.h:53
+#: ../setup/setup.glade.h:54
 msgid "_Typing Method:"
 msgstr "Méthode d'É_criture"
