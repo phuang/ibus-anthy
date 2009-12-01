@@ -1640,7 +1640,7 @@ class Engine(ibus.EngineBase):
                 return self.__convert_segment_to_kana(NTH_HIRAGANA_CANDIDATE)
 
         if self.__convert_mode == CONV_MODE_KATAKANA:
-            return self.__cmd_convert_to_half(keyval, state)
+            return self.__cmd_convert_to_half_katakana(keyval, state)
         elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
             return self.__cmd_convert_to_latin(keyval, state)
         elif CONV_MODE_LATIN_0 <= self.__convert_mode <= CONV_MODE_LATIN_3:
@@ -1670,7 +1670,7 @@ class Engine(ibus.EngineBase):
         elif self.__convert_mode == CONV_MODE_HALF_WIDTH_KATAKANA:
             return self.__cmd_convert_to_katakana(keyval, state)
         elif CONV_MODE_LATIN_0 <= self.__convert_mode <= CONV_MODE_LATIN_3:
-            return self.__cmd_convert_to_half(keyval, state)
+            return self.__cmd_convert_to_half_katakana(keyval, state)
         elif (CONV_MODE_WIDE_LATIN_0 <= self.__convert_mode
                                      <= CONV_MODE_WIDE_LATIN_3):
             return self.__cmd_convert_to_latin(keyval, state)
@@ -1710,8 +1710,17 @@ class Engine(ibus.EngineBase):
             return False
 
         if self.__convert_mode == CONV_MODE_ANTHY:
+            i, s = self.__segments[self.__cursor_pos]
+            if i == -101:
+                return self.__convert_segment_to_latin(-100)
+            elif i == -100:
+                return self.__convert_segment_to_latin(-100)
             return self.__convert_segment_to_kana(NTH_HALFKANA_CANDIDATE)
 
+        elif CONV_MODE_WIDE_LATIN_0 <= self.__convert_mode <= CONV_MODE_WIDE_LATIN_3:
+            return self.__on_key_conv(4)
+        elif CONV_MODE_LATIN_0 <= self.__convert_mode <= CONV_MODE_LATIN_3:
+            return self.__on_key_conv(4)
         return self.__on_key_conv(2)
 
     def __cmd_convert_to_half_katakana(self, keyval, state):
