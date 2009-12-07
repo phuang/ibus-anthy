@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: ibus-anthy VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
 "POT-Creation-Date: 2009-11-24 16:06+0900\n"
-"PO-Revision-Date: 2009-10-13 11:31+0200\n"
-"Last-Translator: Humbert Julien <julroy67@gmail.com>\n"
-"Language-Team: French <kde-francophone@kde.org>\n"
+"PO-Revision-Date: 2009-12-04 18:54+0100\n"
+"Last-Translator: Julien <julroy67@gmail.com>\n"
+"Language-Team: French <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -32,7 +32,7 @@ msgstr "Katakana"
 
 #: ../engine/engine.py:153
 msgid "Half width katakana"
-msgstr ""
+msgstr "Half width katakana"
 
 #: ../engine/engine.py:156
 msgid "Latin"
@@ -44,7 +44,7 @@ msgstr "Latin large"
 
 #: ../engine/engine.py:173
 msgid "Switch typing mode"
-msgstr "Changer méthode d'écriture"
+msgstr "Changer de méthode d'écriture"
 
 #: ../engine/engine.py:179
 msgid "Romaji"
@@ -94,7 +94,7 @@ msgstr ""
 
 #: ../setup/main.py:197
 msgid "Please press a key (or a key combination)"
-msgstr "Veuillez presser une touche (ou une combinaison de touches)"
+msgstr "Veuillez appuyer sur une touche (ou une combinaison de touches)"
 
 #: ../setup/main.py:198
 msgid "The dialog willbe closed when the key is released"
@@ -150,7 +150,7 @@ msgstr "Comportement à la perte du _Focus :"
 
 #: ../setup/setup.glade.h:14
 msgid "Candidate _Window Page Size:"
-msgstr ""
+msgstr "_Taille de la fenêtre de la liste des candidats :"
 
 #: ../setup/setup.glade.h:15
 msgid ""
@@ -168,19 +168,19 @@ msgstr "Co_ntrol"
 
 #: ../setup/setup.glade.h:20
 msgid "Con_vert spaces with the one column width"
-msgstr ""
+msgstr "Con_vertir les espaces en espaces d'une seule colonne de largeur"
 
 #: ../setup/setup.glade.h:21
 msgid "Convert _numbers with the one column width"
-msgstr ""
+msgstr "Convertir les _nombres en nombres d'une seule colonne de largeur"
 
 #: ../setup/setup.glade.h:22
 msgid "Convert _symbols with the one column width"
-msgstr ""
+msgstr "Convertir les _symboles en symboles d'une seule colonne de largeur"
 
 #: ../setup/setup.glade.h:23
 msgid "De_fault"
-msgstr ""
+msgstr "Res_taurer"
 
 #: ../setup/setup.glade.h:24
 msgid ""
@@ -188,6 +188,9 @@ msgid ""
 "ATOK\n"
 "Wnn\n"
 msgstr ""
+"Par Défaut\n"
+"ATOK\n"
+"Wnn\n"
 
 #: ../setup/setup.glade.h:28
 msgid ""
@@ -199,7 +202,7 @@ msgstr ""
 
 #: ../setup/setup.glade.h:30
 msgid "Edit Shortcut"
-msgstr "Éditer le Raccourci"
+msgstr "Éditer le raccourci"
 
 #: ../setup/setup.glade.h:31
 msgid ""
@@ -213,7 +216,7 @@ msgstr ""
 "Katakana\n"
 "Half Width Katakana\n"
 "Latin\n"
-"Wide Latin"
+"Latin large"
 
 #: ../setup/setup.glade.h:36
 msgid ""
@@ -225,11 +228,11 @@ msgstr ""
 
 #: ../setup/setup.glade.h:39
 msgid "Key Code:"
-msgstr "Code touche :"
+msgstr "Touche :"
 
 #: ../setup/setup.glade.h:40
 msgid "Key bin_ding"
-msgstr ""
+msgstr "Ra_ccourcis claviers"
 
 #: ../setup/setup.glade.h:41
 msgid "Modifier:"
@@ -237,7 +240,7 @@ msgstr "Modificateur :"
 
 #: ../setup/setup.glade.h:42
 msgid "Numpad _Key Type:"
-msgstr "_Type de Touches du Pavé Numérique :"
+msgstr "_Touches du Pavé Numérique :"
 
 #: ../setup/setup.glade.h:43
 msgid ""
@@ -254,9 +257,8 @@ msgid "Setup - IBus-Anthy"
 msgstr "Configuration – IBus-Anthy"
 
 #: ../setup/setup.glade.h:47
-#, fuzzy
 msgid "Sy_mbol Style:"
-msgstr "Style de _Ponctuation :"
+msgstr "Style de symboles :"
 
 #: ../setup/setup.glade.h:48
 msgid "_Behavior on Period:"
@@ -280,7 +282,7 @@ msgstr "_Majuscule"
 
 #: ../setup/setup.glade.h:53
 msgid "_Shortcut Type:"
-msgstr "Type de _Raccourcis :"
+msgstr "_Raccourcis claivers :"
 
 #: ../setup/setup.glade.h:54
 msgid "_Typing Method:"
