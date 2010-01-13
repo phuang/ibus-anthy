@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-11-24 16:06+0900\n"
+"POT-Creation-Date: 2010-01-13 12:58+0900\n"
 "PO-Revision-Date: 2009-12-04 18:54+0100\n"
 "Last-Translator: Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -18,49 +18,74 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../engine/engine.py:141
+#: ../engine/engine.py:148
 msgid "Switch input mode"
 msgstr "Changer de méthode d'entrée"
 
-#: ../engine/engine.py:147
+#: ../engine/engine.py:154
 msgid "Hiragana"
 msgstr "Hiragana"
 
-#: ../engine/engine.py:150
+#: ../engine/engine.py:157
 msgid "Katakana"
 msgstr "Katakana"
 
-#: ../engine/engine.py:153
+#: ../engine/engine.py:160
 msgid "Half width katakana"
 msgstr "Half width katakana"
 
-#: ../engine/engine.py:156
+#: ../engine/engine.py:163
 msgid "Latin"
 msgstr "Latin"
 
-#: ../engine/engine.py:159
+#: ../engine/engine.py:166
 msgid "Wide Latin"
 msgstr "Latin large"
 
-#: ../engine/engine.py:173
+#: ../engine/engine.py:180
 msgid "Switch typing mode"
 msgstr "Changer de méthode d'écriture"
 
-#: ../engine/engine.py:179
+#: ../engine/engine.py:186
 msgid "Romaji"
 msgstr "Romaji"
 
-#: ../engine/engine.py:182
+#: ../engine/engine.py:189
 msgid "Kana"
 msgstr "Kana"
 
-#: ../engine/engine.py:185
+#: ../engine/engine.py:192
 msgid "Thumb shift"
 msgstr "Thumb shift"
 
-#: ../engine/engine.py:195
+#: ../engine/engine.py:203
 msgid "Configure Anthy"
 msgstr "Configurer Anthy"
+
+#. Translators: "Dic" means 'dictionary', One kanji may be good.
+#: ../engine/engine.py:217
+msgid "Dic"
+msgstr ""
+
+#: ../engine/engine.py:224
+msgid "Configure dictionaries"
+msgstr ""
+
+#: ../engine/engine.py:229
+msgid "Edit dictionaries"
+msgstr ""
+
+#: ../engine/engine.py:231
+msgid "Launch the dictionary tool"
+msgstr ""
+
+#: ../engine/engine.py:234
+msgid "Add words"
+msgstr ""
+
+#: ../engine/engine.py:236
+msgid "Add words in the dictionary"
+msgstr ""
 
 #: ../engine/factory.py:34
 msgid "Anthy"
