@@ -46,6 +46,7 @@ from anthyprefs import AnthyPrefs
 from gettext import dgettext
 _  = lambda a : dgettext("ibus-anthy", a)
 N_ = lambda a : a
+UN = lambda a : unicode(a)
 
 INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA, \
@@ -69,6 +70,12 @@ CONV_MODE_WIDE_LATIN_3, \
 CONV_MODE_PREDICTION = range(14)
 
 CLIPBOARD_RECONVERT = range(1)
+
+''' FIXME: currently configuration values are extracted by enviroment values.
+    It's better to load config.py(.in) in engine and setup instead and
+    I will move KASUMI_IMG_PATH.
+'''
+KASUMI_IMG_PATH = "/usr/share/pixmaps/kasumi.png"
 
 KP_Table = {}
 for s in dir(keysyms):
@@ -191,10 +198,45 @@ class Engine(ibus.EngineBase):
         typing_mode_prop.set_sub_props(props)
         anthy_props.append(typing_mode_prop)
 
+        self.__set_dict_props(anthy_props)
         anthy_props.append(ibus.Property(key=u"setup",
-                                         tooltip=_("Configure Anthy")))
+                                         tooltip=UN(_("Configure Anthy"))))
 
         return anthy_props
+
+    def __set_dict_props(self, anthy_props):
+        path = self.__prefs.get_value('common', 'dict_admin_command')
+        if not os.path.exists(path[0]):
+            return
+
+        if os.path.exists(KASUMI_IMG_PATH):
+            label = u""
+            icon = unicode(KASUMI_IMG_PATH)
+        else:
+            # Translators: "Dic" means 'dictionary', One kanji may be good.
+            label = UN(_("Dic"))
+            icon = u""
+
+        dict_prop = ibus.Property(key=u"setup-dict-kasumi",
+                                  type=ibus.PROP_TYPE_MENU,
+                                  label=label,
+                                  icon=icon,
+                                  tooltip=UN(_("Configure dictionaries")))
+
+        props = ibus.PropList()
+        props.append(ibus.Property(key=u"setup-dict-kasumi-admin",
+                                   type=ibus.PROP_TYPE_NORMAL,
+                                   label=UN(_("Edit dictionaries")),
+                                   icon=icon,
+                                   tooltip=UN(_("Launch the dictionary tool"))))
+        props.append(ibus.Property(key=u"setup-dict-kasumi-word",
+                                   type=ibus.PROP_TYPE_NORMAL,
+                                   label=UN(_("Add words")),
+                                   icon=icon,
+                                   tooltip=UN(_("Add words in the dictionary"))))
+
+        dict_prop.set_sub_props(props)
+        anthy_props.append(dict_prop)
 
     def __get_clipboard(self, clipboard, text, data):
         clipboard_text = clipboard.wait_for_text ()
@@ -390,6 +432,10 @@ class Engine(ibus.EngineBase):
         else:
             if prop_name == 'setup':
                 self.__start_setup()
+            elif prop_name == 'setup-dict-kasumi-admin':
+                self.__start_dict_admin()
+            elif prop_name == 'setup-dict-kasumi-word':
+                self.__start_add_word()
             else:
                 self.__prop_dict[prop_name].set_state(state)
 
@@ -1779,16 +1825,14 @@ class Engine(ibus.EngineBase):
         if not self._chk_mode('0'):
             return False
 
-        path = self.__prefs.get_value('common', 'dict_admin_command')
-        os.spawnl(os.P_NOWAIT, *path)
+        self.__start_dict_admin()
         return True
 
     def __cmd_add_word(self, keyval, state):
         if not self._chk_mode('0'):
             return False
 
-        path = self.__prefs.get_value('common', 'add_word_command')
-        os.spawnl(os.P_NOWAIT, *path)
+        self.__start_add_word()
         return True
 
     def __cmd_start_setup(self, keyval, state):
@@ -1797,6 +1841,14 @@ class Engine(ibus.EngineBase):
 
         self.__start_setup()
         return True
+
+    def __start_dict_admin(self):
+        path = self.__prefs.get_value('common', 'dict_admin_command')
+        os.spawnl(os.P_NOWAIT, *path)
+
+    def __start_add_word(self):
+        path = self.__prefs.get_value('common', 'add_word_command')
+        os.spawnl(os.P_NOWAIT, *path)
 
     def __start_setup(self):
         if Engine.__setup_pid != 0:
