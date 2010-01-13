@@ -1055,7 +1055,7 @@ URL : http://code.google.com/p/ibus/
     <property name="skip_taskbar_hint">True</property>
     <property name="buttons">cancel</property>
     <property name="text">Please press a key (or a key combination)</property>
-    <property name="secondary_text">The dialog willbe closed when the key is released</property>
+    <property name="secondary_text">The dialog will be closed when the key is released</property>
     <signal name="key_press_event" handler="on_key_input_dialog_key_press_event"/>
     <signal name="key_release_event" handler="on_key_input_dialog_key_release_event"/>
     <child internal-child="vbox">

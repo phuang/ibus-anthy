@@ -195,7 +195,7 @@ class AnthySetup(object):
     def on_button7_clicked(self, widget):
         dlg = self.xml.get_widget('key_input_dialog')
         dlg.set_markup('<big><b>%s</b></big>' % _('Please press a key (or a key combination)'))
-        dlg.format_secondary_text(_('The dialog willbe closed when the key is released'))
+        dlg.format_secondary_text(_('The dialog will be closed when the key is released'))
         id = dlg.run()
         dlg.hide()
         if id == gtk.RESPONSE_OK:

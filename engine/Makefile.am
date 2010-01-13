@@ -90,7 +90,7 @@ CLEANFILES = \
 	anthy.py \
 	anthy_wrap.* \
 	*.pyc \
-	$(MULL)
+	$(NULL)
 
 DISTCLEANFILES = \
-	$(MULL)
+	$(NULL)

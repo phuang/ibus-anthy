@@ -55,4 +55,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * @DATE_DISPLAY@ Peng Huang <shawn.p.huang@gmail.com> - @PACKAGE_VERSION@-1
-- Current veriosn.
+- Current version.
