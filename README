@@ -1,2 +1,162 @@
 ibus-anthy
 It is a Japanese input engine for IBus.
+
+
+Installation
+============
+
+The following is the online document:
+http://code.google.com/p/ibus/wiki/Install
+
+#1. Build & Install IBus
+* Obtain source code
+
+IBus source code can either be download from IBus download page
+(http://code.google.com/p/ibus/downloads/list)
+(If you use ibus for the first time, the download page is more stable than 
+git.)
+
+ $ zcat ibus-xx.tar.gz | tar xfv -
+ $ cd ibus-xx
+
+    * The 'xx' is a version number. 
+
+or obtained from git with following commands:
+
+ $ git clone git://github.com/phuang/ibus.git ibus
+ $ cd ibus
+
+    * 'git clone --help' shows the usage. 
+
+* Build and Install
+After source code is extracted from tarball or git, use following command 
+to build and install:
+
+ $ ./autogen.sh --prefix='/usr' --sysconfdir='/etc' --libdir='/usr/lib' \
+     --enable-gtk-doc
+ $ make
+ $ sudo make install
+
+(Change the paths '/usr', '/etc', '/usr/lib' according to your system 
+configuration.) 
+
+* Register IBus as a Gtk immodule
+For i386
+
+ $ sudo update-gtk-immodules i386-redhat-linux-gnu
+
+or
+
+ $ sudo gtk-query-immodules-2.0-32 \
+     /usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.so >> \
+     /etc/gtk-2.0/i386-redhat-linux-gnu/gtk.immodules
+
+For x86_64
+
+ $ sudo update-gtk-immodules x86_64-redhat-linux-gnu
+
+or
+
+ $ sudo gtk-query-immodules-2.0-64 \
+   /usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.so >> \
+   /etc/gtk-2.0/x86_64-redhat-linux-gnu/gtk.immodules
+
+(Replace the string i386-redhat-linux-gnu or path 
+/usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.so with the setting that matches 
+your system.)
+
+* Update icon caches
+
+  $ ls /usr/share/icons/*/*/*/ibus*
+/usr/share/icons/hicolor/16x16/apps/ibus-keyboard.png
+/usr/share/icons/hicolor/22x22/apps/ibus-keyboard.png
+/usr/share/icons/hicolor/24x24/apps/ibus-keyboard.png
+/usr/share/icons/hicolor/32x32/apps/ibus-keyboard.png
+/usr/share/icons/hicolor/48x48/apps/ibus-keyboard.png
+/usr/share/icons/hicolor/scalable/apps/ibus-keyboard.svg
+  $ sudo gtk-update-icon-cache /usr/share/icons/hicolor
+
+
+#2. Build & Install Anthy
+
+   Download anthy source from Anthy Web
+   (http://sourceforge.jp/projects/anthy/)
+
+       $ zcat anthy-xx.tar.gz | tar xfv -
+       $ ./configure --prefix=/usr
+       $ make
+       $ sudo make install
+
+          * The 'xx' is a version number. 
+
+
+#3. Build & Install IBus Anthy
+   Download ibus-anthy source from IBus download page
+   (http://code.google.com/p/ibus/downloads/list)
+   or
+   Use git clone git://github.com/fujiwarat/ibus-anthy.git ibus-anthy
+
+       $ zcat ibus-anthy-xx.tar.gz | tar xfv -
+       $ cd ibus-anthy
+       $ ./autogen.sh --prefix=/usr
+       $ make
+       $ sudo make install
+
+          * The 'xx' is a version number. 
+
+
+#4. Run iBus
+* Run ibus-daemon to start ibus daemon with either way:
+
+    * Distribution tool likes im-chooser, im-switch
+    * Add a new /etc/xdg/autostart/ibus.desktop to invoke 'ibus-daemon --xim'
+    * Manual
+
+       $ pkill -9 ibus
+       $ ps -ef | grep ibus
+       $ /usr/bin/ibus-daemon --xim &
+
+After ibus-daemin is invoked, Run ibus-setup to set the preference, 
+enable input methods, also start ibus daemon.
+
+e.g.
+
+ $ ps -ef | grep ibus
+foo 15735 15518  0 11:30 pts/3    00:00:17 /usr/bin/ibus-daemon --xim
+foo 20037 15735  0 12:58 pts/3    00:00:00 /usr/libexec/ibus-gconf
+foo 20039 15735  0 12:58 pts/3    00:00:06 python /usr/share/ibus/ui/gtk/main.py
+foo 20041     1  0 12:58 pts/3    00:00:00 /usr/libexec/ibus-x11 --kill-daemon
+foo 20042 15735  0 12:58 pts/3    00:00:01 python /usr/share/ibus-anthy/engine/main.py --ibus
+
+
+#5. Run gnome, kde or old X applications
+* Set following environment varible for Gtk:
+
+ $ GTK_IM_MODULE=ibus 
+
+For KDE:
+
+ $ QT_IM_MODULE=ibus
+
+and other X applications
+
+ $ XMODIFIERS="@im=ibus"
+
+e.g.
+
+ $ env GTK_IM_MODULE=ibus gedit
+
+To enable input method, Type Ctrl + Space.
+
+
+Bug Reports
+===========
+http://code.google.com/p/ibus/issues/list
+
+
+Questions
+=========
+http://groups.google.com/group/ibus-user
+http://groups.google.com/group/ibus-devel
+Also refer AUTHORS file
+
