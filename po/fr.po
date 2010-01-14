@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2010-01-13 12:58+0900\n"
+"POT-Creation-Date: 2010-01-15 01:01+0900\n"
 "PO-Revision-Date: 2010-01-13 14:26+0100\n"
 "Last-Translator: Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -19,118 +19,118 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../engine/engine.py:148
+#: ../engine/engine.py:149
 msgid "Switch input mode"
 msgstr "Changer de méthode d'entrée"
 
-#: ../engine/engine.py:154
+#: ../engine/engine.py:155
 msgid "Hiragana"
 msgstr "Hiragana"
 
-#: ../engine/engine.py:157
+#: ../engine/engine.py:158
 msgid "Katakana"
 msgstr "Katakana"
 
-#: ../engine/engine.py:160
+#: ../engine/engine.py:161
 msgid "Half width katakana"
 msgstr "Half width katakana"
 
-#: ../engine/engine.py:163
+#: ../engine/engine.py:164
 msgid "Latin"
 msgstr "Latin"
 
-#: ../engine/engine.py:166
+#: ../engine/engine.py:167
 msgid "Wide Latin"
 msgstr "Latin large"
 
-#: ../engine/engine.py:180
+#: ../engine/engine.py:181
 msgid "Switch typing mode"
 msgstr "Changer de méthode d'écriture"
 
-#: ../engine/engine.py:186
+#: ../engine/engine.py:187
 msgid "Romaji"
 msgstr "Romaji"
 
-#: ../engine/engine.py:189
+#: ../engine/engine.py:190
 msgid "Kana"
 msgstr "Kana"
 
-#: ../engine/engine.py:192
+#: ../engine/engine.py:193
 msgid "Thumb shift"
 msgstr "Thumb shift"
 
-#: ../engine/engine.py:203
+#: ../engine/engine.py:204
 msgid "Configure Anthy"
 msgstr "Configurer Anthy"
 
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
-#: ../engine/engine.py:217
+#: ../engine/engine.py:218
 msgid "Dic"
 msgstr "Dico"
 
-#: ../engine/engine.py:224
+#: ../engine/engine.py:225
 msgid "Configure dictionaries"
 msgstr "Configurer le dictionnaire"
 
-#: ../engine/engine.py:229
+#: ../engine/engine.py:230
 msgid "Edit dictionaries"
 msgstr "Éditer le dictionnaire"
 
-#: ../engine/engine.py:231
+#: ../engine/engine.py:232
 msgid "Launch the dictionary tool"
 msgstr "Lancer l'utilitaire d'édition du dictionnaire"
 
-#: ../engine/engine.py:234
+#: ../engine/engine.py:235
 msgid "Add words"
 msgstr "Ajouter de nouveaux mots"
 
-#: ../engine/engine.py:236
+#: ../engine/engine.py:237
 msgid "Add words in the dictionary"
 msgstr "Ajouter de nouveaux mots dans le dictionnaire"
 
-#: ../engine/factory.py:34
+#: ../engine/factory.py:35
 msgid "Anthy"
 msgstr "Anthy"
 
-#: ../setup/main.py:46
+#: ../setup/main.py:68
 msgid "Command"
 msgstr "Commande"
 
-#: ../setup/main.py:50
+#: ../setup/main.py:72
 msgid "Shortcut"
 msgstr "Raccourci"
 
-#: ../setup/main.py:83
+#: ../setup/main.py:105
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: ../setup/main.py:84
+#: ../setup/main.py:106
 msgid "Are you sure to close Setup?"
 msgstr "Êtes-vous sûr de vouloir fermer la fenêtre de configuration ?"
 
-#: ../setup/main.py:97
+#: ../setup/main.py:119
 msgid "Notice!"
 msgstr "Attention !"
 
-#: ../setup/main.py:98
+#: ../setup/main.py:120
 msgid "Are you sure to close Setup without save configure?"
 msgstr ""
 "Êtes-vous sûr de fermer la fenêtre de configuration sans sauver les "
 "modifications ?"
 
-#: ../setup/main.py:197
+#: ../setup/main.py:219
 msgid "Please press a key (or a key combination)"
 msgstr "Veuillez appuyer sur une touche (ou une combinaison de touches)"
 
-#: ../setup/main.py:198
-msgid "The dialog willbe closed when the key is released"
+#: ../setup/main.py:220
+msgid "The dialog will be closed when the key is released"
 msgstr "La fenêtre se fermera lorsque la touche sera relâchée"
 
-#: ../setup/main.py:217
+#: ../setup/main.py:239
 msgid "Invalid keysym"
 msgstr "« keysym » invalide"
 
-#: ../setup/main.py:218
+#: ../setup/main.py:240
 msgid "This keysym is not valid"
 msgstr "Le « keysym » est invalide"
 
