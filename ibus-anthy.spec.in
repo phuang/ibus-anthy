@@ -18,7 +18,7 @@ BuildRequires:  swig
 BuildRequires:  pkgconfig
 BuildRequires:  intltool
 
-Requires:   ibus >= 1.2.0.20090904
+Requires:   ibus >= 1.2.0.20100111
 Requires:   anthy
 
 %description
