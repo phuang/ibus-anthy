@@ -1,3 +1,5 @@
+# Files with translatable strings.
+# Please keep this file in alphabetical order.
 engine/engine.py
 engine/factory.py
 setup/main.py
