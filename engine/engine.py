@@ -519,7 +519,7 @@ class Engine(ibus.EngineBase):
 #        self.__invalidate()
 
     def focus_out(self):
-        mode = self.__prefs.get_value('common', 'behivior_on_focus_out')
+        mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
         if mode == 0:
             self.__reset()
             self.__invalidate()
@@ -1091,7 +1091,7 @@ class Engine(ibus.EngineBase):
             try:
                 ret = self.__on_key_common(ord(keyval))
                 if (keyval in u',.、。' and
-                    self.__prefs.get_value('common', 'behivior_on_period')):
+                    self.__prefs.get_value('common', 'behavior_on_period')):
                     return self.__cmd_convert(keyval, state)
                 return ret
             except:
@@ -1222,7 +1222,7 @@ class Engine(ibus.EngineBase):
                     keyval = keysyms.yen
             ret = self.__on_key_common(keyval)
             if (unichr(keyval) in u',.' and
-                self.__prefs.get_value('common', 'behivior_on_period')):
+                self.__prefs.get_value('common', 'behavior_on_period')):
                 return self.__cmd_convert(keyval, state)
             return ret
         else:

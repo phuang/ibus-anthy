@@ -22,6 +22,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import gtk
+import sys
 
 from prefs import Prefs
 
@@ -36,7 +37,39 @@ class AnthyPrefs(Prefs):
         super(AnthyPrefs, self).__init__(bus, config)
         self.default = _config
 
+        # The keys will be EOSL in the near future.
+        self.__update_key ("common",
+                           "behivior_on_focus_out",
+                           "behavior_on_focus_out")
+        self.__update_key ("common",
+                           "behivior_on_period",
+                           "behavior_on_period")
         self.fetch_all()
+
+    def __update_key (self, section, old_key, new_key):
+        file = __file__
+        path_list = __file__.split('/')
+        if path_list:
+            path_list.reverse()
+            file = path_list[0]
+        warning_message = \
+            "(" + file + ") ibus-anthy-WARNING **: "                        \
+            "The key (" + old_key + ") will be removed in the future. "     \
+            "Currently the key (" + new_key + ") is used instead. "         \
+            "The ibus keys are defined in " +                               \
+            "/".join(["/desktop/ibus", self._prefix, section]) + " ."
+
+        if not self.fetch_item(section, old_key, True):
+            return
+        print >> sys.stderr, warning_message
+        if self.fetch_item(section, new_key, True):
+            return
+
+        self.fetch_item(section, old_key)
+        value = self.get_value(section, old_key)
+        self.set_value(section, new_key, value)
+        self.commit_item(section, new_key)
+        self.undo_item(section, new_key)
 
     def keys(self, section):
         if section.startswith('shortcut/'):
@@ -125,8 +158,8 @@ _config = {
         'period_style': 0,
         'symbol_style': 1,
         'ten_key_mode': 1,
-        'behivior_on_focus_out': 0,
-        'behivior_on_period': 0,
+        'behavior_on_focus_out': 0,
+        'behavior_on_period': 0,
 
         'page_size': 10,
         'half_width_symbol': False,

@@ -233,7 +233,7 @@ Convert Characters
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">_Behavior on Period:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">behivior_on_period</property>
+                                <property name="mnemonic_widget">behavior_on_period</property>
                               </widget>
                               <packing>
                                 <property name="top_attach">3</property>
@@ -248,7 +248,7 @@ Convert Characters
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Behavior on _Focus Out:</property>
                                 <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">behivior_on_focus_out</property>
+                                <property name="mnemonic_widget">behavior_on_focus_out</property>
                               </widget>
                               <packing>
                                 <property name="top_attach">4</property>
@@ -258,7 +258,7 @@ Convert Characters
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkComboBox" id="behivior_on_period">
+                              <widget class="GtkComboBox" id="behavior_on_period">
                                 <property name="visible">True</property>
                                 <property name="items" translatable="yes">Do Nothing
 Auto Convert</property>
@@ -273,7 +273,7 @@ Auto Convert</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkComboBox" id="behivior_on_focus_out">
+                              <widget class="GtkComboBox" id="behavior_on_focus_out">
                                 <property name="visible">True</property>
                                 <property name="items" translatable="yes">Clear
 Commit

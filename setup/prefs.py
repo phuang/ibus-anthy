@@ -62,12 +62,15 @@ class Prefs(object):
         for k in self.keys(section):
             self.fetch_item(section, k)
 
-    def fetch_item(self, section, key):
+    def fetch_item(self, section, key, readonly=False):
         s = '/'.join(
             [s for s in '/'.join([self._prefix, section]).split('/') if s])
         v = self._config.get_value(s, key, None)
+        if readonly:
+            return v != None
         if v != None:
             self.modified.setdefault(section, {})[key] = v if v != [''] else []
+        return True
 
     def commit_all(self):
         for s in self.new.keys():
