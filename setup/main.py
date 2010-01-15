@@ -50,6 +50,16 @@ class AnthySetup(object):
         glade_file = path.join(path.dirname(__file__), "setup.glade")
         self.xml = xml = glade.XML(glade_file)
 
+        # glade "icon_name" property has a custom scaling and it seems
+        # to be difficult to show the complicated small icon in metacity.
+        # This can add the pixbuf without scaling.
+        anthydir = path.dirname(path.dirname(__file__))
+        if not anthydir:
+            anthydir = "/usr/share/ibus-anthy"
+        icon_path = path.join(anthydir, "icons", "ibus-anthy.png")
+        if path.exists(icon_path):
+            xml.get_widget('main').set_icon_from_file(icon_path)
+
         for name in ['input_mode', 'typing_method',
                      'period_style', 'symbol_style', 'ten_key_mode',
                      'behavior_on_focus_out', 'behavior_on_period',
