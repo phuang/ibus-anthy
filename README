@@ -80,9 +80,10 @@ your system.)
 #2. Build & Install Anthy
 
    Download anthy source from Anthy Web
-   (http://sourceforge.jp/projects/anthy/)
+   (http://en.sourceforge.jp/projects/anthy/)
 
        $ zcat anthy-xx.tar.gz | tar xfv -
+       $ cd anthy
        $ ./configure --prefix=/usr
        $ make
        $ sudo make install
@@ -90,7 +91,22 @@ your system.)
           * The 'xx' is a version number. 
 
 
-#3. Build & Install IBus Anthy
+#3. Build & Install Kasumi
+
+   Kasumi is not required but probably useful for you.
+   Download kasumi source from Kasumi Web
+   (http://en.sourceforge.jp/projects/kasumi/)
+
+       $ zcat kasumi-xx.tar.gz | tar xfv -
+       $ cd kasumi
+       $ ./configure --prefix=/usr
+       $ make
+       $ sudo make install
+
+          * The 'xx' is a version number. 
+
+
+#4. Build & Install IBus Anthy
    Download ibus-anthy source from IBus download page
    (http://code.google.com/p/ibus/downloads/list)
    or
@@ -105,7 +121,7 @@ your system.)
           * The 'xx' is a version number. 
 
 
-#4. Run iBus
+#5. Run iBus
 * Run ibus-daemon to start ibus daemon with either way:
 
     * Distribution tool likes im-chooser, im-switch
@@ -129,7 +145,7 @@ foo 20041     1  0 12:58 pts/3    00:00:00 /usr/libexec/ibus-x11 --kill-daemon
 foo 20042 15735  0 12:58 pts/3    00:00:01 python /usr/share/ibus-anthy/engine/main.py --ibus
 
 
-#5. Run gnome, kde or old X applications
+#6. Run gnome, kde or old X applications
 * Set following environment varible for Gtk:
 
  $ GTK_IM_MODULE=ibus 
