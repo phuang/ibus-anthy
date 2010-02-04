@@ -20,6 +20,7 @@ BuildRequires:  swig
 BuildRequires:  pkgconfig
 BuildRequires:  intltool
 
+Requires:   pygtk2 >= 2.15.2
 Requires:   ibus >= 1.2.0.20100111
 Requires:   anthy
 %if %enable_kasumi
