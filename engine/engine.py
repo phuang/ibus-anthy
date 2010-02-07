@@ -138,6 +138,8 @@ class Engine(ibus.EngineBase):
         self._MM = 0
         self._SS = 0
         self._H = 0
+        self._RMM = 0
+        self._RSS = 0
 
     def __init_props(self):
         anthy_props = ibus.PropList()
@@ -1089,6 +1091,7 @@ class Engine(ibus.EngineBase):
 
         def insert(keyval):
             try:
+                self._MM = self._SS = 0
                 ret = self.__on_key_common(ord(keyval))
                 if (keyval in u',.、。' and
                     self.__prefs.get_value('common', 'behavior_on_period')):
@@ -1138,6 +1141,10 @@ class Engine(ibus.EngineBase):
                 if stop():
                     cmd_exec([0, RS(), LS()][self._SS])
                 self._SS = 0
+            if keyval in [RS(), LS()]:
+                self._RSS = 0
+            elif keyval == self._RMM:
+                self._RMM = 0
         else:
             if keyval in [LS(), RS()] and state == 0:
                 if self._SS:
@@ -1147,10 +1154,16 @@ class Engine(ibus.EngineBase):
                     start(T1())
                 elif self._MM:
                     stop()
+                    self._RMM = self._MM
+                    self._RSS = 1 if keyval == RS() else 2
                     insert(thumb.table[self._MM][1 if keyval == RS() else 2])
                 else:
-                    self._SS = 1 if keyval == RS() else 2
-                    start(T1())
+                    if self._RSS == (1 if keyval == RS() else 2):
+                        if self._RMM:
+                            insert(thumb.table[self._RMM][self._RSS])
+                    else:
+                        self._SS = 1 if keyval == RS() else 2
+                        start(T1())
             elif keyval in thumb.table.keys() and state == 0:
                 if self._MM:
                     stop()
@@ -1159,12 +1172,18 @@ class Engine(ibus.EngineBase):
                     self._MM = keyval
                 elif self._SS:
                     stop()
+                    self._RMM = keyval
+                    self._RSS = self._SS
                     insert(thumb.table[keyval][self._SS])
                 else:
-                    if cmd_exec(keyval, state):
-                        return True
-                    start(T2())
-                    self._MM = keyval
+                    if self._RMM  == keyval:
+                        if self._RSS:
+                            insert(thumb.table[self._RMM][self._RSS])
+                    else:
+                        if cmd_exec(keyval, state):
+                            return True
+                        start(T2())
+                        self._MM = keyval
             else:
                 if self._MM:
                     stop()
