@@ -55,10 +55,14 @@ class JaString:
     def reset(self):
         self.__cursor = 0
         self.__segments = list()
+        self.__shift = False
 
     def set_mode(self, mode):
         self.__mode = mode
         self.reset()
+
+    def set_shift(self, shift):
+        self.__shift = shift
 
     def insert(self, c):
         segment_before = None
@@ -70,14 +74,21 @@ class JaString:
         if self.__cursor < len(self.__segments):
             segment_after = self.__segments[self.__cursor]
         if segment_before and not segment_before.is_finished():
-            new_segments = segment_before.append(c)
+            if type(segment_before) == romaji.RomajiSegment:
+                new_segments = segment_before.append(c, self.__shift)
+            else:
+                new_segments = segment_before.append(c)
         elif segment_after and not segment_after.is_finished():
-            new_segments = segment_after.prepend(c)
+            if type(segment_after) == romaji.RomajiSegment:
+                new_segments = segment_after.prepend(c, self.__shift)
+            else:
+                new_segments = segment_after.prepend(c)
         else:
             if c != u"\0" and c != u"":
                 if self.__mode == TYPING_MODE_ROMAJI:
-                    new_segments = [romaji.RomajiSegment(c)]
+                    new_segments = [romaji.RomajiSegment(c, u"", self.__shift)]
                 elif self.__mode == TYPING_MODE_KANA:
+                    # kana mode doesn't have shift latin in MS.
                     new_segments = [kana.KanaSegment(c)]
                 elif self.__mode == TYPING_MODE_THUMB_SHIFT:
                     new_segments = [thumb.ThumbShiftSegment(c)]

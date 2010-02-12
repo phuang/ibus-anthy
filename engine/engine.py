@@ -958,7 +958,7 @@ class Engine(ibus.EngineBase):
         self.__invalidate()
         return True
 
-    def __on_key_common(self, keyval):
+    def __on_key_common(self, keyval, state=0):
 
         if self.__input_mode == INPUT_MODE_LATIN:
             # Input Latin chars
@@ -983,6 +983,7 @@ class Engine(ibus.EngineBase):
         elif self.__convert_mode != CONV_MODE_OFF:
             self.__commit_string(self.__convert_chars)
 
+        self.__preedit_ja_string.set_shift((state & modifier.SHIFT_MASK) != 0)
         self.__preedit_ja_string.insert(unichr(keyval))
         self.__invalidate()
         return True
@@ -1239,7 +1240,7 @@ class Engine(ibus.EngineBase):
                     keyval = keysyms.asciitilde
                 elif keyval == keysyms.backslash and keycode in [132-8, 133-8]:
                     keyval = keysyms.yen
-            ret = self.__on_key_common(keyval)
+            ret = self.__on_key_common(keyval, state)
             if (unichr(keyval) in u',.' and
                 self.__prefs.get_value('common', 'behavior_on_period')):
                 return self.__cmd_convert(keyval, state)
