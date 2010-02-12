@@ -105,6 +105,7 @@ class Engine(ibus.EngineBase):
         self.__context._set_encoding(anthy.ANTHY_UTF8_ENCODING)
 
         # init state
+        self.__idle_id = 0
         self.__input_mode = INPUT_MODE_HIRAGANA
         self.__prop_dict = {}
 
@@ -130,7 +131,6 @@ class Engine(ibus.EngineBase):
         self.__preedit_ja_string = jastring.JaString(Engine.__typing_mode)
         self.__convert_chars = u""
         self.__cursor_pos = 0
-        self.__need_update = False
         self.__convert_mode = CONV_MODE_OFF
         self.__segments = list()
         self.__lookup_table.clean()
@@ -140,6 +140,9 @@ class Engine(ibus.EngineBase):
         self._H = 0
         self._RMM = 0
         self._RSS = 0
+        if self.__idle_id != 0:
+            gobject.source_remove(self.__idle_id)
+            self.__idle_id = 0
 
     def __init_props(self):
         anthy_props = ibus.PropList()
@@ -528,6 +531,12 @@ class Engine(ibus.EngineBase):
         elif mode == 1:
             self.__on_key_return()
 
+    def do_destroy(self):
+        if self.__idle_id != 0:
+            gobject.source_remove(self.__idle_id)
+            self.__idle_id = 0
+        super(Engine,self).do_destroy()
+
     # begine convert
     def __begin_anthy_convert(self):
         if self.__convert_mode == CONV_MODE_ANTHY:
@@ -591,10 +600,10 @@ class Engine(ibus.EngineBase):
 
 
     def __invalidate(self):
-        if self.__need_update:
+        if self.__idle_id != 0:
             return
-        self.__need_update = True
-        gobject.idle_add(self.__update, priority = gobject.PRIORITY_LOW)
+        self.__idle_id = gobject.idle_add(self.__update,
+                                          priority = gobject.PRIORITY_LOW)
 
 #    def __get_preedit(self):
     def __get_preedit(self, commit=False):
@@ -701,11 +710,11 @@ class Engine(ibus.EngineBase):
             self.__lookup_table_visible)
 
     def __update(self):
-        self.__need_update = False
         if self.__convert_mode == CONV_MODE_OFF:
             self.__update_input_chars()
         else:
             self.__update_convert_chars()
+        self.__idle_id = 0
 
     def __on_key_return(self):
         if self.__preedit_ja_string.is_empty():
