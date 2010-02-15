@@ -22,6 +22,7 @@
 
 import os
 from os import path
+from locale import getpreferredencoding
 import sys
 import gobject
 import ibus
@@ -108,6 +109,7 @@ class Engine(ibus.EngineBase):
         self.__idle_id = 0
         self.__input_mode = INPUT_MODE_HIRAGANA
         self.__prop_dict = {}
+        self.__is_utf8 = (getpreferredencoding().lower() == "utf-8")
 
 #        self.__lookup_table = ibus.LookupTable(page_size=9, round=True)
         size = self.__prefs.get_value('common', 'page_size')
@@ -573,6 +575,15 @@ class Engine(ibus.EngineBase):
     def __end_convert(self):
         self.__end_anthy_convert()
 
+    def __candidate_cb(self, candidate):
+        if not self.__is_utf8:
+            return
+        for key in romaji_utf8_rule.keys():
+            if candidate.find(key) >= 0:
+                for value in romaji_utf8_rule[key]:
+                    candidate = candidate.replace(key, value)
+                    self.__lookup_table.append_candidate(ibus.Text(candidate))
+
     def __fill_lookup_table(self):
         if self.__convert_mode == CONV_MODE_PREDICTION:
             seg_stat = anthy.anthy_prediction_stat()
@@ -584,7 +595,7 @@ class Engine(ibus.EngineBase):
                 buf = self.__context.get_prediction(i)
                 candidate = unicode(buf, "utf-8")
                 self.__lookup_table.append_candidate(ibus.Text(candidate))
-
+                self.__candidate_cb(candidate)
             return
 
         # get segment stat
@@ -597,6 +608,7 @@ class Engine(ibus.EngineBase):
             buf = self.__context.get_segment(self.__cursor_pos, i)
             candidate = unicode(buf, "utf-8")
             self.__lookup_table.append_candidate(ibus.Text(candidate))
+            self.__candidate_cb(candidate)
 
 
     def __invalidate(self):
@@ -992,7 +1004,13 @@ class Engine(ibus.EngineBase):
         elif self.__convert_mode != CONV_MODE_OFF:
             self.__commit_string(self.__convert_chars)
 
-        self.__preedit_ja_string.set_shift((state & modifier.SHIFT_MASK) != 0)
+        # "n" + "'" == "nn" in romaji
+        if (keyval >= ord('A') and keyval <= ord('Z')) or \
+           (keyval >= ord('a') and keyval <= ord('z')):
+            shift = (state & modifier.SHIFT_MASK) != 0
+        else:
+            shift = False
+        self.__preedit_ja_string.set_shift(shift)
         self.__preedit_ja_string.insert(unichr(keyval))
         self.__invalidate()
         return True
