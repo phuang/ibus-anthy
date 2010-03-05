@@ -24,7 +24,7 @@ from os import path, getenv
 import gtk
 import pango
 from gtk import glade
-from ibus import keysyms, modifier
+from ibus import keysyms, modifier, Bus
 from gettext import dgettext, bindtextdomain
 
 from anthyprefs import AnthyPrefs
@@ -41,7 +41,10 @@ def s_to_l(s):
 
 class AnthySetup(object):
     def __init__(self):
-        self.prefs = prefs = AnthyPrefs()
+        self.__config = Bus().get_config()
+        self.__thumb_kb_layout_mode = None
+        self.__thumb_kb_layout = None
+        self.prefs = prefs = AnthyPrefs(None, self.__config)
 
         localedir = getenv("IBUS_LOCALEDIR")
         bindtextdomain("ibus-anthy", localedir)
@@ -63,8 +66,11 @@ class AnthySetup(object):
         for name in ['input_mode', 'typing_method',
                      'period_style', 'symbol_style', 'ten_key_mode',
                      'behavior_on_focus_out', 'behavior_on_period',
-                     'half_width_symbol', 'half_width_number', 'half_width_space']:
-            xml.get_widget(name).set_active(prefs.get_value('common', name))
+                     'half_width_symbol', 'half_width_number', 'half_width_space',
+                     'thumb:keyboard_layout_mode', 'thumb:keyboard_layout',
+                     'thumb:fmv_extension', 'thumb:handakuten']:
+            section, key = self.__get_section_key(name)
+            xml.get_widget(name).set_active(prefs.get_value(section, key))
 
         l = ['default', 'atok', 'wnn']
         s_type = prefs.get_value('common', 'shortcut_type')
@@ -89,6 +95,14 @@ class AnthySetup(object):
             ls.append([k, l_to_s(self.prefs.get_value(sec, k))])
         tv.set_model(ls)
 
+        self.__thumb_kb_layout_mode = xml.get_widget('thumb:keyboard_layout_mode')
+        self.__thumb_kb_layout = xml.get_widget('thumb:keyboard_layout')
+        self.__set_thumb_kb_label()
+
+        for name in ['thumb:ls', 'thumb:rs']:
+            section, key = self.__get_section_key(name)
+            xml.get_widget(name).set_text(prefs.get_value(section, key))
+
         tv = xml.get_widget('treeview2')
         tv.append_column(gtk.TreeViewColumn('', gtk.CellRendererText(), text=0))
         tv.get_selection().connect_after('changed',
@@ -96,6 +110,32 @@ class AnthySetup(object):
         tv.set_model(gtk.ListStore(str))
 
         xml.signal_autoconnect(self)
+
+    def __get_section_key(self, name):
+        i = name.find(':')
+        if i > 0:
+            section = name[:i]
+            key = name[i + 1:]
+        else:
+            section = 'common'
+            key = name
+        return (section, key)
+
+    def __set_thumb_kb_label(self):
+        if self.__thumb_kb_layout_mode == None or \
+           self.__thumb_kb_layout == None:
+            return
+        section, key = self.__get_section_key(self.__thumb_kb_layout_mode.name)
+        layout_mode = self.prefs.get_value(section, key)
+        if layout_mode:
+            self.__thumb_kb_layout.set_sensitive(False)
+        else:
+            self.__thumb_kb_layout.set_sensitive(True)
+        if layout_mode and \
+           not self.__config.get_value('general', 'use_system_keyboard_layout', True):
+            self.xml.get_widget('thumb:warning_hbox').show()
+        else:
+            self.xml.get_widget('thumb:warning_hbox').hide()
 
     def on_selection_changed(self, widget, id):
         set_sensitive = lambda a, b: self.xml.get_widget(a).set_sensitive(b)
@@ -139,16 +179,22 @@ class AnthySetup(object):
         widget.set_sensitive(False)
 
     def on_cb_changed(self, widget):
-        self.prefs.set_value('common', widget.name, widget.get_active())
+        section, key = self.__get_section_key(widget.name)
+        self.prefs.set_value(section, key, widget.get_active())
         self.xml.get_widget('btn_apply').set_sensitive(True)
 
     def on_sb_changed(self, widget):
-        self.prefs.set_value('common', widget.name, widget.get_value_as_int())
+        section, key = self.__get_section_key(widget.name)
+        self.prefs.set_value(section, key, widget.get_value_as_int())
         self.xml.get_widget('btn_apply').set_sensitive(True)
 
     def on_ck_toggled(self, widget):
-        self.prefs.set_value('common', widget.name, widget.get_active())
+        section, key = self.__get_section_key(widget.name)
+        self.prefs.set_value(section, key, widget.get_active())
         self.xml.get_widget('btn_apply').set_sensitive(True)
+        if self.__thumb_kb_layout_mode and \
+           widget.name == self.__thumb_kb_layout_mode.name:
+            self.__set_thumb_kb_label()
 
     def on_btn_edit_clicked(self, widget):
         ls, it = self.xml.get_widget('shortcut').get_selection().get_selected()
@@ -179,6 +225,41 @@ class AnthySetup(object):
             ls.set(it, 1, new)
             self.xml.get_widget('btn_apply').set_sensitive(True)
 
+    def on_btn_thumb_key_clicked(self, widget):
+        if widget.name == 'thumb:button_ls':
+            entry = 'thumb:ls'
+        elif widget.name == 'thumb:button_rs':
+            entry = 'thumb:rs'
+        else:
+            return
+        text = self.xml.get_widget(entry).get_text()
+        m = self.xml.get_widget('treeview2').get_model()
+        m.clear()
+        if text != None:
+            m.append([text])
+            i = m.get_iter_first()
+            self.xml.get_widget('treeview2').get_selection().select_iter(i)
+        self.xml.get_widget('entry2').set_text('')
+        self.xml.get_widget('button4').hide()
+        self.xml.get_widget('button5').show()
+        self.xml.get_widget('button6').hide()
+        for w in ['checkbutton6', 'checkbutton7', 'checkbutton8']:
+            self.xml.get_widget(w).set_active(False)
+        dlg = self.xml.get_widget('edit_shortcut')
+        id = dlg.run()
+        dlg.hide()
+        self.xml.get_widget('button4').show()
+        self.xml.get_widget('button5').hide()
+        self.xml.get_widget('button6').show()
+        if id == gtk.RESPONSE_OK:
+            l, i = self.xml.get_widget('treeview2').get_selection().get_selected()
+            new = l[i][0]
+            if new != text:
+                section, key = self.__get_section_key(entry)
+                self.prefs.set_value(section, key, new)
+                self.xml.get_widget(entry).set_text(new)
+                self.xml.get_widget('btn_apply').set_sensitive(True)
+
     def _get_shortcut_sec(self):
         l = ['default', 'atok', 'wnn']
         s_type = self.xml.get_widget('shortcut_type').get_active_text().lower()
@@ -195,7 +276,8 @@ class AnthySetup(object):
         for k in self.prefs.keys(sec):
             ls.append([k, l_to_s(self.prefs.get_value(sec, k))])
 
-        self.prefs.set_value('common', widget.name, sec[len('shortcut/'):])
+        section, key = self.__get_section_key(widget.name)
+        self.prefs.set_value(section, key, sec[len('shortcut/'):])
         self.xml.get_widget('btn_apply').set_sensitive(True)
 
     def on_shortcut_key_release_event(self, widget, event):
@@ -261,6 +343,24 @@ class AnthySetup(object):
             if l[i][0] == s:
                 return True
         l.append([s])
+
+    def on_button5_clicked(self, widget):
+        s = self.xml.get_widget('entry2').get_text()
+        if not s or not keysyms.name_to_keycode(s):
+            dlg = self.xml.get_widget('invalid_keysym')
+            dlg.set_markup('<big><b>%s</b></big>' % _('Invalid keysym'))
+            dlg.format_secondary_text(_('This keysym is not valid'))
+            dlg.run()
+            dlg.hide()
+            return True
+        for w, m in [('checkbutton6', 'Ctrl+'),
+                     ('checkbutton7', 'Alt+'),
+                     ('checkbutton8', 'Shift+')]:
+            if self.xml.get_widget(w).get_active():
+                s = m + s
+        l, i = self.xml.get_widget('treeview2').get_selection().get_selected()
+        l[i][0] = s
+        return True
 
     def on_button6_clicked(self, widget):
         l, i = self.xml.get_widget('treeview2').get_selection().get_selected()

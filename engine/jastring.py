@@ -137,7 +137,9 @@ class JaString:
         ret = ''
         for c in s:
             c = c if not period else PeriodTable.get(c, c)
-            c = c if not symbol else SymbolTable[symbol].get(c, c)
+            # thumb_left + '2' and '/' are different
+            if self.__mode != TYPING_MODE_THUMB_SHIFT:
+                c = c if not symbol else SymbolTable[symbol].get(c, c)
             c = c if not half_symbol else HalfSymbolTable.get(c, c)
             c = c if not half_number else HalfNumberTable.get(c, c)
             ret += c

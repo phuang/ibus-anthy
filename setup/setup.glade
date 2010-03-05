@@ -460,7 +460,7 @@ Hold
                     <property name="visible">True</property>
                     <property name="spacing">8</property>
                     <child>
-                      <widget class="GtkLabel" id="label4">
+                      <widget class="GtkLabel" id="label5">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Shortcut Type:</property>
                         <property name="use_underline">True</property>
@@ -612,6 +612,373 @@ Wnn
               </packing>
             </child>
             <child>
+              <widget class="GtkVBox" id="vbox3">
+                <property name="visible">True</property>
+                <property name="border_width">8</property>
+                <property name="spacing">4</property>
+                <child>
+                  <widget class="GtkFrame" id="frame4">
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment5">
+                        <property name="visible">True</property>
+                        <property name="top_padding">8</property>
+                        <property name="bottom_padding">8</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <widget class="GtkTable" id="table4">
+                            <property name="visible">True</property>
+                            <property name="n_rows">8</property>
+                            <property name="column_spacing">8</property>
+                            <property name="row_spacing">4</property>
+                            <child>
+                              <widget class="GtkTable" id="table5">
+                                <property name="visible">True</property>
+                                <property name="n_rows">2</property>
+                                <property name="n_columns">3</property>
+                                <property name="column_spacing">8</property>
+                                <property name="row_spacing">4</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label28">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="label" translatable="yes">Thumb Shift _Left Key:</property>
+                                    <property name="mnemonic_widget">thumb:ls</property>
+                                  </widget>
+                                  <packing>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="thumb:ls">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="editable">False</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkButton" id="thumb:button_ls">
+                                    <property name="label">...</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <signal name="clicked" handler="on_btn_thumb_key_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label29">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="label" translatable="yes">_Thumb Shift Right Key:</property>
+                                    <property name="mnemonic_widget">thumb:rs</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="thumb:rs">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="editable">False</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkButton" id="thumb:button_rs">
+                                    <property name="label">...</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <signal name="clicked" handler="on_btn_thumb_key_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="thumb:keyboard_layout_mode">
+                                <property name="label" translatable="yes">Adjust _input method layout to system keyboard layout</property>
+                                <property name="tooltip_text" translatable="yes">Adjust IM layout to XKB layout</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_ck_toggled"/>
+                                <accelerator key="I" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="hbox9">
+                                <property name="visible">True</property>
+                                <property name="spacing">8</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label30">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="label" translatable="yes">Input _Method Layout:</property>
+                                    <property name="mnemonic_widget">thumb:keyboard_layout</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkComboBox" id="thumb:keyboard_layout">
+                                    <property name="visible">True</property>
+                                    <property name="items" translatable="yes">NICOLA-J
+NICOLA-A
+NICOLA-F</property>
+                                    <signal name="changed" handler="on_cb_changed"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">2</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="hbox10">
+                                <property name="visible">True</property>
+                                <property name="spacing">8</property>
+                                <child>
+                                  <widget class="GtkImage" id="image2">
+                                    <property name="visible">True</property>
+                                    <property name="stock">gtk-dialog-info</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label31">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="wrap">True</property>
+                                    <property name="label" translatable="yes">Restart ibus when you change the keyboard layout.</property>
+                                    <property name="tooltip_text" translatable="yes">Restart ibus when you change XKB</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="thumb:warning_hbox">
+                                <property name="visible">False</property>
+                                <property name="spacing">8</property>
+                                <child>
+                                  <widget class="GtkImage" id="image3">
+                                    <property name="visible">True</property>
+                                    <property name="stock">gtk-dialog-warning</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label32">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="wrap">True</property>
+                                    <property name="label" translatable="yes">Strongly recommend to enable "Use system keyboard layout" check button in "Advanced" tab using 'ibus-setup' command</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">4</property>
+                                <property name="bottom_attach">5</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="hbox11">
+                                <property name="visible">True</property>
+                                <property name="spacing">8</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label33">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="label" translatable="yes">_Additional Key Arrangement:</property>
+                                    <property name="mnemonic_widget">thumb:fmv_extension</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkComboBox" id="thumb:fmv_extension">
+                                    <property name="visible">True</property>
+                                    <property name="items" translatable="yes">None
+FMV KB231 key extension
+FMV KB611 key extension</property>
+                                    <property name="tooltip_text" translatable="yes">'～', 『', '¢', '£' and so on can be output with Thumb Shift key</property>
+                                    <signal name="changed" handler="on_cb_changed"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">5</property>
+                                <property name="bottom_attach">6</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="hbox12">
+                                <property name="visible">True</property>
+                                <property name="spacing">8</property>
+                                <child>
+                                  <widget class="GtkImage" id="image4">
+                                    <property name="visible">True</property>
+                                    <property name="stock">gtk-dialog-info</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label34">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="wrap">True</property>
+                                    <property name="label" translatable="yes">You do not have to reconfigure the system keyboard layout for "Additional Key Arrangement" since this option changes input method layout only in case input method is turned on.</property>
+                                    <property name="tooltip_text" translatable="yes">You do not have to reconfigure XKB since this option changes IM layout only with IM on.</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">6</property>
+                                <property name="bottom_attach">7</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="thumb:handakuten">
+                                <property name="label" translatable="yes">_Enable semi-voiced sound mark with Shift key</property>
+                                <property name="tooltip_text" translatable="yes">Seion + Shift can output Handakuon</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_ck_toggled"/>
+                                <accelerator key="E" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">7</property>
+                                <property name="bottom_attach">8</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label35">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Thumb Shift Layout&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label3">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Thumb S_hift</property>
+                <property name="use_underline">True</property>
+                <property name="mnemonic_widget">vbox3</property>
+              </widget>
+              <packing>
+                <property name="position">2</property>
+                <property name="tab_fill">False</property>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkLabel" id="about">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">&lt;span size='xx-large'&gt;&lt;b&gt;IBus-Anthy&lt;/b&gt;&lt;/span&gt;
@@ -626,18 +993,18 @@ URL : http://code.google.com/p/ibus/
                 <property name="ellipsize">start</property>
               </widget>
               <packing>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label3">
+              <widget class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Abo_ut</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">about</property>
               </widget>
               <packing>
-                <property name="position">2</property>
+                <property name="position">3</property>
                 <property name="tab_fill">False</property>
                 <property name="type">tab</property>
               </packing>
@@ -752,7 +1119,7 @@ URL : http://code.google.com/p/ibus/
                 <property name="visible">True</property>
                 <property name="spacing">8</property>
                 <child>
-                  <widget class="GtkLabel" id="label30">
+                  <widget class="GtkLabel" id="label50">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Key Code:</property>
                   </widget>
@@ -799,7 +1166,7 @@ URL : http://code.google.com/p/ibus/
                 <property name="visible">True</property>
                 <property name="spacing">8</property>
                 <child>
-                  <widget class="GtkLabel" id="label29">
+                  <widget class="GtkLabel" id="label51">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Modifier:</property>
                   </widget>

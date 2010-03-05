@@ -170,11 +170,17 @@ _config = {
 
         'dict_admin_command': ['/usr/bin/kasumi', 'kasumi'],
         'add_word_command': ['/usr/bin/kasumi', 'kasumi', '-a'],
+    },
 
-        'thumb_rs': gtk.keysyms.Henkan,
-        'thumb_ls': gtk.keysyms.Muhenkan,
-        'thumb_t1': 100,
-        'thumb_t2': 75,
+    'thumb': {
+        'keyboard_layout_mode': True,
+        'keyboard_layout': 0,
+        'fmv_extension': 2,
+        'handakuten': False,
+        'rs': 'Henkan',
+        'ls': 'Muhenkan',
+        't1': 100,
+        't2': 75,
     }
 }
 

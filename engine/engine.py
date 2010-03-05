@@ -97,6 +97,7 @@ class Engine(ibus.EngineBase):
     __setup_pid = 0
     __prefs = None
     __keybind = {}
+    __thumb = None
 
     def __init__(self, bus, object_path):
         super(Engine, self).__init__(bus, object_path)
@@ -492,6 +493,8 @@ class Engine(ibus.EngineBase):
             return True
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
+        if prop_name == u"TypingMode.ThumbShift":
+            self._reset_thumb()
 
         mode, label = typing_modes[prop_name]
 
@@ -1054,6 +1057,9 @@ class Engine(ibus.EngineBase):
             cls.__prefs.set_value(base_sec, name, value)
             if name == 'shortcut_type':
                 cls.__keybind = cls._mk_keybind()
+        elif base_sec == 'thumb':
+            cls.__prefs.set_value(base_sec, name, value)
+            cls._reset_thumb()
         elif base_sec:
             cls.__prefs.set_value(base_sec, name, value)
         else:
@@ -1086,6 +1092,15 @@ class Engine(ibus.EngineBase):
                  'alt+' in s and modifier.MOD1_MASK or 0)
         return cls._mk_key(keyval, state)
 
+    @classmethod
+    def _reset_thumb(cls):
+        if cls.__thumb == None:
+            import thumb
+            cls.__thumb = thumb.ThumbShiftKeyboard(cls.__prefs)
+
+        else:
+            cls.__thumb.reset()
+
     @staticmethod
     def _mk_key(keyval, state):
         if state & (modifier.CONTROL_MASK | modifier.MOD1_MASK):
@@ -1097,12 +1112,12 @@ class Engine(ibus.EngineBase):
         return repr([int(state), int(keyval)])
 
     def process_key_event_thumb(self, keyval, keycode, state):
-        import gtk
-        import thumb
+        if self.__thumb == None:
+            self._reset_thumb()
 
         def on_timeout(keyval):
             if self._MM:
-                insert(thumb.table[self._MM][self._SS])
+                insert(self.__thumb.get_char(self._MM)[self._SS])
             else:
                 cmd_exec([0, RS(), LS()][self._SS])
             self._H = None
@@ -1140,16 +1155,16 @@ class Engine(ibus.EngineBase):
             return False
 
         def RS():
-            return self.__prefs.get_value('common', 'thumb_rs')
+            return self.__thumb.get_rs()
 
         def LS():
-            return self.__prefs.get_value('common', 'thumb_ls')
+            return self.__thumb.get_ls()
 
         def T1():
-            return self.__prefs.get_value('common', 'thumb_t1')
+            return self.__thumb.get_t1()
 
         def T2():
-            return self.__prefs.get_value('common', 'thumb_t2')
+            return self.__thumb.get_t2()
 
         state = state & (modifier.SHIFT_MASK |
                          modifier.CONTROL_MASK |
@@ -1163,7 +1178,7 @@ class Engine(ibus.EngineBase):
         if state & modifier.RELEASE_MASK:
             if keyval == self._MM:
                 if stop():
-                    insert(thumb.table[self._MM][self._SS])
+                    insert(self.__thumb.get_char(self._MM)[self._SS])
                 self._MM = 0
             elif (1 if keyval == RS() else 2) == self._SS:
                 if stop():
@@ -1184,29 +1199,29 @@ class Engine(ibus.EngineBase):
                     stop()
                     self._RMM = self._MM
                     self._RSS = 1 if keyval == RS() else 2
-                    insert(thumb.table[self._MM][1 if keyval == RS() else 2])
+                    insert(self.__thumb.get_char(self._MM)[1 if keyval == RS() else 2])
                 else:
                     if self._RSS == (1 if keyval == RS() else 2):
                         if self._RMM:
-                            insert(thumb.table[self._RMM][self._RSS])
+                            insert(self.__thumb.get_char(self._RMM)[self._RSS])
                     else:
                         self._SS = 1 if keyval == RS() else 2
                         start(T1())
-            elif keyval in thumb.table.keys() and state == 0:
+            elif keyval in self.__thumb.get_chars() and state == 0:
                 if self._MM:
                     stop()
-                    insert(thumb.table[self._MM][self._SS])
+                    insert(self.__thumb.get_char(self._MM)[self._SS])
                     start(T2())
                     self._MM = keyval
                 elif self._SS:
                     stop()
                     self._RMM = keyval
                     self._RSS = self._SS
-                    insert(thumb.table[keyval][self._SS])
+                    insert(self.__thumb.get_char(keyval)[self._SS])
                 else:
                     if self._RMM  == keyval:
                         if self._RSS:
-                            insert(thumb.table[self._RMM][self._RSS])
+                            insert(self.__thumb.get_char(self._RMM)[self._RSS])
                     else:
                         if cmd_exec(keyval, state):
                             return True
@@ -1215,14 +1230,17 @@ class Engine(ibus.EngineBase):
             else:
                 if self._MM:
                     stop()
-                    insert(thumb.table[self._MM][self._SS])
+                    insert(self.__thumb.get_char(self._MM)[self._SS])
                 elif self._SS:
                     stop()
                     cmd_exec([0, RS(), LS()][self._SS])
                 if cmd_exec(keyval, state):
                     return True
                 elif 0x21 <= keyval <= 0x7e and state & (modifier.CONTROL_MASK | modifier.MOD1_MASK) == 0:
-                    insert(thumb.shift_table.get(keyval, unichr(keyval)))
+                    if state & modifier.SHIFT_MASK:
+                        insert(self.__thumb.get_shift_char(keyval, unichr(keyval)))
+                    elif self._SS == 0:
+                        insert(unichr(keyval))
                 else:
                     if not self.__preedit_ja_string.is_empty():
                         return True
