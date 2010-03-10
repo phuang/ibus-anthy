@@ -112,6 +112,7 @@ AM_GNU_GETTEXT_VERSION(0.16.1)
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-anthy.spec
+data/Makefile
 engine/Makefile
 engine/ibus-engine-anthy
 engine/anthy.xml.in

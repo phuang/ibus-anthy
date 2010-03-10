@@ -20,11 +20,12 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 SUBDIRS = \
-	engine \
-	setup \
-	icons \
 	m4 \
 	po \
+	data \
+	engine \
+	icons \
+	setup \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
