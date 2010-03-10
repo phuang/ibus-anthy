@@ -41,6 +41,12 @@ class Prefs(object):
     def sections(self):
         return self.default.keys()
 
+    def set_new_section(self, section):
+        self.default.setdefault(section, {})
+
+    def set_new_key(self, section, key):
+        self.default[section].setdefault(key)
+
     def get_value(self, section, key):
         try:
             return self.new[section][key]

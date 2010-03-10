@@ -26,6 +26,7 @@ import sys
 
 from prefs import Prefs
 
+N_ = lambda a : a
 
 __all__ = ['AnthyPrefs']
 
@@ -88,6 +89,7 @@ _cmd_keys = [
     "half_katakana_mode",
 #    "cancel_pseudo_ascii_mode_key",
     "circle_typing_method",
+    "circle_dict_method",
 
     "insert_space",
     "insert_alternate_space",
@@ -181,7 +183,62 @@ _config = {
         'ls': 'Muhenkan',
         't1': 100,
         't2': 75,
-    }
+    },
+
+    'dict': {
+        'anthy_zipcode': ['/usr/share/anthy/zipcode.t'],
+        'ibus_symbol': ['/usr/share/ibus-anthy/dicts/symbol.t'],
+        'files': [
+            '/usr/share/anthy/zipcode.t',
+            '/usr/share/ibus-anthy/dicts/symbol.t',
+        ],
+    },
+
+    'dict/file/default': {
+        'embed': False,
+        'single': True,
+        'icon': None,
+        'short_label': None,
+        'long_label': None,
+        'preview_lines': 30,
+        'reverse': False,
+        'is_system': False,
+        'encoding': 'utf-8',
+    },
+
+    'dict/file/embedded': {
+        'embed': True,
+        'single': True,
+        'icon': None,
+        'short_label': '般',
+        'long_label': N_("General"),
+        'preview_lines': 0,
+        'reverse': False,
+        'is_system': True,
+    },
+
+    'dict/file/anthy_zipcode': {
+        'embed': False,
+        'single': True,
+        'icon': None,
+        'short_label': '〒',
+        'long_label': N_("Zip Code Conversion"),
+        'preview_lines': 30,
+        'reverse': True,
+        'is_system': True,
+        'encoding': 'euc_jp',
+    },
+
+    'dict/file/ibus_symbol': {
+        'embed': True,
+        'single': False,
+        'icon': None,
+        'short_label': '記',
+        'long_label': N_("Symbol"),
+        'preview_lines': -1,
+        'reverse': False,
+        'is_system': True,
+    },
 }
 
 _shortcut_default = {
@@ -190,6 +247,7 @@ _shortcut_default = {
     'circle_kana_mode': ['Ctrl+period', 'Ctrl+greater', 'Hiragana_Katakana'],
 #    'cancel_pseudo_ascii_mode_key': ['Escape'],
     'circle_typing_method': ['Alt+Romaji', 'Ctrl+slash'],
+    'circle_dict_method': ['Alt+Henkan'],
 
     'insert_space': ['space'],
     'insert_alternate_space': ['Shift+space'],
@@ -254,6 +312,7 @@ _shortcut_atok = {
     'hiragana_mode': ['Hiragana_Katakana'],
     'katakana_mode': ['Shift+Hiragana_Katakana'],
     'circle_typing_method': ['Romaji', 'Alt+Romaji'],
+    'circle_dict_method': ['Alt+Henkan'],
     'convert': ['space', 'Henkan', 'Shift+space', 'Shift+Henkan'],
     'predict': ['Tab'],
     'cancel': ['Escape', 'BackSpace', 'Ctrl+H', 'Ctrl+bracketleft'],
@@ -316,6 +375,7 @@ _shortcut_wnn = {
     'insert_space': ['space'],
     'backspace': ['Ctrl+H', 'BackSpace'],
     'delete': ['Ctrl+D', 'Delete'],
+    'circle_dict_method': ['Alt+Henkan'],
 
     'move_caret_backward': ['Ctrl+B', 'Left'],
     'move_caret_forward': ['Ctrl+F', 'Right'],

@@ -21,8 +21,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 import os
-from os import path
+from os import environ, path
 from locale import getpreferredencoding
+import signal
 import sys
 import gobject
 import ibus
@@ -73,6 +74,13 @@ CONV_MODE_PREDICTION = range(14)
 
 CLIPBOARD_RECONVERT = range(1)
 
+LINK_DICT_EMBEDDED, \
+LINK_DICT_SINGLE = range(2)
+
+IMPORTED_EMBEDDED_DICT_DIR = "imported_words_default.d"
+IMPORTED_EMBEDDED_DICT_PREFIX = "ibus__"
+IMPORTED_SINGLE_DICT_PREFIX = "imported_words_ibus__"
+
 ''' FIXME: currently configuration values are extracted by enviroment values.
     It's better to load config.py(.in) in engine and setup instead and
     I will move KASUMI_IMG_PATH.
@@ -109,6 +117,7 @@ class Engine(ibus.EngineBase):
         # init state
         self.__idle_id = 0
         self.__input_mode = INPUT_MODE_HIRAGANA
+        self.__dict_mode = 0
         self.__prop_dict = {}
         self.__is_utf8 = (getpreferredencoding().lower() == "utf-8")
 
@@ -207,18 +216,73 @@ class Engine(ibus.EngineBase):
         typing_mode_prop.set_sub_props(props)
         anthy_props.append(typing_mode_prop)
 
-        self.__set_dict_props(anthy_props)
+        self.__set_dict_mode_props(anthy_props)
+        self.__set_dict_config_props(anthy_props)
         anthy_props.append(ibus.Property(key=u"setup",
                                          tooltip=UN(_("Configure Anthy"))))
 
         return anthy_props
 
-    def __set_dict_props(self, anthy_props):
-        path = self.__prefs.get_value('common', 'dict_admin_command')
-        if not os.path.exists(path[0]):
+    def __init_signal(self):
+        signal.signal(signal.SIGHUP, self.__signal_cb)
+        signal.signal(signal.SIGINT, self.__signal_cb)
+        signal.signal(signal.SIGQUIT, self.__signal_cb)
+        signal.signal(signal.SIGABRT, self.__signal_cb)
+        signal.signal(signal.SIGTERM, self.__signal_cb)
+
+    def __signal_cb(self, signum, object):
+        self.__remove_dict_files()
+        signal.signal(signum, signal.SIG_DFL)
+        os.kill(os.getpid(), signum)
+
+    def __set_dict_mode_props(self, anthy_props):
+        short_label = self.__prefs.get_value('dict/file/embedded',
+                                             'short_label')
+        dict_mode_prop = ibus.Property(key=u"DictMode",
+                                       type=ibus.PROP_TYPE_MENU,
+                                       label=UN(short_label),
+                                       tooltip=UN(_("Switch Dictionary")))
+        self.__prop_dict[u"DictMode"] = dict_mode_prop
+        props = ibus.PropList()
+
+        long_label = self.__prefs.get_value('dict/file/embedded',
+                                            'long_label')
+        props.append(ibus.Property(key=u"DictMode.embedded",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=UN(_(long_label))))
+
+        for file in self.__prefs.get_value('dict', 'files'):
+            self._link_dict_file(file)
+            id = self._get_dict_id_from_file(file)
+            if id == None:
+                continue
+            section = 'dict/file/' + id
+            if not self.__prefs.get_value(section, 'single'):
+                continue
+            key = "DictMode." + id
+            long_label = self.__prefs.get_value(section, 'long_label')
+            if 'is_system' in self.__prefs.keys(section) and \
+               self.__prefs.get_value(section, 'is_system'):
+                uni_long_label = UN(_(long_label))
+            else:
+                uni_long_label = UN(long_label)
+            props.append(ibus.Property(key=UN(key),
+                                       type=ibus.PROP_TYPE_RADIO,
+                                       label=uni_long_label))
+
+        props[self.__dict_mode].set_state(ibus.PROP_STATE_CHECKED)
+        for prop in props:
+            self.__prop_dict[prop.key] = prop
+        dict_mode_prop.set_sub_props(props)
+        anthy_props.append(dict_mode_prop)
+        self.__init_signal()
+
+    def __set_dict_config_props(self, anthy_props):
+        admin_command = self.__prefs.get_value('common', 'dict_admin_command')
+        if not path.exists(admin_command[0]):
             return
 
-        if os.path.exists(KASUMI_IMG_PATH):
+        if path.exists(KASUMI_IMG_PATH):
             label = u""
             icon = unicode(KASUMI_IMG_PATH)
         else:
@@ -254,6 +318,22 @@ class Engine(ibus.EngineBase):
             self.__update_reconvert(clipboard_text)
 
         return clipboard_text
+
+    def __get_single_dict_files(self):
+        files = self.__prefs.get_value('dict', 'files')
+        single_files = []
+        for file in files:
+            id = self._get_dict_id_from_file(file)
+            if id == None:
+                continue
+            section = 'dict/file/' + id
+            if self.__prefs.get_value(section, 'single'):
+                single_files.append(file)
+        return single_files
+
+    def __remove_dict_files(self):
+        for file in self.__prefs.get_value('dict', 'files'):
+            self._remove_dict_file(file)
 
     def update_preedit(self, string, attrs, cursor_pos, visible):
         self.update_preedit_text(ibus.Text(string, attrs), cursor_pos, visible)
@@ -434,9 +514,16 @@ class Engine(ibus.EngineBase):
     def property_activate(self, prop_name, state):
 
         if state == ibus.PROP_STATE_CHECKED:
-            if self.__input_mode_activate(prop_name, state):
+            if prop_name == None:
                 return
-            if self.__typing_mode_activate(prop_name, state):
+            elif prop_name.startswith(u"InputMode."):
+                self.__input_mode_activate(prop_name, state)
+                return
+            elif prop_name.startswith(u"TypingMode."):
+                self.__typing_mode_activate(prop_name, state)
+                return
+            elif prop_name.startswith(u"DictMode."):
+                self.__dict_mode_activate(prop_name, state)
                 return
         else:
             if prop_name == 'setup':
@@ -447,11 +534,14 @@ class Engine(ibus.EngineBase):
                 self.__start_add_word()
             else:
                 self.__prop_dict[prop_name].set_state(state)
+                if prop_name == "DictMode":
+                    sub_name = self.__dict_mode_get_prop_name(self.__dict_mode)
+                    if sub_name == None:
+                        return
+                    self.__dict_mode_activate(sub_name,
+                                              ibus.PROP_STATE_CHECKED)
 
     def __input_mode_activate(self, prop_name, state):
-        if not prop_name.startswith(u"InputMode."):
-            return False
-
         input_modes = {
             u"InputMode.Hiragana" : (INPUT_MODE_HIRAGANA, u"あ"),
             u"InputMode.Katakana" : (INPUT_MODE_KATAKANA, u"ア"),
@@ -462,13 +552,13 @@ class Engine(ibus.EngineBase):
 
         if prop_name not in input_modes:
             print >> sys.stderr, "Unknow prop_name = %s" % prop_name
-            return True
+            return
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
 
         mode, label = input_modes[prop_name]
         if self.__input_mode == mode:
-            return True
+            return
 
         self.__input_mode = mode
         prop = self.__prop_dict[u"InputMode"]
@@ -479,9 +569,6 @@ class Engine(ibus.EngineBase):
         self.__invalidate()
 
     def __typing_mode_activate(self, prop_name, state):
-        if not prop_name.startswith(u"TypingMode."):
-            return False
-
         typing_modes = {
             u"TypingMode.Romaji" : (jastring.TYPING_MODE_ROMAJI, u"R"),
             u"TypingMode.Kana" : (jastring.TYPING_MODE_KANA, u"か"),
@@ -490,7 +577,7 @@ class Engine(ibus.EngineBase):
 
         if prop_name not in typing_modes:
             print >> sys.stderr, "Unknow prop_name = %s" % prop_name
-            return True
+            return
         self.__prop_dict[prop_name].set_state(state)
         self.update_property(self.__prop_dict[prop_name])
         if prop_name == u"TypingMode.ThumbShift":
@@ -522,6 +609,57 @@ class Engine(ibus.EngineBase):
         prop.label = label
         self.update_property(prop)
 
+    def __dict_mode_get_prop_name(self, mode):
+        if mode == 0:
+            id = 'embedded'
+        else:
+            single_files = self.__get_single_dict_files()
+            file = single_files[mode - 1]
+            id = self._get_dict_id_from_file(file)
+        if id == None:
+            return None
+        return 'DictMode.' + id
+
+    def __dict_mode_activate(self, prop_name, state):
+        if prop_name not in self.__prop_dict.keys():
+            # The prop_name is added. Need to restart.
+            return
+        i = prop_name.find('.')
+        if i < 0:
+            return
+        id = prop_name[i + 1:].encode('utf-8')
+
+        file = None
+        files = self.__prefs.get_value('dict', 'files')
+        if id == 'embedded':
+            pass
+        elif id == 'anthy_zipcode' or id == 'ibus_symbol':
+            file = self.__prefs.get_value('dict', id)[0]
+        else:
+            found = False
+            for file in files:
+                if id == self._get_quoted_id(file):
+                    found = True
+                    break
+            if found == False:
+                return
+
+        if id == 'embedded':
+            dict_name = 'default'
+            self.__dict_mode = 0
+        else:
+            dict_name = 'ibus__' + id
+            self.__dict_mode = files.index(file) + 1
+        self.__prop_dict[prop_name].set_state(state)
+        self.update_property(self.__prop_dict[prop_name])
+        self.__context.init_personality()
+        self.__context.do_set_personality(dict_name)
+
+        prop = self.__prop_dict[u"DictMode"]
+        section = 'dict/file/' + id
+        prop.label = self.__prefs.get_value(section, 'short_label')
+        self.update_property(prop)
+
     def focus_in(self):
         self.register_properties(self.__prop_list)
         self.__refresh_typing_mode_property()
@@ -540,6 +678,7 @@ class Engine(ibus.EngineBase):
         if self.__idle_id != 0:
             gobject.source_remove(self.__idle_id)
             self.__idle_id = 0
+        self.__remove_dict_files()
         super(Engine,self).do_destroy()
 
     # begine convert
@@ -587,6 +726,43 @@ class Engine(ibus.EngineBase):
                     candidate = candidate.replace(key, value)
                     self.__lookup_table.append_candidate(ibus.Text(candidate))
 
+    def __fill_anthy_zipcode_strip(self, dict_file, id):
+        import re
+        text = self.__preedit_ja_string.get_latin()[0]
+        if text.find('-') < 0:
+            return
+        text = text.replace('-', '')
+        section = 'dict/file/' + id
+        if 'encoding' not in self.__prefs.keys(section):
+            section = 'dict/file/default'
+        encoding = self.__prefs.get_value(section, 'encoding')
+        contents = unicode(open(dict_file).read(), encoding)
+        expression = re.compile("^" + text + "[ \t]")
+
+        found = False
+        dict_dest = None
+        for line in contents.split('\n'):
+            matched = expression.search(line)
+            if matched:
+                found = True
+                dict_dest = unicode(matched.string).split(' ')[2]
+                break
+        if found:
+            self.__lookup_table.append_candidate(ibus.Text(dict_dest))
+
+    def __fill_lookup_table_dict_mode(self):
+        if self.__dict_mode <= 0:
+            return
+        single_files = self.__get_single_dict_files()
+        file = single_files[self.__dict_mode - 1]
+        if file == None:
+            return
+        id = self._get_dict_id_from_file(file)
+        if id == None:
+            return
+        if id == 'anthy_zipcode':
+            self.__fill_anthy_zipcode_strip(file, id)
+
     def __fill_lookup_table(self):
         if self.__convert_mode == CONV_MODE_PREDICTION:
             seg_stat = anthy.anthy_prediction_stat()
@@ -612,6 +788,7 @@ class Engine(ibus.EngineBase):
             candidate = unicode(buf, "utf-8")
             self.__lookup_table.append_candidate(ibus.Text(candidate))
             self.__candidate_cb(candidate)
+        self.__fill_lookup_table_dict_mode()
 
 
     def __invalidate(self):
@@ -1060,6 +1237,12 @@ class Engine(ibus.EngineBase):
         elif base_sec == 'thumb':
             cls.__prefs.set_value(base_sec, name, value)
             cls._reset_thumb()
+        elif base_sec == 'dict':
+            cls._set_dict_files_value(base_sec, name, value)
+        elif base_sec.startswith('dict/file/'):
+            if base_sec not in cls.__prefs.sections():
+                cls._fetch_dict_values(base_sec)
+            cls.__prefs.set_value(base_sec, name, value)
         elif base_sec:
             cls.__prefs.set_value(base_sec, name, value)
         else:
@@ -1100,6 +1283,163 @@ class Engine(ibus.EngineBase):
 
         else:
             cls.__thumb.reset()
+
+    @classmethod
+    def _get_userhome(cls):
+        if 'HOME' not in environ:
+            import pwd
+            userhome = pwd.getpwuid(getuid()).pw_dir
+        else:
+            userhome = environ['HOME']
+        userhome = userhome.rstrip('/')
+        return userhome
+
+    @classmethod
+    def _get_quoted_id(cls, file):
+        id = file
+        has_mbcs = False
+
+        for i in xrange(0, len(id)):
+            if ord(id[i]) >= 0x7f:
+                    has_mbcs = True
+                    break
+        if has_mbcs:
+            import urllib
+            id = urllib.quote(id)
+
+        if id.find('/') >=0:
+            id = id[id.rindex('/') + 1:]
+        if id.find('.') >=0:
+            id = id[:id.rindex('.')]
+        return id
+
+    @classmethod
+    def _get_dict_id_from_file(cls, file):
+        if file in cls.__prefs.get_value('dict', 'anthy_zipcode'):
+            id = 'anthy_zipcode'
+        elif file in cls.__prefs.get_value('dict', 'ibus_symbol'):
+            id = 'ibus_symbol'
+        else:
+            id = cls._get_quoted_id(file)
+        return id
+
+    @classmethod
+    def _link_dict_file_with_id(cls, file, id, link_mode):
+        if id == None:
+            return
+        if link_mode == LINK_DICT_EMBEDDED:
+            directory = cls._get_userhome() + "/.anthy/" + IMPORTED_EMBEDDED_DICT_DIR
+            name = IMPORTED_EMBEDDED_DICT_PREFIX + id
+        elif link_mode == LINK_DICT_SINGLE:
+            directory = cls._get_userhome() + "/.anthy"
+            name = IMPORTED_SINGLE_DICT_PREFIX + id
+        else:
+            return
+        if path.exists(directory):
+            if not path.isdir(directory):
+                print >> sys.stderr, directory + " is not a directory"
+                return
+        else:
+            os.makedirs(directory, 0700)
+        backup_dir = os.getcwd()
+        os.chdir(directory)
+        if path.exists(directory + '/' + name):
+            if path.islink(directory + '/' + name):
+                print >> sys.stderr, "Removing " + name
+                os.unlink(directory + '/' + name)
+            else:
+                alternate = name + str(os.getpid())
+                print >> sys.stderr, "Moving " + name + " to " + alternate
+                os.rename(name, alternate)
+        os.symlink(file, directory + '/' + name)
+        if backup_dir != None:
+            os.chdir(backup_dir)
+
+    @classmethod
+    def _remove_dict_file_with_id(cls, file, id, link_mode):
+        if id == None:
+            return
+        if link_mode == LINK_DICT_EMBEDDED:
+            directory = cls._get_userhome() + "/.anthy/" + IMPORTED_EMBEDDED_DICT_DIR
+            name = IMPORTED_EMBEDDED_DICT_PREFIX + id
+        elif link_mode == LINK_DICT_SINGLE:
+            directory = cls._get_userhome() + "/.anthy"
+            name = IMPORTED_SINGLE_DICT_PREFIX + id
+        else:
+            return
+        if path.exists(directory):
+            if not path.isdir(directory):
+                print >> sys.stderr, directory + " is not a directory"
+                return
+        backup_dir = os.getcwd()
+        os.chdir(directory)
+        if path.exists(directory + '/' + name):
+            os.unlink(directory + '/' + name)
+        if backup_dir != None:
+            os.chdir(backup_dir)
+
+    @classmethod
+    def _link_dict_file(cls, file):
+        id = cls._get_dict_id_from_file(file)
+        if id == None:
+            return
+        section = 'dict/file/' + id
+        if section not in cls.__prefs.sections():
+            cls._fetch_dict_values(section)
+        if cls.__prefs.get_value(section, 'embed'):
+            cls._link_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
+        if cls.__prefs.get_value(section, 'single'):
+            cls._link_dict_file_with_id(file, id, LINK_DICT_SINGLE)
+
+    @classmethod
+    def _remove_dict_file(cls, file):
+        id = cls._get_dict_id_from_file(file)
+        if id == None:
+            return
+        section = 'dict/file/' + id
+        if section not in cls.__prefs.sections():
+            cls._fetch_dict_values(section)
+        if cls.__prefs.get_value(section, 'embed'):
+            cls._remove_dict_file_with_id(file, id, LINK_DICT_EMBEDDED)
+        if cls.__prefs.get_value(section, 'single'):
+            cls._remove_dict_file_with_id(file, id, LINK_DICT_SINGLE)
+
+    @classmethod
+    def _set_dict_files_value(cls, base_sec, name, value):
+        if name == 'files':
+            str_list = []
+            for file in value:
+                str_list.append(str(file))
+            old_files = cls.__prefs.get_value(base_sec, name)
+            for file in old_files:
+                if file in str_list:
+                    continue
+                cls._remove_dict_file(file)
+            for file in str_list:
+                if file in old_files:
+                    continue
+                cls._link_dict_file(file)
+            cls.__prefs.set_value(base_sec, name, str_list)
+        else:
+            cls.__prefs.set_value(base_sec, name, value)
+
+    @classmethod
+    def _fetch_dict_values(cls, section):
+        cls.__prefs.set_new_section(section)
+        cls.__prefs.set_new_key(section, 'short_label')
+        cls.__prefs.fetch_item(section, 'short_label')
+        cls.__prefs.set_value(section, 'short_label',
+                              str(cls.__prefs.get_value(section, 'short_label')))
+        cls.__prefs.set_new_key(section, 'long_label')
+        cls.__prefs.fetch_item(section, 'long_label')
+        cls.__prefs.set_value(section, 'long_label',
+                              str(cls.__prefs.get_value(section, 'long_label')))
+        cls.__prefs.set_new_key(section, 'embed')
+        cls.__prefs.fetch_item(section, 'embed')
+        cls.__prefs.set_new_key(section, 'single')
+        cls.__prefs.fetch_item(section, 'single')
+        cls.__prefs.set_new_key(section, 'reverse')
+        cls.__prefs.fetch_item(section, 'reverse')
 
     @staticmethod
     def _mk_key(keyval, state):
@@ -1381,6 +1721,22 @@ class Engine(ibus.EngineBase):
         }
         self.__typing_mode_activate(modes[self.__typing_mode],
                                     ibus.PROP_STATE_CHECKED)
+        return True
+
+    def __cmd_circle_dict_method(self, keyval, state):
+        if not self._chk_mode('0'):
+            return False
+
+        single_files = self.__get_single_dict_files()
+        new_mode = self.__dict_mode + 1
+        if new_mode > len(single_files):
+            new_mode = 0
+        self.__dict_mode = new_mode
+        prop_name = self.__dict_mode_get_prop_name(self.__dict_mode)
+        if prop_name == None:
+            return False
+        self.__dict_mode_activate(prop_name,
+                                  ibus.PROP_STATE_CHECKED)
         return True
 
     #edit_keys
@@ -1909,12 +2265,12 @@ class Engine(ibus.EngineBase):
         return True
 
     def __start_dict_admin(self):
-        path = self.__prefs.get_value('common', 'dict_admin_command')
-        os.spawnl(os.P_NOWAIT, *path)
+        command = self.__prefs.get_value('common', 'dict_admin_command')
+        os.spawnl(os.P_NOWAIT, *command)
 
     def __start_add_word(self):
-        path = self.__prefs.get_value('common', 'add_word_command')
-        os.spawnl(os.P_NOWAIT, *path)
+        command = self.__prefs.get_value('common', 'add_word_command')
+        os.spawnl(os.P_NOWAIT, *command)
 
     def __start_setup(self):
         if Engine.__setup_pid != 0:

@@ -109,6 +109,14 @@ struct anthy_context {};
         return anthy_set_reconversion_mode (self, mode);
     }
 
+    int init_personality (void) {
+        return anthy_init_personality ();
+    }
+
+    int do_set_personality (const char *id) {
+        return anthy_do_set_personality (id);
+    }
+
     ~anthy_context () {
         anthy_release_context (self);
     }

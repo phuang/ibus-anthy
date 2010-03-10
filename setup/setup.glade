@@ -460,7 +460,7 @@ Hold
                     <property name="visible">True</property>
                     <property name="spacing">8</property>
                     <child>
-                      <widget class="GtkLabel" id="label5">
+                      <widget class="GtkLabel" id="label6">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Shortcut Type:</property>
                         <property name="use_underline">True</property>
@@ -979,6 +979,341 @@ FMV KB611 key extension</property>
               </packing>
             </child>
             <child>
+              <widget class="GtkVBox" id="vbox4">
+                <property name="visible">True</property>
+                <property name="border_width">4</property>
+                <property name="spacing">4</property>
+                <child>
+                  <widget class="GtkFrame" id="frame5">
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment6">
+                        <property name="visible">True</property>
+                        <property name="top_padding">4</property>
+                        <property name="left_padding">0</property>
+                        <child>
+                          <widget class="GtkVBox" id="vbox5">
+                            <property name="visible">True</property>
+                            <property name="border_width">4</property>
+                            <property name="spacing">4</property>
+                            <child>
+                              <widget class="GtkTable" id="table6">
+                                <property name="visible">True</property>
+                                <property name="n_rows">2</property>
+                                <property name="n_columns">3</property>
+                                <property name="column_spacing">8</property>
+                                <property name="row_spacing">4</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label36">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">_Edit Dictionary Command:</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">dict:entry_edit_dict_command</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"></property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="dict:entry_edit_dict_command">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="editable">True</property>
+                                    <signal name="changed" handler="on_entry_dict_command_changed"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkButton" id="dict:btn_edit_dict_command">
+                                    <property name="label">...</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="can_default">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <signal name="clicked" handler="on_btn_dict_command_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label37">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">_Add Word Command:</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">dict:entry_add_word_command</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"></property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="dict:entry_add_word_command">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="editable">True</property>
+                                    <signal name="changed" handler="on_entry_dict_command_changed"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkButton" id="dict:btn_add_word_command">
+                                    <property name="label">...</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="can_default">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <signal name="clicked" handler="on_btn_dict_command_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                    <property name="top_attach">1</property>
+                                    <property name="bottom_attach">2</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label38">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Default Dictionary Configuration&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkFrame" id="frame6">
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment7">
+                        <property name="visible">True</property>
+                        <property name="top_padding">4</property>
+                        <property name="left_padding">0</property>
+                        <child>
+                          <widget class="GtkVBox" id="vbox6">
+                            <property name="visible">True</property>
+                            <property name="border_width">4</property>
+                            <property name="spacing">4</property>
+                            <child>
+                              <widget class="GtkScrolledWindow" id="scrolledwindow2">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="height_request">220</property>
+                                <property name="hscrollbar_policy">automatic</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                                <property name="shadow_type">in</property>
+                                <child>
+                                  <widget class="GtkTreeView" id="dict:view">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <signal name="button_press_event" handler="on_shortcut_click_event"/>
+                                    <signal name="button_release_event" handler="on_shortcut_click_event"/>
+                                    <signal name="key_release_event" handler="on_shortcut_key_release_event"/>
+                                  </widget>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHButtonBox" id="hbuttonbox2">
+                                <property name="visible">True</property>
+                                <property name="spacing">4</property>
+                                <property name="layout_style">end</property>
+                                <child>
+                                  <widget class="GtkButton" id="dict:btn_view">
+                                    <property name="label" translatable="yes">_View</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="can_default">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <signal name="clicked" handler="on_btn_dict_view_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkButton" id="dict:btn_add">
+                                    <property name="label">gtk-add</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="can_default">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="on_btn_dict_add_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkButton" id="dict:btn_edit">
+                                    <property name="label">gtk-edit</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="can_default">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="on_btn_dict_add_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">2</property>
+                                 </packing>
+                               </child>
+                               <child>
+                                 <widget class="GtkButton" id="dict:btn_delete">
+                                   <property name="label">gtk-delete</property>
+                                   <property name="visible">True</property>
+                                   <property name="can_focus">True</property>
+                                   <property name="can_default">True</property>
+                                   <property name="receives_default">False</property>
+                                   <property name="use_stock">True</property>
+                                   <signal name="clicked" handler="on_btn_dict_delete_clicked"/>
+                                 </widget>
+                                 <packing>
+                                   <property name="expand">False</property>
+                                   <property name="fill">False</property>
+                                   <property name="position">3</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHButtonBox" id="hbuttonbox2">
+                                <property name="visible">True</property>
+                                <property name="spacing">4</property>
+                                <property name="layout_style">end</property>
+                                <child>
+                                  <widget class="GtkButton" id="dict:btn_up">
+                                    <property name="label">gtk-go-up</property>
+                                    <property name="tooltip_text" translatable="yes">You can change the order on language bar</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="can_default">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="on_btn_dict_order_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkButton" id="dict:btn_down">
+                                    <property name="label">gtk-go-down</property>
+                                    <property name="tooltip_text" translatable="yes">You can change the order on language bar</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="can_default">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="on_btn_dict_order_clicked"/>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label39">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Extended Dictionaries&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label4">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Dictionar_y</property>
+                <property name="use_underline">True</property>
+                <property name="mnemonic_widget">vbox4</property>
+              </widget>
+              <packing>
+                <property name="position">3</property>
+                <property name="tab_fill">False</property>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkLabel" id="about">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">&lt;span size='xx-large'&gt;&lt;b&gt;IBus-Anthy&lt;/b&gt;&lt;/span&gt;
@@ -993,18 +1328,18 @@ URL : http://code.google.com/p/ibus/
                 <property name="ellipsize">start</property>
               </widget>
               <packing>
-                <property name="position">3</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label4">
+              <widget class="GtkLabel" id="label5">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Abo_ut</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">about</property>
               </widget>
               <packing>
-                <property name="position">3</property>
+                <property name="position">4</property>
                 <property name="tab_fill">False</property>
                 <property name="type">tab</property>
               </packing>
@@ -1090,12 +1425,12 @@ URL : http://code.google.com/p/ibus/
       <widget class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <child>
-          <widget class="GtkVBox" id="vbox3">
+          <widget class="GtkVBox" id="vbox20">
             <property name="visible">True</property>
             <property name="border_width">5</property>
             <property name="spacing">6</property>
             <child>
-              <widget class="GtkScrolledWindow" id="scrolledwindow2">
+              <widget class="GtkScrolledWindow" id="scrolledwindow3">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="border_width">1</property>
@@ -1231,7 +1566,7 @@ URL : http://code.google.com/p/ibus/
               </packing>
             </child>
             <child>
-              <widget class="GtkHButtonBox" id="hbuttonbox2">
+              <widget class="GtkHButtonBox" id="hbuttonbox3">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">end</property>
@@ -1482,6 +1817,125 @@ URL : http://code.google.com/p/ibus/
           </packing>
         </child>
       </widget>
+    </child>
+  </widget>
+  <widget class="GtkVBox" id="dict:add_extra_vbox">
+    <property name="visible">True</property>
+    <property name="no_show_all">True</property>
+    <property name="spacing">10</property>
+    <child>
+      <widget class="GtkTable" id="table10">
+        <property name="visible">True</property>
+        <property name="n_rows">2</property>
+        <property name="n_columns">2</property>
+        <property name="column_spacing">8</property>
+        <property name="row_spacing">4</property>
+        <child>
+          <widget class="GtkLabel" id="label60">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">_Short Label:</property>
+            <property name="use_underline">True</property>
+            <property name="mnemonic_widget">dict:short_entry</property>
+          </widget>
+          <packing>
+            <property name="x_options">GTK_FILL</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkEntry" id="dict:short_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">True</property>
+            <property name="max-length">1</property>
+          </widget>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkLabel" id="label61">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">_Description:</property>
+            <property name="use_underline">True</property>
+            <property name="mnemonic_widget">dict:long_entry</property>
+          </widget>
+          <packing>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+            <property name="x_options">GTK_FILL</property>
+            <property name="y_options"></property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkEntry" id="dict:long_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">True</property>
+          </widget>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">2</property>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+          </packing>
+        </child>
+      </widget>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+      </packing>
+    </child>
+    <child>
+      <widget class="GtkCheckButton" id="dict:single">
+        <property name="label" translatable="yes">_Use your dictionary alone with switching dictionaries</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="receives_default">False</property>
+        <property name="use_underline">True</property>
+        <property name="draw_indicator">True</property>
+        <property name="active">True</property>
+        <accelerator key="U" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
+      </widget>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <widget class="GtkCheckButton" id="dict:embed">
+        <property name="label" translatable="yes">_Embed your dictionary in the system dictionary</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="receives_default">False</property>
+        <property name="use_underline">True</property>
+        <property name="draw_indicator">True</property>
+        <accelerator key="E" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
+      </widget>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <!-- Unfortunatelly reverse conversion is too slow. -->
+      <widget class="GtkCheckButton" id="dict:reverse">
+        <property name="label" translatable="yes">Enable the _reverse conversion</property>
+        <property name="visible">False</property>
+        <property name="can_focus">False</property>
+        <property name="receives_default">False</property>
+        <property name="use_underline">True</property>
+        <property name="draw_indicator">True</property>
+        <accelerator key="R" signal="grab_focus" modifiers="GDK_MOD1_MASK"/>
+      </widget>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">3</property>
+      </packing>
     </child>
   </widget>
 </glade-interface>
