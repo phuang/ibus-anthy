@@ -64,7 +64,7 @@ class AnthySetup(object):
         if path.exists(icon_path):
             xml.get_widget('main').set_icon_from_file(icon_path)
 
-        for name in ['input_mode', 'typing_method',
+        for name in ['input_mode', 'typing_method', 'conversion_segment_mode',
                      'period_style', 'symbol_style', 'ten_key_mode',
                      'behavior_on_focus_out', 'behavior_on_period',
                      'half_width_symbol', 'half_width_number', 'half_width_space',
@@ -298,19 +298,19 @@ class AnthySetup(object):
 
         if new:
             if file in files:
-                self.__run_message_dialog(_("Your choosed file has already been added."),
+                self.__run_message_dialog(_("Your choosed file has already been added: ") + file,
                                           gtk.MESSAGE_ERROR)
                 return
             if not path.exists(file):
-                self.__run_message_dialog(_("Your choosed file does not exist."),
+                self.__run_message_dialog(_("Your choosed file does not exist: ") + file,
                                           gtk.MESSAGE_ERROR)
                 return
             if path.isdir(file):
-                self.__run_message_dialog(_("Your choosed file is a directory."),
+                self.__run_message_dialog(_("Your choosed file is a directory: " + file),
                                           gtk.MESSAGE_ERROR)
                 return
             if file.startswith(self.__get_userhome() + "/.anthy"):
-                self.__run_message_dialog(_("You cannot add dictionaries in the anthy private directory."),
+                self.__run_message_dialog(_("You cannot add dictionaries in the anthy private directory: " + file),
                                           gtk.MESSAGE_ERROR)
                 return
 
@@ -593,6 +593,10 @@ class AnthySetup(object):
         else:
             return
         command = self.prefs.get_value('common', key)
+        if not path.exists(command[0]):
+            self.__run_message_dialog(_("Your file does not exist: ") + command[0],
+                                      gtk.MESSAGE_ERROR)
+            return
         os.spawnl(os.P_NOWAIT, *command)
 
     def on_btn_dict_add_clicked(self, widget):
@@ -676,7 +680,7 @@ class AnthySetup(object):
                                       gtk.MESSAGE_ERROR)
             return
         if not path.exists(dict_file):
-            self.__run_message_dialog(_("Your file does not exist."),
+            self.__run_message_dialog(_("Your file does not exist: ") + dict_file,
                                       gtk.MESSAGE_ERROR)
             return
 

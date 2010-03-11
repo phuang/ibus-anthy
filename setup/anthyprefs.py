@@ -156,6 +156,7 @@ _config = {
     'common': {
         'input_mode': 0,
         'typing_method': 0,
+        'conversion_segment_mode': 0,
 
         'period_style': 0,
         'symbol_style': 1,

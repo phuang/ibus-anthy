@@ -72,6 +72,10 @@ CONV_MODE_WIDE_LATIN_2, \
 CONV_MODE_WIDE_LATIN_3, \
 CONV_MODE_PREDICTION = range(14)
 
+SEGMENT_DEFAULT         = 0
+SEGMENT_SINGLE          = 1 << 0
+SEGMENT_IMMEDIATE       = 1 << 1
+
 CLIPBOARD_RECONVERT = range(1)
 
 LINK_DICT_EMBEDDED, \
@@ -117,6 +121,7 @@ class Engine(ibus.EngineBase):
         # init state
         self.__idle_id = 0
         self.__input_mode = INPUT_MODE_HIRAGANA
+        self.__segment_mode = SEGMENT_DEFAULT
         self.__dict_mode = 0
         self.__prop_dict = {}
         self.__is_utf8 = (getpreferredencoding().lower() == "utf-8")
@@ -134,6 +139,11 @@ class Engine(ibus.EngineBase):
         mode = self.__prefs.get_value('common', 'typing_method')
         mode = 'TypingMode.' + ['Romaji', 'Kana', 'ThumbShift'][mode]
         self.__typing_mode_activate(mode, ibus.PROP_STATE_CHECKED)
+
+        mode = self.__prefs.get_value('common', 'conversion_segment_mode')
+        mode = 'SegmentMode.' + ['Multi', 'Single',
+                                 'ImmediateMulti', 'ImmediateSingle'][mode]
+        self.__segment_mode_activate(mode, ibus.PROP_STATE_CHECKED)
 
         # use reset to init values
         self.__reset()
@@ -216,6 +226,7 @@ class Engine(ibus.EngineBase):
         typing_mode_prop.set_sub_props(props)
         anthy_props.append(typing_mode_prop)
 
+        self.__set_segment_mode_props(anthy_props)
         self.__set_dict_mode_props(anthy_props)
         self.__set_dict_config_props(anthy_props)
         anthy_props.append(ibus.Property(key=u"setup",
@@ -234,6 +245,34 @@ class Engine(ibus.EngineBase):
         self.__remove_dict_files()
         signal.signal(signum, signal.SIG_DFL)
         os.kill(os.getpid(), signum)
+
+    def __set_segment_mode_props(self, anthy_props):
+        segment_mode_prop = ibus.Property(key=u"SegmentMode",
+                                          type=ibus.PROP_TYPE_MENU,
+                                          label=u"連",
+                                          tooltip=UN(_("Switch conversion mode")))
+        self.__prop_dict[u"SegmentMode"] = segment_mode_prop
+
+        props = ibus.PropList()
+        props.append(ibus.Property(key=u"SegmentMode.Multi",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=UN(_("Multiple segment"))))
+        props.append(ibus.Property(key=u"SegmentMode.Single",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=UN(_("Single segment"))))
+        props.append(ibus.Property(key=u"SegmentMode.ImmediateMulti",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=UN(_("Immediate conversion (Multiple segment)"))))
+        props.append(ibus.Property(key=u"SegmentMode.ImmediateSingle",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=UN(_("Immediate conversion (Single segment)"))))
+        props[self.__segment_mode].set_state(ibus.PROP_STATE_CHECKED)
+
+        for prop in props:
+            self.__prop_dict[prop.key] = prop
+
+        segment_mode_prop.set_sub_props(props)
+        anthy_props.append(segment_mode_prop)
 
     def __set_dict_mode_props(self, anthy_props):
         short_label = self.__prefs.get_value('dict/file/embedded',
@@ -522,6 +561,9 @@ class Engine(ibus.EngineBase):
             elif prop_name.startswith(u"TypingMode."):
                 self.__typing_mode_activate(prop_name, state)
                 return
+            elif prop_name.startswith(u"SegmentMode."):
+                self.__segment_mode_activate(prop_name, state)
+                return
             elif prop_name.startswith(u"DictMode."):
                 self.__dict_mode_activate(prop_name, state)
                 return
@@ -609,6 +651,31 @@ class Engine(ibus.EngineBase):
         prop.label = label
         self.update_property(prop)
 
+    def __segment_mode_activate(self, prop_name, state):
+        segment_modes = {
+            u"SegmentMode.Multi" : (SEGMENT_DEFAULT, u"連"),
+            u"SegmentMode.Single" : (SEGMENT_SINGLE, u"単"),
+            u"SegmentMode.ImmediateMulti" : (SEGMENT_IMMEDIATE, u"逐|連"),
+            u"SegmentMode.ImmediateSingle" :
+                (SEGMENT_IMMEDIATE | SEGMENT_SINGLE, u"逐|単"),
+        }
+
+        if prop_name not in segment_modes:
+            print >> sys.stderr, "Unknow prop_name = %s" % prop_name
+            return
+        self.__prop_dict[prop_name].set_state(state)
+        self.update_property(self.__prop_dict[prop_name])
+
+        mode, label = segment_modes[prop_name]
+
+        self.__segment_mode = mode
+        prop = self.__prop_dict[u"SegmentMode"]
+        prop.label = label
+        self.update_property(prop)
+
+        self.__reset()
+        self.__invalidate()
+
     def __dict_mode_get_prop_name(self, mode):
         if mode == 0:
             id = 'embedded'
@@ -681,8 +748,21 @@ class Engine(ibus.EngineBase):
         self.__remove_dict_files()
         super(Engine,self).do_destroy()
 
+    def __join_all_segments(self):
+        while True:
+            conv_stat = anthy.anthy_conv_stat()
+            self.__context.get_stat(conv_stat)
+            seg = conv_stat.nr_segment - self.__cursor_pos
+
+            if seg > 1:
+                self.__context.resize_segment(self.__cursor_pos, 1)
+            else:
+                break
+
     # begine convert
     def __begin_anthy_convert(self):
+        if self.__segment_mode & SEGMENT_IMMEDIATE:
+            self.__end_anthy_convert()
         if self.__convert_mode == CONV_MODE_ANTHY:
             return
         self.__convert_mode = CONV_MODE_ANTHY
@@ -691,6 +771,8 @@ class Engine(ibus.EngineBase):
         text, cursor = self.__preedit_ja_string.get_hiragana(True)
 
         self.__context.set_string(text.encode("utf8"))
+        if self.__segment_mode & SEGMENT_SINGLE:
+            self.__join_all_segments()
         conv_stat = anthy.anthy_conv_stat()
         self.__context.get_stat(conv_stat)
 
@@ -699,7 +781,10 @@ class Engine(ibus.EngineBase):
             text = unicode(buf, "utf-8")
             self.__segments.append((0, text))
 
-        self.__cursor_pos = 0
+        if self.__segment_mode & SEGMENT_IMMEDIATE:
+            self.__cursor_pos = conv_stat.nr_segment - 1
+        else:
+            self.__cursor_pos = 0
         self.__fill_lookup_table()
         self.__lookup_table_visible = False
 
@@ -1177,7 +1262,10 @@ class Engine(ibus.EngineBase):
             return True
 
         # Input Japanese
-        if self.__convert_mode == CONV_MODE_ANTHY:
+        if self.__segment_mode & SEGMENT_IMMEDIATE:
+            # Commit nothing
+            pass
+        elif self.__convert_mode == CONV_MODE_ANTHY:
             for i, (seg_index, text) in enumerate(self.__segments):
                 self.__context.commit_segment(i, seg_index)
             self.__commit_string(self.__convert_chars)
@@ -1192,6 +1280,8 @@ class Engine(ibus.EngineBase):
             shift = False
         self.__preedit_ja_string.set_shift(shift)
         self.__preedit_ja_string.insert(unichr(keyval))
+        if self.__segment_mode & SEGMENT_IMMEDIATE:
+            self.__begin_anthy_convert()
         self.__invalidate()
         return True
 
