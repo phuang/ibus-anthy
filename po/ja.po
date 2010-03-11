@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2010-01-15 01:01+0900\n"
+"POT-Creation-Date: 2010-03-11 22:39+0900\n"
 "PO-Revision-Date: 2009-03-16 12:31+1000\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -16,72 +16,98 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../engine/engine.py:149
+#: ../engine/engine.py:176
 msgid "Switch input mode"
 msgstr "入力モード切替"
 
-#: ../engine/engine.py:155
+#: ../engine/engine.py:182
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: ../engine/engine.py:158
+#: ../engine/engine.py:185
 msgid "Katakana"
 msgstr "カタカナ"
 
-#: ../engine/engine.py:161
+#: ../engine/engine.py:188
 msgid "Half width katakana"
 msgstr "半角カタカナ"
 
-#: ../engine/engine.py:164
+#: ../engine/engine.py:191
 msgid "Latin"
 msgstr "英数"
 
-#: ../engine/engine.py:167
+#: ../engine/engine.py:194
 msgid "Wide Latin"
 msgstr "全角英数"
 
-#: ../engine/engine.py:181
+#: ../engine/engine.py:208
 msgid "Switch typing mode"
 msgstr "入力モード切替"
 
-#: ../engine/engine.py:187
+#: ../engine/engine.py:214
 msgid "Romaji"
 msgstr "ローマ字"
 
-#: ../engine/engine.py:190
+#: ../engine/engine.py:217
 msgid "Kana"
 msgstr "かな"
 
-#: ../engine/engine.py:193
+#: ../engine/engine.py:220
 msgid "Thumb shift"
 msgstr "親指シフト"
 
-#: ../engine/engine.py:204
+#: ../engine/engine.py:233
 msgid "Configure Anthy"
 msgstr "Anthyの設定"
 
+#: ../engine/engine.py:253
+#, fuzzy
+msgid "Switch conversion mode"
+msgstr "入力モード切替"
+
+#: ../engine/engine.py:259
+msgid "Multiple segment"
+msgstr ""
+
+#: ../engine/engine.py:262
+msgid "Single segment"
+msgstr ""
+
+#: ../engine/engine.py:265
+msgid "Immediate conversion (Multiple segment)"
+msgstr ""
+
+#: ../engine/engine.py:268
+msgid "Immediate conversion (Single segment)"
+msgstr ""
+
+#: ../engine/engine.py:283
+#, fuzzy
+msgid "Switch Dictionary"
+msgstr "辞書を編集する"
+
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
-#: ../engine/engine.py:218
+#: ../engine/engine.py:329
 msgid "Dic"
 msgstr "辞"
 
-#: ../engine/engine.py:225
+#: ../engine/engine.py:336
 msgid "Configure dictionaries"
 msgstr "辞書を構成する"
 
-#: ../engine/engine.py:230
+#: ../engine/engine.py:341
 msgid "Edit dictionaries"
 msgstr "辞書を編集する"
 
-#: ../engine/engine.py:232
+#: ../engine/engine.py:343
 msgid "Launch the dictionary tool"
 msgstr "辞書ツールを起動する"
 
-#: ../engine/engine.py:235
+#: ../engine/engine.py:346
 msgid "Add words"
 msgstr "単語を追加する"
 
-#: ../engine/engine.py:237
+#: ../engine/engine.py:348
 msgid "Add words in the dictionary"
 msgstr "辞書に単語を追加する"
 
@@ -89,59 +115,154 @@ msgstr "辞書に単語を追加する"
 msgid "Anthy"
 msgstr "Anthy"
 
-#: ../setup/main.py:68
+#: ../setup/anthyprefs.py:215
+#, fuzzy
+msgid "General"
+msgstr "全般(_G)"
+
+#: ../setup/anthyprefs.py:226
+msgid "Zip Code Conversion"
+msgstr ""
+
+#: ../setup/anthyprefs.py:238
+#, fuzzy
+msgid "Symbol"
+msgstr "記号スタイル(_M):"
+
+#: ../setup/main.py:85
 msgid "Command"
 msgstr "コマンド"
 
-#: ../setup/main.py:72
+#: ../setup/main.py:89
 msgid "Shortcut"
 msgstr "ショートカット"
 
-#: ../setup/main.py:105
+#: ../setup/main.py:130
+msgid "Description"
+msgstr ""
+
+#. Translators: "Embd" means a short word of 'embedded'.
+#: ../setup/main.py:138
+msgid "Embd"
+msgstr ""
+
+#. Translators: "Sgl" means a short word of 'single'.
+#: ../setup/main.py:146
+msgid "Sgl"
+msgstr ""
+
+#: ../setup/main.py:301
+msgid "Your choosed file has already been added: "
+msgstr ""
+
+#: ../setup/main.py:305
+msgid "Your choosed file does not exist: "
+msgstr ""
+
+#: ../setup/main.py:309
+msgid "Your choosed file is a directory: "
+msgstr ""
+
+#: ../setup/main.py:313
+msgid "You cannot add dictionaries in the anthy private directory: "
+msgstr ""
+
+#: ../setup/main.py:320
+msgid "Your file path is not good: "
+msgstr ""
+
+#: ../setup/main.py:480
 msgid "Confirm"
 msgstr "確認"
 
-#: ../setup/main.py:106
+#: ../setup/main.py:481
 msgid "Are you sure to close Setup?"
 msgstr "この設定ツールを終了します。よろしいですか？"
 
-#: ../setup/main.py:119
+#: ../setup/main.py:494
 msgid "Notice!"
 msgstr "注意！"
 
-#: ../setup/main.py:120
+#: ../setup/main.py:495
 msgid "Are you sure to close Setup without save configure?"
 msgstr "変更を保存せずに終了します。よろしいですか？"
 
-#: ../setup/main.py:219
+#: ../setup/main.py:597 ../setup/main.py:683
+msgid "Your file does not exist: "
+msgstr ""
+
+#: ../setup/main.py:607
+msgid "Open Dictionary File"
+msgstr ""
+
+#: ../setup/main.py:613
+#, fuzzy
+msgid "Edit Dictionary File"
+msgstr "辞書を編集する"
+
+#: ../setup/main.py:627
+msgid "Your choosed file is not correct."
+msgstr ""
+
+#: ../setup/main.py:656
+msgid "You cannot delete the system dictionary."
+msgstr ""
+
+#: ../setup/main.py:679
+msgid "Your file is not good."
+msgstr ""
+
+#: ../setup/main.py:708
+#, fuzzy
+msgid "View Dictionary File"
+msgstr "辞書を編集する"
+
+#: ../setup/main.py:839
 msgid "Please press a key (or a key combination)"
 msgstr "キーを入力してください"
 
-#: ../setup/main.py:220
+#: ../setup/main.py:840
 msgid "The dialog will be closed when the key is released"
 msgstr "このダイアログはキーリリース時に閉じられます"
 
-#: ../setup/main.py:239
+#: ../setup/main.py:859 ../setup/main.py:879
 msgid "Invalid keysym"
 msgstr "無効なキーシンボル"
 
-#: ../setup/main.py:240
+#: ../setup/main.py:860 ../setup/main.py:880
 msgid "This keysym is not valid"
 msgstr "このキーシンボルは有効ではありません"
 
 #: ../setup/setup.glade.h:1
+msgid "'～', 『', '¢', '£' and so on can be output with Thumb Shift key"
+msgstr ""
+
+#: ../setup/setup.glade.h:2
 msgid "<b>Behavior</b>"
 msgstr "<b>動作</b>"
 
-#: ../setup/setup.glade.h:2
+#: ../setup/setup.glade.h:3
+msgid "<b>Default Dictionary Configuration</b>"
+msgstr ""
+
+#: ../setup/setup.glade.h:4
+#, fuzzy
+msgid "<b>Extended Dictionaries</b>"
+msgstr "辞書を編集する"
+
+#: ../setup/setup.glade.h:5
 msgid "<b>Initial Setting</b>"
 msgstr "<b>初期値の設定</b>"
 
-#: ../setup/setup.glade.h:3
+#: ../setup/setup.glade.h:6
 msgid "<b>Other</b>"
 msgstr "<b>その他</b>"
 
-#: ../setup/setup.glade.h:4
+#: ../setup/setup.glade.h:7
+msgid "<b>Thumb Shift Layout</b>"
+msgstr ""
+
+#: ../setup/setup.glade.h:8
 msgid ""
 "<span size='xx-large'><b>IBus-Anthy</b></span>\n"
 "\n"
@@ -157,23 +278,31 @@ msgstr ""
 "URL : http://code.google.com/p/ibus/\n"
 "\n"
 
-#: ../setup/setup.glade.h:11
+#: ../setup/setup.glade.h:15
 msgid "A_lternate"
 msgstr "A_lt"
 
-#: ../setup/setup.glade.h:12
+#: ../setup/setup.glade.h:16
 msgid "Abo_ut"
 msgstr "情報(_U)"
 
-#: ../setup/setup.glade.h:13
+#: ../setup/setup.glade.h:17
+msgid "Adjust IM layout to XKB layout"
+msgstr ""
+
+#: ../setup/setup.glade.h:18
+msgid "Adjust _input method layout to system keyboard layout"
+msgstr ""
+
+#: ../setup/setup.glade.h:19
 msgid "Behavior on _Focus Out:"
 msgstr "フォーカスアウト時の動作(_F):"
 
-#: ../setup/setup.glade.h:14
+#: ../setup/setup.glade.h:20
 msgid "Candidate _Window Page Size:"
 msgstr "候補ウインドウの項目数(_W):"
 
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.glade.h:21
 msgid ""
 "Clear\n"
 "Commit\n"
@@ -183,27 +312,31 @@ msgstr ""
 "確定\n"
 "保持\n"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:25
 msgid "Co_ntrol"
 msgstr "Co_ntrol"
 
-#: ../setup/setup.glade.h:20
+#: ../setup/setup.glade.h:26
 msgid "Con_vert spaces with the one column width"
 msgstr "空白を半角で変換する(_V)"
 
-#: ../setup/setup.glade.h:21
+#: ../setup/setup.glade.h:27
+msgid "Conversion _Mode:"
+msgstr ""
+
+#: ../setup/setup.glade.h:28
 msgid "Convert _numbers with the one column width"
 msgstr "数字を半角で変換する(_N)"
 
-#: ../setup/setup.glade.h:22
+#: ../setup/setup.glade.h:29
 msgid "Convert _symbols with the one column width"
 msgstr "記号を半角で変換する(_S)"
 
-#: ../setup/setup.glade.h:23
+#: ../setup/setup.glade.h:30
 msgid "De_fault"
 msgstr "デフォルト(_F)"
 
-#: ../setup/setup.glade.h:24
+#: ../setup/setup.glade.h:31
 msgid ""
 "Default\n"
 "ATOK\n"
@@ -213,7 +346,11 @@ msgstr ""
 "ATOK\n"
 "Wnn\n"
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:35
+msgid "Dictionar_y"
+msgstr ""
+
+#: ../setup/setup.glade.h:36
 msgid ""
 "Do Nothing\n"
 "Auto Convert"
@@ -221,11 +358,15 @@ msgstr ""
 "何もしない\n"
 "自動変換"
 
-#: ../setup/setup.glade.h:30
+#: ../setup/setup.glade.h:38
 msgid "Edit Shortcut"
 msgstr "ショートカットの編集"
 
-#: ../setup/setup.glade.h:31
+#: ../setup/setup.glade.h:39
+msgid "Enable the _reverse conversion"
+msgstr ""
+
+#: ../setup/setup.glade.h:40
 msgid ""
 "Hiragana\n"
 "Katakana\n"
@@ -239,7 +380,12 @@ msgstr ""
 "英数\n"
 "全角英数"
 
-#: ../setup/setup.glade.h:36
+#: ../setup/setup.glade.h:45
+#, fuzzy
+msgid "Input _Method Layout:"
+msgstr "入力モード(_I):"
+
+#: ../setup/setup.glade.h:46
 msgid ""
 "Keep Numpad Codes\n"
 "Convert Characters\n"
@@ -247,23 +393,53 @@ msgstr ""
 "テンキーコードのまま\n"
 "文字を変換\n"
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:49
 msgid "Key Code:"
 msgstr "キーコード:"
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:50
 msgid "Key bin_ding"
 msgstr "キー割り当て(_D)"
 
-#: ../setup/setup.glade.h:41
+#: ../setup/setup.glade.h:51
 msgid "Modifier:"
 msgstr "キー修飾:"
 
-#: ../setup/setup.glade.h:42
+#: ../setup/setup.glade.h:52
+msgid ""
+"Multiple segment\n"
+"Single segment\n"
+"Immediate conversion (Multiple segment)\n"
+"Immediate conversion (Single segment)"
+msgstr ""
+
+#: ../setup/setup.glade.h:56
+msgid ""
+"NICOLA-J\n"
+"NICOLA-A\n"
+"NICOLA-F"
+msgstr ""
+
+#: ../setup/setup.glade.h:59
+msgid ""
+"None\n"
+"FMV KB231 key extension\n"
+"FMV KB611 key extension"
+msgstr ""
+
+#: ../setup/setup.glade.h:62
 msgid "Numpad _Key Type:"
 msgstr "テンキータイプ(_K):"
 
-#: ../setup/setup.glade.h:43
+#: ../setup/setup.glade.h:63
+msgid "Restart ibus when you change XKB"
+msgstr ""
+
+#: ../setup/setup.glade.h:64
+msgid "Restart ibus when you change the keyboard layout."
+msgstr ""
+
+#: ../setup/setup.glade.h:65
 msgid ""
 "Romaji\n"
 "Kana\n"
@@ -273,41 +449,122 @@ msgstr ""
 "かな\n"
 "親指シフト"
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:68
+msgid "Seion + Shift can output Handakuon"
+msgstr ""
+
+#: ../setup/setup.glade.h:69
 msgid "Setup - IBus-Anthy"
 msgstr "IBus-Anthyの設定"
 
-#: ../setup/setup.glade.h:47
-msgid "Sy_mbol Style:"
+#: ../setup/setup.glade.h:70
+msgid ""
+"Strongly recommend to enable \"Use system keyboard layout\" check button in "
+"\"Advanced\" tab using 'ibus-setup' command"
+msgstr ""
+
+#: ../setup/setup.glade.h:71
+#, fuzzy
+msgid "Symbo_l Style:"
 msgstr "記号スタイル(_M):"
 
-#: ../setup/setup.glade.h:48
+#: ../setup/setup.glade.h:72
+#, fuzzy
+msgid "Thumb S_hift"
+msgstr "親指シフト"
+
+#: ../setup/setup.glade.h:73
+#, fuzzy
+msgid "Thumb Shift _Left Key:"
+msgstr "親指シフト"
+
+#: ../setup/setup.glade.h:74
+msgid "You can change the order on language bar"
+msgstr ""
+
+#: ../setup/setup.glade.h:75
+msgid ""
+"You do not have to reconfigure XKB since this option changes IM layout only "
+"with IM on."
+msgstr ""
+
+#: ../setup/setup.glade.h:76
+msgid ""
+"You do not have to reconfigure the system keyboard layout for \"Additional "
+"Key Arrangement\" since this option changes input method layout only in case "
+"input method is turned on."
+msgstr ""
+
+#: ../setup/setup.glade.h:77
+msgid "_Add Word Command:"
+msgstr ""
+
+#: ../setup/setup.glade.h:78
+msgid "_Additional Key Arrangement:"
+msgstr ""
+
+#: ../setup/setup.glade.h:79
 msgid "_Behavior on Period:"
 msgstr "句読点入力時の動作(_B):"
 
-#: ../setup/setup.glade.h:49
+#: ../setup/setup.glade.h:80
+msgid "_Description:"
+msgstr ""
+
+#: ../setup/setup.glade.h:81
+#, fuzzy
+msgid "_Edit Dictionary Command:"
+msgstr "辞書を編集する"
+
+#: ../setup/setup.glade.h:82
+#, fuzzy
+msgid "_Embed your dictionary in the system dictionary"
+msgstr "辞書に単語を追加する"
+
+#: ../setup/setup.glade.h:83
+msgid "_Enable semi-voiced sound mark with Shift key"
+msgstr ""
+
+#: ../setup/setup.glade.h:84
 msgid "_General"
 msgstr "全般(_G)"
 
-#: ../setup/setup.glade.h:50
+#: ../setup/setup.glade.h:85
 msgid "_Input Mode:"
 msgstr "入力モード(_I):"
 
-#: ../setup/setup.glade.h:51
+#: ../setup/setup.glade.h:86
 msgid "_Period Style:"
 msgstr "句読点スタイル(_P):"
 
-#: ../setup/setup.glade.h:52
+#: ../setup/setup.glade.h:87
 msgid "_Shift"
 msgstr "_Shift"
 
-#: ../setup/setup.glade.h:53
+#: ../setup/setup.glade.h:88
+#, fuzzy
+msgid "_Short Label:"
+msgstr "ショートカットタイプ(_S):"
+
+#: ../setup/setup.glade.h:89
 msgid "_Shortcut Type:"
 msgstr "ショートカットタイプ(_S):"
 
-#: ../setup/setup.glade.h:54
+#: ../setup/setup.glade.h:90
+msgid "_Thumb Shift Right Key:"
+msgstr ""
+
+#: ../setup/setup.glade.h:91
 msgid "_Typing Method:"
 msgstr "入力タイプ(_T):"
+
+#: ../setup/setup.glade.h:92
+msgid "_Use your dictionary alone with switching dictionaries"
+msgstr ""
+
+#: ../setup/setup.glade.h:93
+msgid "_View"
+msgstr ""
 
 #~ msgid ""
 #~ "、。\n"
