@@ -341,7 +341,7 @@ msgstr ""
 
 #: ../setup/setup.glade.h:35
 msgid "Dictionar_y"
-msgstr "ディレクトリ(_Y)"
+msgstr "辞書(_Y)"
 
 #: ../setup/setup.glade.h:36
 msgid ""
