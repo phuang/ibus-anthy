@@ -363,7 +363,7 @@ Hold
                               <widget class="GtkCheckButton" id="half_width_number">
                                 <property name="label" translatable="yes">Convert _numbers with the one column width</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
@@ -417,7 +417,7 @@ Hold
                               <widget class="GtkCheckButton" id="half_width_symbol">
                                 <property name="label" translatable="yes">Convert _symbols with the one column width</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
@@ -434,7 +434,7 @@ Hold
                               <widget class="GtkCheckButton" id="half_width_space">
                                 <property name="label" translatable="yes">Con_vert spaces with the one column width</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
@@ -1923,7 +1923,7 @@ URL : http://code.google.com/p/ibus/
       <widget class="GtkCheckButton" id="dict:single">
         <property name="label" translatable="yes">_Use your dictionary alone with switching dictionaries</property>
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_underline">True</property>
         <property name="draw_indicator">True</property>
@@ -1940,7 +1940,7 @@ URL : http://code.google.com/p/ibus/
       <widget class="GtkCheckButton" id="dict:embed">
         <property name="label" translatable="yes">_Embed your dictionary in the system dictionary</property>
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_underline">True</property>
         <property name="draw_indicator">True</property>
@@ -1957,7 +1957,7 @@ URL : http://code.google.com/p/ibus/
       <widget class="GtkCheckButton" id="dict:reverse">
         <property name="label" translatable="yes">Enable the _reverse conversion</property>
         <property name="visible">False</property>
-        <property name="can_focus">False</property>
+        <property name="can_focus">True</property>
         <property name="receives_default">False</property>
         <property name="use_underline">True</property>
         <property name="draw_indicator">True</property>

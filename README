@@ -40,6 +40,12 @@ to build and install:
 (Change the paths '/usr', '/etc', '/usr/lib' according to your system 
 configuration.) 
 
+or if you use Linux system, probably rpmbuild is easier to build applications.
+
+  # cp ibus-xx.tar.gz /usr/src/$distributer/SOURCE
+  # rpmbuild -bp ibus/ibus.spec.in
+  # rpmbuild -bb ibus/ibus.spec.in
+
 * Register IBus as a Gtk immodule
 For i386
 
@@ -119,6 +125,16 @@ your system.)
        $ sudo make install
 
           * The 'xx' is a version number. 
+
+or if you use Linux system, probably rpmbuild is easier to build applications.
+
+  # cp ibus-anthy-xx.tar.gz /usr/src/$distributer/SOURCE
+  # rpmbuild -bp ibus-anthy/ibus-anthy.spec.in
+  # rpmbuild -bb ibus-anthy/ibus-anthy.spec.in
+
+or if you use Linux system, probably you can install rpm with yum.
+
+  # yum install --enablerepo=rawhide ibus-anthy
 
 
 #5. Run iBus

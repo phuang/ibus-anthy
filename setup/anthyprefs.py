@@ -49,10 +49,8 @@ class AnthyPrefs(Prefs):
 
     def __update_key (self, section, old_key, new_key):
         file = __file__
-        path_list = __file__.split('/')
-        if path_list:
-            path_list.reverse()
-            file = path_list[0]
+        if __file__.find('/') >= 0:
+            file = __file__[__file__.rindex('/') + 1:]
         warning_message = \
             "(" + file + ") ibus-anthy-WARNING **: "                        \
             "The key (" + old_key + ") will be removed in the future. "     \
