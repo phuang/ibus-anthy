@@ -266,6 +266,11 @@ class AnthySetup(object):
     def __append_dict_id_in_model(self, id, is_gettext):
         prefs = self.prefs
         section = 'dict/file/' + id
+        # user value is dbus.String
+        prefs.set_value(section, 'short_label',
+                        str(prefs.get_value(section, 'short_label')))
+        prefs.set_value(section, 'long_label',
+                        str(prefs.get_value(section, 'long_label')))
         short_label = prefs.get_value(section, 'short_label')
         long_label = prefs.get_value(section, 'long_label')
         embed = prefs.get_value(section, 'embed')
@@ -382,12 +387,13 @@ class AnthySetup(object):
         short_entry = self.xml.get_widget('dict:short_entry')
         short_entry.set_text(short_label)
         long_entry = self.xml.get_widget('dict:long_entry')
-        long_entry.set_text(long_label)
         if is_system_dict:
             short_entry.set_editable(False)
+            long_entry.set_text(_(long_label))
             long_entry.set_editable(False)
         else:
             short_entry.set_editable(True)
+            long_entry.set_text(long_label)
             long_entry.set_editable(True)
 
         return selected_id
@@ -397,6 +403,7 @@ class AnthySetup(object):
         prefs.set_new_section(section)
         prefs.set_new_key(section, 'short_label')
         prefs.fetch_item(section, 'short_label')
+        # user value is dbus.String
         prefs.set_value(section, 'short_label',
                         str(prefs.get_value(section, 'short_label')))
         prefs.set_new_key(section, 'long_label')
