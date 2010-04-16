@@ -19,7 +19,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-# if not 1, append datestamp to the version number.
+dnl - if not 1, append datestamp to the version number.
 m4_define([ibus_released], [0])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [2])
@@ -37,7 +37,7 @@ AC_GNU_SOURCE
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-# define PACKAGE_VERSION_* variables
+dnl - define PACKAGE_VERSION_* variables
 AS_VERSION
 AS_NANO
 AM_SANITY_CHECK
@@ -51,14 +51,14 @@ AC_HEADER_STDC
 AM_PROG_LIBTOOL
 IT_PROG_INTLTOOL([0.35.0])
 
-# For dislpay Date
+dnl - For dislpay Date
 m4_define(ibus_maybe_datedisplay,
     m4_esyscmd([if test x]ibus_released[ != x1; then date '+%a %b %d %Y' | tr -d '\n\r'; fi]))
 m4_define([ibus_datedisplay], ibus_maybe_datedisplay)
 DATE_DISPLAY="ibus_datedisplay"
 AC_SUBST(DATE_DISPLAY)
 
-# check anthy
+dnl - check anthy
 PKG_CHECK_MODULES(ANTHY, [
     anthy
 ])
@@ -71,18 +71,18 @@ NTH_HALFKANA_CANDIDATE],,
     AC_MSG_ERROR([Could not find NTH_*_CANDIDATE values in anthy.h]),
     [[#include <anthy/anthy.h>]])
 
-# check swig
+dnl - check swig
 AC_PATH_PROG(SWIG, swig)
 if test x"$SWIG" == x""; then
      AC_MSG_ERROR([can not find swig])
 fi
 AC_SUBST(SWIG)
 
-# check env
+dnl - check env
 AC_PATH_PROG(ENV, env)
 AC_SUBST(ENV)
 
-# check python
+dnl - check python
 AM_PATH_PYTHON([2.5])
 
 AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
@@ -99,7 +99,23 @@ fi
 AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_LIBS)
 
-# define GETTEXT_* variables
+dnl - check file path of Anthy zipcode.t
+AC_ARG_WITH(anthy-zipcode,
+           [AC_HELP_STRING([--with-anthy-zipcode=FILE],
+                           [file path of Anty zipcode.t])],
+           [ANTHY_ZIPCODE_FILE="$withval"],
+           [ANTHY_ZIPCODE_FILE="$datadir/anthy/zipcode.t"])
+AC_SUBST(ANTHY_ZIPCODE_FILE)
+
+dnl - check file path of kasumi bin
+AC_ARG_WITH(kasumi-exec,
+           [AC_HELP_STRING([--with-kasumi-exec=FILE],
+                           [file path of kasumi bin])],
+           [KASUMI_EXEC_FILE="$withval"],
+           [KASUMI_EXEC_FILE="$bindir/kasumi"])
+AC_SUBST(KASUMI_EXEC_FILE)
+
+dnl - define GETTEXT_* variables
 GETTEXT_PACKAGE=ibus-anthy
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define to the read-only architecture-independent data directory.])
@@ -108,7 +124,7 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.16.1)
 
 
-# OUTPUT files
+dnl - OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-anthy.spec

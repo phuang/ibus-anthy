@@ -20,24 +20,55 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-setup_anthy_PYTHON = \
-	prefs.py \
-	anthyprefs.py \
-	main.py \
-	setup.glade \
-	$(NULL)
-
-setup_anthydir = $(datadir)/ibus-anthy/setup
+BUILT_SOURCES = anthyprefs.py
 
 libexec_SCRIPTS = ibus-setup-anthy
 
+setup_anthy_PYTHON = \
+	anthyprefs.py \
+	main.py \
+	prefs.py \
+	setup.glade \
+	$(NULL)
+
+setup_anthy_built_files = \
+	$(BUILT_SOURCES) \
+	$(libexec_SCRIPTS) \
+	$(NULL)
+
+setup_anthy_built_in_files = $(addsuffix .in, $(setup_anthy_built_files))
+
+setup_anthydir = $(datadir)/ibus-anthy/setup
+
+CONFIG_CLEAN_FILES = \
+	$(BUILT_SOURCES) \
+	$(libexec_SCRIPTS) \
+	$(NULL)
+
 CLEANFILES = \
+	$(BUILT_SOURCES) \
 	*.pyc \
 	$(NULL)
 
 EXTRA_DIST = \
-	ibus-setup-anthy.in \
+	$(setup_anthy_built_in_files) \
 	$(NULL)
+
+anthyprefs.py: anthyprefs.py.in
+	sed -e "s|\@ANTHY_ZIPCODE_FILE\@|$(ANTHY_ZIPCODE_FILE)|g" \
+	    -e "s|\@KASUMI_EXEC_FILE\@|$(KASUMI_EXEC_FILE)|g" \
+	    -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
+	$< > $@
+
+# Need a time lag between .py and .py.in files to build .py files
+# because *_PYTHON valuables are installed in the tarball.
+dist-hook:
+	@sleep 1; \
+	for in_file in $(setup_anthy_built_in_files) ; do \
+	    if [ -f $(distdir)/$(srcdir)/$$in_file ] ; then \
+	        touch $(distdir)/$(srcdir)/$$in_file; \
+	    fi; \
+	done;
 
 test:
 	$(ENV) DBUS_DEBUG=true \

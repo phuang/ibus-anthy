@@ -2,6 +2,6 @@
 # Please keep this file in alphabetical order.
 engine/engine.py
 engine/factory.py
-setup/anthyprefs.py
+setup/anthyprefs.py.in
 setup/main.py
 setup/setup.glade

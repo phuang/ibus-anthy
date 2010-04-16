@@ -169,8 +169,8 @@ _config = {
 
         'shortcut_type': 'default',
 
-        'dict_admin_command': ['/usr/bin/kasumi', 'kasumi'],
-        'add_word_command': ['/usr/bin/kasumi', 'kasumi', '-a'],
+        'dict_admin_command': ['@KASUMI_EXEC_FILE@', 'kasumi'],
+        'add_word_command': ['@KASUMI_EXEC_FILE@', 'kasumi', '-a'],
     },
 
     'thumb': {
@@ -185,11 +185,11 @@ _config = {
     },
 
     'dict': {
-        'anthy_zipcode': ['/usr/share/anthy/zipcode.t'],
-        'ibus_symbol': ['/usr/share/ibus-anthy/dicts/symbol.t'],
+        'anthy_zipcode': ['@ANTHY_ZIPCODE_FILE@'],
+        'ibus_symbol': ['@pkgdatadir@/dicts/symbol.t'],
         'files': [
-            '/usr/share/anthy/zipcode.t',
-            '/usr/share/ibus-anthy/dicts/symbol.t',
+            '@ANTHY_ZIPCODE_FILE@',
+            '@pkgdatadir@/dicts/symbol.t',
         ],
     },
 

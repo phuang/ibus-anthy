@@ -1415,6 +1415,9 @@ class Engine(ibus.EngineBase):
 
     @classmethod
     def _link_dict_file_with_id(cls, file, id, link_mode):
+        if not path.exists(file):
+            print >> sys.stderr, file + " does not exist"
+            return
         if id == None:
             return
         if link_mode == LINK_DICT_EMBEDDED:
@@ -1433,7 +1436,7 @@ class Engine(ibus.EngineBase):
             os.makedirs(directory, 0700)
         backup_dir = os.getcwd()
         os.chdir(directory)
-        if path.exists(directory + '/' + name):
+        if path.lexists(directory + '/' + name):
             if path.islink(directory + '/' + name):
                 print >> sys.stderr, "Removing " + name
                 os.unlink(directory + '/' + name)
@@ -1463,7 +1466,7 @@ class Engine(ibus.EngineBase):
                 return
         backup_dir = os.getcwd()
         os.chdir(directory)
-        if path.exists(directory + '/' + name):
+        if path.lexists(directory + '/' + name):
             os.unlink(directory + '/' + name)
         if backup_dir != None:
             os.chdir(backup_dir)
