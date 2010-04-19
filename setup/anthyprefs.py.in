@@ -171,6 +171,7 @@ _config = {
 
         'dict_admin_command': ['@KASUMI_EXEC_FILE@', 'kasumi'],
         'add_word_command': ['@KASUMI_EXEC_FILE@', 'kasumi', '-a'],
+        'dict_config_icon': '@KASUMI_ICON_FILE@',
     },
 
     'thumb': {

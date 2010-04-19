@@ -85,12 +85,6 @@ IMPORTED_EMBEDDED_DICT_DIR = "imported_words_default.d"
 IMPORTED_EMBEDDED_DICT_PREFIX = "ibus__"
 IMPORTED_SINGLE_DICT_PREFIX = "imported_words_ibus__"
 
-''' FIXME: currently configuration values are extracted by enviroment values.
-    It's better to load config.py(.in) in engine and setup instead and
-    I will move KASUMI_IMG_PATH.
-'''
-KASUMI_IMG_PATH = "/usr/share/pixmaps/kasumi.png"
-
 KP_Table = {}
 for s in dir(keysyms):
     if s.startswith('KP_'):
@@ -318,12 +312,13 @@ class Engine(ibus.EngineBase):
 
     def __set_dict_config_props(self, anthy_props):
         admin_command = self.__prefs.get_value('common', 'dict_admin_command')
+        icon_path = self.__prefs.get_value('common', 'dict_config_icon')
+
         if not path.exists(admin_command[0]):
             return
-
-        if path.exists(KASUMI_IMG_PATH):
+        if icon_path and path.exists(icon_path):
             label = u""
-            icon = unicode(KASUMI_IMG_PATH)
+            icon = unicode(icon_path)
         else:
             # Translators: "Dic" means 'dictionary', One kanji may be good.
             label = UN(_("Dic"))

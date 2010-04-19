@@ -115,6 +115,14 @@ AC_ARG_WITH(kasumi-exec,
            [KASUMI_EXEC_FILE="$bindir/kasumi"])
 AC_SUBST(KASUMI_EXEC_FILE)
 
+dnl - check file path of kasumi icon
+AC_ARG_WITH(kasumi-icon,
+           [AC_HELP_STRING([--with-kasumi-icon=FILE],
+                           [file path of kasumi icon])],
+           [KASUMI_ICON_FILE="$withval"],
+           [KASUMI_ICON_FILE="$datadir/pixmaps/kasumi.png"])
+AC_SUBST(KASUMI_ICON_FILE)
+
 dnl - define GETTEXT_* variables
 GETTEXT_PACKAGE=ibus-anthy
 AC_SUBST(GETTEXT_PACKAGE)
