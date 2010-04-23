@@ -20,10 +20,10 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 dnl - if not 1, append datestamp to the version number.
-m4_define([ibus_released], [0])
+m4_define([ibus_released], [1])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [2])
-m4_define([ibus_micro_version], [0])
+m4_define([ibus_micro_version], [1])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
@@ -52,9 +52,8 @@ AM_PROG_LIBTOOL
 IT_PROG_INTLTOOL([0.35.0])
 
 dnl - For dislpay Date
-m4_define(ibus_maybe_datedisplay,
-    m4_esyscmd([if test x]ibus_released[ != x1; then date '+%a %b %d %Y' | tr -d '\n\r'; fi]))
-m4_define([ibus_datedisplay], ibus_maybe_datedisplay)
+m4_define(ibus_datedisplay,
+    m4_esyscmd(date '+%a %b %d %Y' | tr -d '\n\r'))
 DATE_DISPLAY="ibus_datedisplay"
 AC_SUBST(DATE_DISPLAY)
 
