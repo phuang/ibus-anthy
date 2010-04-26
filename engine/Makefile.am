@@ -62,7 +62,7 @@ engine_DATA = anthy.xml
 enginedir = $(datadir)/ibus/component
 
 anthy.py anthy_wrap.c: anthy.i
-	$(SWIG) -python -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
+	$(SWIG) -python $(ANTHY_CFLAGS) -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
 
 anthy.xml: anthy.xml.in
 	( \
