@@ -335,7 +335,7 @@ _shortcut_atok = {
     'select_last_segment': ['Ctrl+Right'],
     'expand_segment': ['Right', 'Ctrl+L'],
     'shrink_segment': ['Left', 'Ctrl+K'],
-    'commit_selected_segment': ['Down'],
+    'commit_selected_segment': ['Down', 'Ctrl+N'],
 
     'candidates_page_up': ['Shift+Henkan', 'Page_Up'],
     'candidates_page_down': ['Henkan', 'Page_Down'],
