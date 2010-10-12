@@ -677,7 +677,7 @@ Wnn
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="use_underline">True</property>
-                                    <property name="label" translatable="yes">Thumb Shift _Left Key:</property>
+                                    <property name="label" translatable="yes">_Left Thumb Shift Key:</property>
                                     <property name="mnemonic_widget">thumb:ls</property>
                                   </widget>
                                   <packing>
@@ -712,7 +712,7 @@ Wnn
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="use_underline">True</property>
-                                    <property name="label" translatable="yes">_Thumb Shift Right Key:</property>
+                                    <property name="label" translatable="yes">Right _Thumb Shift Key:</property>
                                     <property name="mnemonic_widget">thumb:rs</property>
                                   </widget>
                                   <packing>

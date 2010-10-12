@@ -224,6 +224,8 @@ class Engine(ibus.EngineBase):
         self.__set_dict_mode_props(anthy_props)
         self.__set_dict_config_props(anthy_props)
         anthy_props.append(ibus.Property(key=u"setup",
+                                         label=UN(_("Preferences - Anthy")),
+                                         icon=u"preferences-desktop",
                                          tooltip=UN(_("Configure Anthy"))))
 
         return anthy_props
@@ -316,8 +318,8 @@ class Engine(ibus.EngineBase):
 
         if not path.exists(admin_command[0]):
             return
+        label = UN(_("Dictionary - Anthy"))
         if icon_path and path.exists(icon_path):
-            label = u""
             icon = unicode(icon_path)
         else:
             # Translators: "Dic" means 'dictionary', One kanji may be good.
