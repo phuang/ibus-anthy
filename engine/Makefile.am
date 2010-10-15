@@ -73,7 +73,7 @@ anthy.xml: anthy.xml.in
 	) > $@
 
 test:
-	$(ENV) \
+	$(ENV_IBUS_TEST) \
 		DBUS_DEBUG=true \
 		IBUS_ANTHY_PKGDATADIR=$(abs_top_srcdir) \
 		PYTHONPATH=$(builddir)/.libs:@pyexecdir@ \

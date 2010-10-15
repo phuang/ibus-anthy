@@ -72,7 +72,7 @@ dist-hook:
 	done;
 
 test:
-	$(ENV) DBUS_DEBUG=true \
+	$(ENV_IBUS_TEST) DBUS_DEBUG=true \
 		   LANG=en_US \
 		   PYTHONPATH=$(abs_top_srcdir):$(pyexecdir) \
 		   IBUS_LOCALEDIR=@localedir@ \
