@@ -8,106 +8,115 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2010-03-11 22:39+0900\n"
+"POT-Creation-Date: 2010-10-15 18:19+0900\n"
 "PO-Revision-Date: 2008-08-21 21:37+0800\n"
 "Last-Translator: Peng Huang <shawn.p.huang@gmail.com>\n"
 "Language-Team: Peng Huang <shawn.p.huang@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../engine/engine.py:176
+#: ../engine/engine.py:170
 msgid "Switch input mode"
 msgstr "切换输入模式"
 
-#: ../engine/engine.py:182
+#: ../engine/engine.py:176
 msgid "Hiragana"
 msgstr "平假名"
 
-#: ../engine/engine.py:185
+#: ../engine/engine.py:179
 msgid "Katakana"
 msgstr "片假名"
 
-#: ../engine/engine.py:188
+#: ../engine/engine.py:182
 msgid "Half width katakana"
 msgstr "半角片假名"
 
-#: ../engine/engine.py:191
+#: ../engine/engine.py:185
 msgid "Latin"
 msgstr "英数"
 
-#: ../engine/engine.py:194
+#: ../engine/engine.py:188
 msgid "Wide Latin"
 msgstr "全角英数"
 
-#: ../engine/engine.py:208
+#: ../engine/engine.py:202
 msgid "Switch typing mode"
 msgstr "切换输入模式"
 
-#: ../engine/engine.py:214
+#: ../engine/engine.py:208
 msgid "Romaji"
 msgstr ""
 
-#: ../engine/engine.py:217
+#: ../engine/engine.py:211
 #, fuzzy
 msgid "Kana"
 msgstr "片假名"
 
-#: ../engine/engine.py:220
+#: ../engine/engine.py:214
 msgid "Thumb shift"
 msgstr ""
 
-#: ../engine/engine.py:233
+#: ../engine/engine.py:227
+msgid "Preferences - Anthy"
+msgstr ""
+
+#: ../engine/engine.py:229
 msgid "Configure Anthy"
 msgstr ""
 
-#: ../engine/engine.py:253
+#: ../engine/engine.py:249
 #, fuzzy
 msgid "Switch conversion mode"
 msgstr "切换输入模式"
 
-#: ../engine/engine.py:259
+#: ../engine/engine.py:255
 msgid "Multiple segment"
 msgstr ""
 
-#: ../engine/engine.py:262
+#: ../engine/engine.py:258
 msgid "Single segment"
 msgstr ""
 
-#: ../engine/engine.py:265
+#: ../engine/engine.py:261
 msgid "Immediate conversion (Multiple segment)"
 msgstr ""
 
-#: ../engine/engine.py:268
+#: ../engine/engine.py:264
 msgid "Immediate conversion (Single segment)"
 msgstr ""
 
-#: ../engine/engine.py:283
+#: ../engine/engine.py:279
 msgid "Switch Dictionary"
 msgstr ""
 
+#: ../engine/engine.py:321
+msgid "Dictionary - Anthy"
+msgstr ""
+
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
-#: ../engine/engine.py:329
+#: ../engine/engine.py:326
 msgid "Dic"
 msgstr ""
 
-#: ../engine/engine.py:336
+#: ../engine/engine.py:333
 msgid "Configure dictionaries"
 msgstr ""
 
-#: ../engine/engine.py:341
+#: ../engine/engine.py:338
 msgid "Edit dictionaries"
 msgstr ""
 
-#: ../engine/engine.py:343
+#: ../engine/engine.py:340
 msgid "Launch the dictionary tool"
 msgstr ""
 
-#: ../engine/engine.py:346
+#: ../engine/engine.py:343
 msgid "Add words"
 msgstr ""
 
-#: ../engine/engine.py:348
+#: ../engine/engine.py:345
 msgid "Add words in the dictionary"
 msgstr ""
 
@@ -115,117 +124,237 @@ msgstr ""
 msgid "Anthy"
 msgstr ""
 
-#: ../setup/anthyprefs.py:215
+#: ../setup/anthyprefs.py.in:775
 msgid "General"
 msgstr ""
 
-#: ../setup/anthyprefs.py:226
+#: ../setup/anthyprefs.py.in:786
 msgid "Zip Code Conversion"
 msgstr ""
 
-#: ../setup/anthyprefs.py:238
+#: ../setup/anthyprefs.py.in:798
 msgid "Symbol"
 msgstr ""
 
-#: ../setup/main.py:85
+#: ../setup/main.py:86
 msgid "Command"
 msgstr ""
 
-#: ../setup/main.py:89
+#: ../setup/main.py:90
 msgid "Shortcut"
 msgstr ""
 
-#: ../setup/main.py:130
+#: ../setup/main.py:131
 msgid "Description"
 msgstr ""
 
 #. Translators: "Embd" means a short word of 'embedded'.
-#: ../setup/main.py:138
+#: ../setup/main.py:139
 msgid "Embd"
 msgstr ""
 
 #. Translators: "Sgl" means a short word of 'single'.
-#: ../setup/main.py:146
+#: ../setup/main.py:147
 msgid "Sgl"
 msgstr ""
 
-#: ../setup/main.py:301
+#: ../setup/main.py:262 ../setup/main.py:284
+msgid "Input Chars"
+msgstr ""
+
+#: ../setup/main.py:264 ../setup/main.py:286
+msgid "Output Chars"
+msgstr ""
+
+#: ../setup/main.py:312
+msgid "Input"
+msgstr ""
+
+#: ../setup/main.py:314
+msgid "Single"
+msgstr ""
+
+#: ../setup/main.py:316
+msgid "Left"
+msgstr ""
+
+#: ../setup/main.py:318
+msgid "Right"
+msgstr ""
+
+#: ../setup/main.py:393
+msgid "Customize Romaji Key Table"
+msgstr ""
+
+#: ../setup/main.py:394
+msgid "_Romaji Key Table"
+msgstr ""
+
+#: ../setup/main.py:395 ../setup/main.py:401 ../setup/setup.glade.h:87
+msgid "_Output Chars"
+msgstr ""
+
+#: ../setup/main.py:396 ../setup/main.py:402
+msgid "Default"
+msgstr ""
+
+#: ../setup/main.py:399
+msgid "Customize Kana Key Table"
+msgstr ""
+
+#: ../setup/main.py:400
+msgid "_Kana Key Table"
+msgstr ""
+
+#: ../setup/main.py:405
+msgid "Customize Thumb Shift Key Table"
+msgstr ""
+
+#: ../setup/main.py:406
+msgid "_Thumb Shift Key Table"
+msgstr ""
+
+#: ../setup/main.py:407
+msgid "Single _Output Chars"
+msgstr ""
+
+#: ../setup/main.py:408
+msgid "Base"
+msgstr ""
+
+#: ../setup/main.py:409
+msgid "NICOLA-J key extension"
+msgstr ""
+
+#: ../setup/main.py:410
+msgid "NICOLA-A key extension"
+msgstr ""
+
+#: ../setup/main.py:411
+msgid "NICOLA-F key extension"
+msgstr ""
+
+#: ../setup/main.py:412
+msgid "FMV KB231-J key extension"
+msgstr ""
+
+#: ../setup/main.py:413
+msgid "FMV KB231-A key extension"
+msgstr ""
+
+#: ../setup/main.py:414
+msgid "FMV KB231-F key extension"
+msgstr ""
+
+#: ../setup/main.py:415
+msgid "FMV KB611-J key extension"
+msgstr ""
+
+#: ../setup/main.py:416
+msgid "FMV KB611-A key extension"
+msgstr ""
+
+#: ../setup/main.py:417
+msgid "FMV KB611-F key extension"
+msgstr ""
+
+#: ../setup/main.py:562
 msgid "Your choosed file has already been added: "
 msgstr ""
 
-#: ../setup/main.py:305
+#: ../setup/main.py:566
 msgid "Your choosed file does not exist: "
 msgstr ""
 
-#: ../setup/main.py:309
+#: ../setup/main.py:570
 msgid "Your choosed file is a directory: "
 msgstr ""
 
-#: ../setup/main.py:313
+#: ../setup/main.py:574
 msgid "You cannot add dictionaries in the anthy private directory: "
 msgstr ""
 
-#: ../setup/main.py:320
+#: ../setup/main.py:581
 msgid "Your file path is not good: "
 msgstr ""
 
-#: ../setup/main.py:480
+#: ../setup/main.py:747
 msgid "Confirm"
 msgstr ""
 
-#: ../setup/main.py:481
+#: ../setup/main.py:748
 msgid "Are you sure to close Setup?"
 msgstr ""
 
-#: ../setup/main.py:494
+#: ../setup/main.py:761
 msgid "Notice!"
 msgstr ""
 
-#: ../setup/main.py:495
+#: ../setup/main.py:762
 msgid "Are you sure to close Setup without save configure?"
 msgstr ""
 
-#: ../setup/main.py:597 ../setup/main.py:683
+#: ../setup/main.py:866
+msgid "Please specify Input Chars"
+msgstr ""
+
+#: ../setup/main.py:869
+msgid "Please specify Output Chars"
+msgstr ""
+
+#: ../setup/main.py:872
+msgid "Please specify Left Thumb Shift Chars"
+msgstr ""
+
+#: ../setup/main.py:875
+msgid "Please specify Right Thumb Shift Chars"
+msgstr ""
+
+#: ../setup/main.py:888 ../setup/main.py:922
+msgid "Your custom key is not assigned in any sections. Maybe a bug."
+msgstr ""
+
+#: ../setup/main.py:981 ../setup/main.py:1067
 msgid "Your file does not exist: "
 msgstr ""
 
-#: ../setup/main.py:607
+#: ../setup/main.py:991
 msgid "Open Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:613
+#: ../setup/main.py:997
 msgid "Edit Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:627
+#: ../setup/main.py:1011
 msgid "Your choosed file is not correct."
 msgstr ""
 
-#: ../setup/main.py:656
+#: ../setup/main.py:1040
 msgid "You cannot delete the system dictionary."
 msgstr ""
 
-#: ../setup/main.py:679
+#: ../setup/main.py:1063
 msgid "Your file is not good."
 msgstr ""
 
-#: ../setup/main.py:708
+#: ../setup/main.py:1092
 msgid "View Dictionary File"
 msgstr ""
 
-#: ../setup/main.py:839
+#: ../setup/main.py:1242
 msgid "Please press a key (or a key combination)"
 msgstr ""
 
-#: ../setup/main.py:840
+#: ../setup/main.py:1243
 msgid "The dialog will be closed when the key is released"
 msgstr ""
 
-#: ../setup/main.py:859 ../setup/main.py:879
+#: ../setup/main.py:1262 ../setup/main.py:1282
 msgid "Invalid keysym"
 msgstr ""
 
-#: ../setup/main.py:860 ../setup/main.py:880
+#: ../setup/main.py:1263 ../setup/main.py:1283
 msgid "This keysym is not valid"
 msgstr ""
 
@@ -250,104 +379,102 @@ msgid "<b>Initial Setting</b>"
 msgstr ""
 
 #: ../setup/setup.glade.h:6
-msgid "<b>Other</b>"
+msgid "<b>Kana</b>"
 msgstr ""
 
 #: ../setup/setup.glade.h:7
-msgid "<b>Thumb Shift Layout</b>"
+msgid "<b>Other</b>"
 msgstr ""
 
 #: ../setup/setup.glade.h:8
-msgid ""
-"<span size='xx-large'><b>IBus-Anthy</b></span>\n"
-"\n"
-"<big>The Anthy engine for IBus input platform</big>\n"
-"\n"
-"URL : http://code.google.com/p/ibus/\n"
-"\n"
+msgid "<b>Romaji</b>"
 msgstr ""
 
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.glade.h:9
+msgid "<b>Thumb Shift Layout</b>"
+msgstr ""
+
+#: ../setup/setup.glade.h:10
 msgid "A_lternate"
 msgstr ""
 
-#: ../setup/setup.glade.h:16
+#: ../setup/setup.glade.h:11
 msgid "Abo_ut"
 msgstr ""
 
-#: ../setup/setup.glade.h:17
+#: ../setup/setup.glade.h:12
 msgid "Adjust IM layout to XKB layout"
 msgstr ""
 
-#: ../setup/setup.glade.h:18
+#: ../setup/setup.glade.h:13
 msgid "Adjust _input method layout to system keyboard layout"
 msgstr ""
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:14
 msgid "Behavior on _Focus Out:"
 msgstr ""
 
-#: ../setup/setup.glade.h:20
+#: ../setup/setup.glade.h:15
 msgid "Candidate _Window Page Size:"
 msgstr ""
 
-#: ../setup/setup.glade.h:21
+#: ../setup/setup.glade.h:16
 msgid ""
 "Clear\n"
 "Commit\n"
 "Hold\n"
 msgstr ""
 
-#: ../setup/setup.glade.h:25
+#: ../setup/setup.glade.h:20
 msgid "Co_ntrol"
 msgstr ""
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:21
 msgid "Con_vert spaces with the one column width"
 msgstr ""
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:22
 msgid "Conversion _Mode:"
 msgstr ""
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:23
 msgid "Convert _numbers with the one column width"
 msgstr ""
 
-#: ../setup/setup.glade.h:29
+#: ../setup/setup.glade.h:24
 msgid "Convert _symbols with the one column width"
 msgstr ""
 
-#: ../setup/setup.glade.h:30
+#: ../setup/setup.glade.h:25
 msgid "De_fault"
 msgstr ""
 
-#: ../setup/setup.glade.h:31
+#: ../setup/setup.glade.h:26
 msgid ""
 "Default\n"
 "ATOK\n"
 "Wnn\n"
 msgstr ""
 
-#: ../setup/setup.glade.h:35
+#: ../setup/setup.glade.h:30
 msgid "Dictionar_y"
 msgstr ""
 
-#: ../setup/setup.glade.h:36
+#: ../setup/setup.glade.h:31
 msgid ""
 "Do Nothing\n"
 "Auto Convert"
 msgstr ""
 
-#: ../setup/setup.glade.h:38
+#: ../setup/setup.glade.h:33
 msgid "Edit Shortcut"
 msgstr ""
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:34
 msgid "Enable the _reverse conversion"
 msgstr ""
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:35
 msgid ""
 "Hiragana\n"
 "Katakana\n"
@@ -356,29 +483,29 @@ msgid ""
 "Wide Latin"
 msgstr ""
 
-#: ../setup/setup.glade.h:45
+#: ../setup/setup.glade.h:40
 msgid "Input _Method Layout:"
 msgstr ""
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:41
 msgid ""
 "Keep Numpad Codes\n"
 "Convert Characters\n"
 msgstr ""
 
-#: ../setup/setup.glade.h:49
+#: ../setup/setup.glade.h:44
 msgid "Key Code:"
 msgstr ""
 
-#: ../setup/setup.glade.h:50
+#: ../setup/setup.glade.h:45
 msgid "Key bin_ding"
 msgstr ""
 
-#: ../setup/setup.glade.h:51
+#: ../setup/setup.glade.h:46
 msgid "Modifier:"
 msgstr ""
 
-#: ../setup/setup.glade.h:52
+#: ../setup/setup.glade.h:47
 msgid ""
 "Multiple segment\n"
 "Single segment\n"
@@ -386,148 +513,184 @@ msgid ""
 "Immediate conversion (Single segment)"
 msgstr ""
 
-#: ../setup/setup.glade.h:56
+#: ../setup/setup.glade.h:51
 msgid ""
 "NICOLA-J\n"
 "NICOLA-A\n"
 "NICOLA-F"
 msgstr ""
 
-#: ../setup/setup.glade.h:59
+#: ../setup/setup.glade.h:54
 msgid ""
 "None\n"
 "FMV KB231 key extension\n"
 "FMV KB611 key extension"
 msgstr ""
 
-#: ../setup/setup.glade.h:62
+#: ../setup/setup.glade.h:57
 msgid "Numpad _Key Type:"
 msgstr ""
 
-#: ../setup/setup.glade.h:63
+#: ../setup/setup.glade.h:58
 msgid "Restart ibus when you change XKB"
 msgstr ""
 
-#: ../setup/setup.glade.h:64
+#: ../setup/setup.glade.h:59
 msgid "Restart ibus when you change the keyboard layout."
 msgstr ""
 
-#: ../setup/setup.glade.h:65
+#: ../setup/setup.glade.h:60
+msgid "Right _Thumb Shift Key:"
+msgstr ""
+
+#: ../setup/setup.glade.h:61
 msgid ""
 "Romaji\n"
 "Kana\n"
 "Thumb shift"
 msgstr ""
 
-#: ../setup/setup.glade.h:68
+#: ../setup/setup.glade.h:64
 msgid "Seion + Shift can output Handakuon"
 msgstr ""
 
-#: ../setup/setup.glade.h:69
+#: ../setup/setup.glade.h:65
 msgid "Setup - IBus-Anthy"
 msgstr ""
 
-#: ../setup/setup.glade.h:70
+#: ../setup/setup.glade.h:66
 msgid ""
 "Strongly recommend to enable \"Use system keyboard layout\" check button in "
 "\"Advanced\" tab using 'ibus-setup' command"
 msgstr ""
 
-#: ../setup/setup.glade.h:71
+#: ../setup/setup.glade.h:67
 msgid "Symbo_l Style:"
 msgstr ""
 
-#: ../setup/setup.glade.h:72
+#: ../setup/setup.glade.h:68
+msgid "The Anthy engine for IBus input platform"
+msgstr ""
+
+#: ../setup/setup.glade.h:69
 msgid "Thumb S_hift"
 msgstr ""
 
-#: ../setup/setup.glade.h:73
-msgid "Thumb Shift _Left Key:"
+#: ../setup/setup.glade.h:70
+msgid "Thumb _Shift Key Table:"
 msgstr ""
 
-#: ../setup/setup.glade.h:74
+#: ../setup/setup.glade.h:71
 msgid "You can change the order on language bar"
 msgstr ""
 
-#: ../setup/setup.glade.h:75
+#: ../setup/setup.glade.h:72
 msgid ""
 "You do not have to reconfigure XKB since this option changes IM layout only "
 "with IM on."
 msgstr ""
 
-#: ../setup/setup.glade.h:76
+#: ../setup/setup.glade.h:73
 msgid ""
 "You do not have to reconfigure the system keyboard layout for \"Additional "
 "Key Arrangement\" since this option changes input method layout only in case "
 "input method is turned on."
 msgstr ""
 
-#: ../setup/setup.glade.h:77
+#: ../setup/setup.glade.h:74
 msgid "_Add Word Command:"
 msgstr ""
 
-#: ../setup/setup.glade.h:78
+#: ../setup/setup.glade.h:75
 msgid "_Additional Key Arrangement:"
 msgstr ""
 
-#: ../setup/setup.glade.h:79
+#: ../setup/setup.glade.h:76
 msgid "_Behavior on Period:"
 msgstr ""
 
-#: ../setup/setup.glade.h:80
+#: ../setup/setup.glade.h:77
 msgid "_Description:"
 msgstr ""
 
-#: ../setup/setup.glade.h:81
+#: ../setup/setup.glade.h:78
 msgid "_Edit Dictionary Command:"
 msgstr ""
 
-#: ../setup/setup.glade.h:82
+#: ../setup/setup.glade.h:79
 msgid "_Embed your dictionary in the system dictionary"
 msgstr ""
 
-#: ../setup/setup.glade.h:83
+#: ../setup/setup.glade.h:80
 msgid "_Enable semi-voiced sound mark with Shift key"
 msgstr ""
 
-#: ../setup/setup.glade.h:84
+#: ../setup/setup.glade.h:81
 msgid "_General"
 msgstr ""
 
-#: ../setup/setup.glade.h:85
+#: ../setup/setup.glade.h:82
+msgid "_Input Chars"
+msgstr ""
+
+#: ../setup/setup.glade.h:83
 msgid "_Input Mode:"
 msgstr ""
 
-#: ../setup/setup.glade.h:86
-msgid "_Period Style:"
+#: ../setup/setup.glade.h:84
+msgid "_Kana Key Table:"
 msgstr ""
 
-#: ../setup/setup.glade.h:87
-msgid "_Shift"
+#: ../setup/setup.glade.h:85
+msgid "_Left Thumb Shift"
+msgstr ""
+
+#: ../setup/setup.glade.h:86
+msgid "_Left Thumb Shift Key:"
 msgstr ""
 
 #: ../setup/setup.glade.h:88
-msgid "_Short Label:"
+msgid "_Period Style:"
 msgstr ""
 
 #: ../setup/setup.glade.h:89
-msgid "_Shortcut Type:"
+msgid "_Right Thumb Shift"
 msgstr ""
 
 #: ../setup/setup.glade.h:90
-msgid "_Thumb Shift Right Key:"
+msgid "_Romaji Key Table:"
 msgstr ""
 
 #: ../setup/setup.glade.h:91
-msgid "_Typing Method:"
+msgid "_Shift"
 msgstr ""
 
 #: ../setup/setup.glade.h:92
-msgid "_Use your dictionary alone with switching dictionaries"
+msgid "_Short Label:"
 msgstr ""
 
 #: ../setup/setup.glade.h:93
+msgid "_Shortcut Type:"
+msgstr ""
+
+#: ../setup/setup.glade.h:94
+msgid "_Typing Method"
+msgstr ""
+
+#: ../setup/setup.glade.h:95
+msgid "_Typing Method:"
+msgstr ""
+
+#: ../setup/setup.glade.h:96
+msgid "_Use your dictionary alone with switching dictionaries"
+msgstr ""
+
+#: ../setup/setup.glade.h:97
 msgid "_View"
+msgstr ""
+
+#: ../setup/setup.glade.h:98
+msgid "translator_credits"
 msgstr ""
 
 #, fuzzy
