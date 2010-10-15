@@ -1573,18 +1573,11 @@ FMV KB611 key extension</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="about">
+              <widget class="GtkVBox" id="about_vbox">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;span size='xx-large'&gt;&lt;b&gt;IBus-Anthy&lt;/b&gt;&lt;/span&gt;
-
-&lt;big&gt;The Anthy engine for IBus input platform&lt;/big&gt;
-
-URL : http://code.google.com/p/ibus/
-
-</property>
-                <property name="use_markup">True</property>
-                <property name="justify">center</property>
-                <property name="ellipsize">start</property>
+                <property name="orientation">vertical</property>
+                <property name="border_width">10</property>
+                <property name="spacing">6</property>
               </widget>
               <packing>
                 <property name="position">5</property>
@@ -2422,5 +2415,19 @@ URL : http://code.google.com/p/ibus/
         <property name="position">3</property>
       </packing>
     </child>
+  </widget>
+  <widget class="GtkAboutDialog" id="about_dialog">
+    <property name="program-name">IBus-Anthy</property>
+    <property name="copyright">Copyright (c) 2007-2008 Peng Huang
+Copyright (c) 2009 Hideaki ABE
+Copyright (c) 2009-2010 Takao Fujiwara
+Copyright (c) 2007-2010 Red Hat, Inc.</property>
+    <property name="comments" translatable="yes">The Anthy engine for IBus input platform</property>
+    <property name="license">GPL</property>
+    <property name="website">http://code.google.com/p/ibus/</property>
+    <property name="authors">Takao Fujiwara &lt;takao.fujiwara1@gmail.com&gt;</property>
+    <property name="translator-credits" translatable="yes">translator_credits</property>
+    <property name="logo-icon-name"></property>
+    <property name="wrap-license">True</property>
   </widget>
 </glade-interface>

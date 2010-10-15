@@ -58,6 +58,7 @@ anthyprefs.py: anthyprefs.py.in
 	sed -e "s|\@ANTHY_ZIPCODE_FILE\@|$(ANTHY_ZIPCODE_FILE)|g" \
 	    -e "s|\@KASUMI_EXEC_FILE\@|$(KASUMI_EXEC_FILE)|g" \
 	    -e "s|\@KASUMI_ICON_FILE\@|$(KASUMI_ICON_FILE)|g" \
+	    -e "s|\@VERSION\@|$(VERSION)|g" \
 	    -e "s|\@pkgdatadir\@|$(pkgdatadir)|g" \
 	$< > $@
 

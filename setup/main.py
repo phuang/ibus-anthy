@@ -167,6 +167,7 @@ class AnthySetup(object):
         self.__append_dicts_in_model()
 
         self.__init_japanese_sort()
+        self.__init_about_vbox(icon_path)
 
         xml.signal_autoconnect(self)
 
@@ -176,6 +177,24 @@ class AnthySetup(object):
         for index, c in enumerate(japanese_ordered_list):
             japanese_ordered_dict[c] = index
         self.__japanese_ordered_dict = japanese_ordered_dict;
+
+    def __init_about_vbox(self, icon_path):
+        about_dialog = self.xml.get_widget("about_dialog")
+        about_vbox = self.xml.get_widget("about_vbox")
+
+        about_dialog.set_version(self.prefs.get_version())
+        if icon_path != None:
+            image = gtk.image_new_from_file(icon_path)
+            about_dialog.set_logo(image.get_pixbuf())
+        content_area = about_dialog.get_content_area()
+        list = content_area.get_children()
+        vbox = list[0]
+        for w in vbox.get_children():
+            old_parent = w.parent
+            w.unparent()
+            w.set_parent_window(None)
+            w.emit("parent-set", old_parent)
+            about_vbox.pack_start(w, False, False, 0)
 
     def __get_userhome(self):
         if 'HOME' not in environ:

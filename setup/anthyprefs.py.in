@@ -78,6 +78,9 @@ class AnthyPrefs(Prefs):
     def get_japanese_ordered_list(self):
         return _japanese_ordered_list
 
+    def get_version(self):
+        return '@VERSION@'
+
 # Sad! dict.keys() doesn't return the saved order.
 # locale.strcoll() also just returns the Unicode code point.
 # Unicode order is wrong in Japanese large 'a' and small 'a'.
