@@ -21,7 +21,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # string, result, cont
-romaji_typing_rule = {
+romaji_typing_rule_static = {
     u"-" : u"ー",
     u"a" : u"あ",
     u"i" : u"い",
@@ -363,7 +363,7 @@ romaji_utf8_rule = {
 }
 
 # a port of 101kana.sty from scim-anthy
-kana_typing_rule = {
+kana_typing_rule_static = {
     # no modifiers keys
     u"1" : u"ぬ",
     u"2" : u"ふ",

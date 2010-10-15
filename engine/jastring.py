@@ -51,6 +51,9 @@ class JaString:
     def __init__(self, mode=TYPING_MODE_ROMAJI):
         self.__mode = mode
         self.reset()
+        romaji.RomajiSegment._init_romaji_typing_rule(self._prefs)
+        kana.KanaSegment._init_kana_typing_rule(self._prefs)
+        thumb.ThumbShiftSegment._init_thumb_typing_rule(self._prefs)
 
     def reset(self):
         self.__cursor = 0

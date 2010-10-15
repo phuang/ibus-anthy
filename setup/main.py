@@ -45,6 +45,7 @@ class AnthySetup(object):
         self.__config = Bus().get_config()
         self.__thumb_kb_layout_mode = None
         self.__thumb_kb_layout = None
+        self.__japanese_ordered_dict = {}
         self.prefs = prefs = AnthyPrefs(None, self.__config)
 
         localedir = getenv("IBUS_LOCALEDIR")
@@ -165,7 +166,16 @@ class AnthySetup(object):
         tv.set_model(ls)
         self.__append_dicts_in_model()
 
+        self.__init_japanese_sort()
+
         xml.signal_autoconnect(self)
+
+    def __init_japanese_sort(self):
+        japanese_ordered_dict = {}
+        japanese_ordered_list = self.prefs.get_japanese_ordered_list()
+        for index, c in enumerate(japanese_ordered_list):
+            japanese_ordered_dict[c] = index
+        self.__japanese_ordered_dict = japanese_ordered_dict;
 
     def __get_userhome(self):
         if 'HOME' not in environ:
@@ -195,6 +205,233 @@ class AnthySetup(object):
                                 message_format=message)
         dlg.run()
         dlg.destroy()
+
+    def __japanese_tuple_sort(self, a, b):
+        if a[1] == b[1]:
+            return cmp(a[0], b[0])
+        elif a[1] in self.__japanese_ordered_dict and \
+            b[1] in self.__japanese_ordered_dict:
+            return self.__japanese_ordered_dict[a[1]] - \
+                self.__japanese_ordered_dict[b[1]]
+        elif a[1] not in self.__japanese_ordered_dict and \
+            b[1] in self.__japanese_ordered_dict:
+            return 1
+        elif a[1] in self.__japanese_ordered_dict and \
+            b[1] not in self.__japanese_ordered_dict:
+            return -1
+        else:
+            return cmp(a[1], b[1])
+
+    def __japanese_thumb_sort(self, a, b):
+        return cmp(a[0], b[0])
+
+    def __get_romaji_treeview_custom_key_table(self, method):
+        prefs = self.prefs
+        rule = {}
+        ls = gtk.ListStore(str, str, str)
+        tv = self.xml.get_widget('treeview_custom_key_table')
+        section = 'romaji_typing_rule/' + str(method)
+        for key in prefs.keys(section):
+            key = str(key)
+            value = prefs.get_value(section, key)
+            # config.set_value(key, None) is not supported.
+            if value != None and value != '':
+                rule[key] = str(value)
+        for key, value in sorted(rule.items(), \
+            cmp = self.__japanese_tuple_sort):
+            ls.append(['romaji', key, value])
+        tv.append_column(gtk.TreeViewColumn(_(_("Input Chars")),
+                                            gtk.CellRendererText(), text=1))
+        tv.append_column(gtk.TreeViewColumn(_(_("Output Chars")),
+                                            gtk.CellRendererText(), text=2))
+        tv.set_model(ls)
+        return tv
+
+    def __get_kana_treeview_custom_key_table(self, method):
+        prefs = self.prefs
+        rule = {}
+        ls = gtk.ListStore(str, str, str)
+        tv = self.xml.get_widget('treeview_custom_key_table')
+        section = 'kana_typing_rule/' + str(method)
+        for key in prefs.keys(section):
+            key = str(key)
+            value = prefs.get_value(section, key)
+            # config.set_value(key, None) is not supported.
+            if value != None and value != '':
+                rule[key] = str(value)
+        for key, value in sorted(rule.items(), \
+            cmp = self.__japanese_tuple_sort):
+            ls.append(['kana', key, value])
+        tv.append_column(gtk.TreeViewColumn(_(_("Input Chars")),
+                                            gtk.CellRendererText(), text=1))
+        tv.append_column(gtk.TreeViewColumn(_(_("Output Chars")),
+                                            gtk.CellRendererText(), text=2))
+        tv.set_model(ls)
+        return tv
+
+    def __get_thumb_treeview_custom_key_table(self, method):
+        prefs = self.prefs
+        rule = {}
+        ls = gtk.ListStore(str, str, str, str, str)
+        tv = self.xml.get_widget('treeview_custom_key_table')
+        section = 'thumb_typing_rule/' + str(method)
+        for key in prefs.keys(section):
+            key = str(key)
+            value = prefs.get_value(section, key)
+            # config.set_value(key, None) is not supported.
+            if value != None and len(value) == 3 and \
+                ((value[0] != None and value[0] != '') or \
+                 (value[1] != None and value[1] != '') or \
+                 (value[2] != None and value[2] != '')):
+                rule[key] = {}
+                rule[key][0] = str(value[0])
+                rule[key][1] = str(value[1])
+                rule[key][2] = str(value[2])
+        for key, value in sorted(rule.items(), \
+            cmp = self.__japanese_thumb_sort):
+            ls.append(['thumb', key, value[0], value[2], value[1]])
+        tv.append_column(gtk.TreeViewColumn(_(_("Input")),
+                                            gtk.CellRendererText(), text=1))
+        tv.append_column(gtk.TreeViewColumn(_(_("Single")),
+                                            gtk.CellRendererText(), text=2))
+        tv.append_column(gtk.TreeViewColumn(_(_("Left")),
+                                            gtk.CellRendererText(), text=3))
+        tv.append_column(gtk.TreeViewColumn(_(_("Right")),
+                                            gtk.CellRendererText(), text=4))
+        tv.set_model(ls)
+        return tv
+
+    def __show_dialog_custom_key_table_extention(self, mode):
+        hbox_combo = self.xml.get_widget('hbox_for_combobox_custom_key_table')
+        label_left = self.xml.get_widget('label_left_thumb_shift_custom_key')
+        entry_left = self.xml.get_widget('entry_left_thumb_shift_custom_key')
+        label_right = self.xml.get_widget('label_right_thumb_shift_custom_key')
+        entry_right = self.xml.get_widget('entry_right_thumb_shift_custom_key')
+        if mode == "thumb":
+            hbox_combo.show()
+            label_left.show()
+            entry_left.show()
+            label_right.show()
+            entry_right.show()
+        else:
+            hbox_combo.hide()
+            label_left.hide()
+            entry_left.hide()
+            label_right.hide()
+            entry_right.hide()
+
+    def __connect_dialog_custom_key_table_buttons(self, mode):
+        tv = self.xml.get_widget('treeview_custom_key_table')
+        tv.get_selection().connect_after('changed',
+                                         self.on_selection_custom_key_table_changed, 0)
+        entry = self.xml.get_widget('entry_input_custom_key')
+        entry.connect('changed', self.on_entry_custom_key_changed, mode)
+        entry = self.xml.get_widget('entry_output_custom_key')
+        entry.connect('changed', self.on_entry_custom_key_changed, mode)
+        entry = self.xml.get_widget('entry_left_thumb_shift_custom_key')
+        entry.connect('changed', self.on_entry_custom_key_changed, mode)
+        entry = self.xml.get_widget('entry_right_thumb_shift_custom_key')
+        entry.connect('changed', self.on_entry_custom_key_changed, mode)
+        button = self.xml.get_widget('button_add_custom_key')
+        button.set_sensitive(False)
+        button.connect('clicked', self.on_btn_add_custom_key, mode)
+        button = self.xml.get_widget('button_remove_custom_key')
+        button.set_sensitive(False)
+        button.connect('clicked', self.on_btn_remove_custom_key, tv)
+
+    def __disconnect_dialog_custom_key_table_buttons(self):
+        tv = self.xml.get_widget('treeview_custom_key_table')
+        combobox = self.xml.get_widget('combobox_custom_key_table')
+        if tv != None:
+            for column in tv.get_columns():
+                tv.remove_column(column)
+            for child in tv.get_children():
+                tv.remove(child)
+            entry = self.xml.get_widget('entry_input_custom_key')
+            entry.disconnect_by_func(self.on_entry_custom_key_changed)
+            entry.set_text('')
+            entry = self.xml.get_widget('entry_output_custom_key')
+            entry.disconnect_by_func(self.on_entry_custom_key_changed)
+            entry.set_text('')
+            entry = self.xml.get_widget('entry_left_thumb_shift_custom_key')
+            entry.disconnect_by_func(self.on_entry_custom_key_changed)
+            entry = self.xml.get_widget('entry_right_thumb_shift_custom_key')
+            entry.disconnect_by_func(self.on_entry_custom_key_changed)
+            button = self.xml.get_widget('button_add_custom_key')
+            button.disconnect_by_func(self.on_btn_add_custom_key)
+            button = self.xml.get_widget('button_remove_custom_key')
+            button.disconnect_by_func(self.on_btn_remove_custom_key)
+        combobox.clear()
+        combobox.disconnect_by_func(self.on_cb_custom_key_table_changed)
+
+    def __run_dialog_custom_key_table(self, mode):
+        prefs = self.prefs
+        dlg = self.xml.get_widget('dialog_custom_key_table')
+        label = self.xml.get_widget('label_custom_key_table')
+        label_output = self.xml.get_widget('label_output_custom_key')
+        list_labels = []
+        if mode == "romaji":
+            dlg.set_title(_("Customize Romaji Key Table"))
+            label.set_label(_("_Romaji Key Table"))
+            label_output.set_label(_("_Output Chars"))
+            list_labels = [["default", _("Default")]]
+            self.__show_dialog_custom_key_table_extention(mode)
+        elif mode == "kana":
+            dlg.set_title(_("Customize Kana Key Table"))
+            label.set_label(_("_Kana Key Table"))
+            label_output.set_label(_("_Output Chars"))
+            list_labels = [["default", _("Default")]]
+            self.__show_dialog_custom_key_table_extention(mode)
+        elif mode == "thumb":
+            dlg.set_title(_("Customize Thumb Shift Key Table"))
+            label.set_label(_("_Thumb Shift Key Table"))
+            label_output.set_label(_("Single _Output Chars"))
+            list_labels = [["base", _("Base")],
+                           ["nicola_j_table", _("NICOLA-J key extension")],
+                           ["nicola_a_table", _("NICOLA-A key extension")],
+                           ["nicola_f_table", _("NICOLA-F key extension")],
+                           ["kb231_j_fmv_table", _("FMV KB231-J key extension")],
+                           ["kb231_a_fmv_table", _("FMV KB231-A key extension")],
+                           ["kb231_f_fmv_table", _("FMV KB231-F key extension")],
+                           ["kb611_j_fmv_table", _("FMV KB611-J key extension")],
+                           ["kb611_a_fmv_table", _("FMV KB611-A key extension")],
+                           ["kb611_f_fmv_table", _("FMV KB611-F key extension")],
+                          ]
+            self.__show_dialog_custom_key_table_extention(mode)
+        ls = gtk.ListStore(str, str)
+        for s in list_labels:
+            ls.append([s[1], s[0]])
+        renderer = gtk.CellRendererText()
+        combobox = self.xml.get_widget('combobox_custom_key_table')
+        combobox.pack_start(renderer, True)
+        combobox.add_attribute(renderer, "text", 0)
+        combobox.set_model(ls)
+
+        tv = None
+        if mode == "romaji":
+            method = prefs.get_value('romaji_typing_rule', 'method')
+            if method == None:
+                method = 'default'
+            tv = self.__get_romaji_treeview_custom_key_table(method)
+        if mode == "kana":
+            method = prefs.get_value('kana_typing_rule', 'method')
+            if method == None:
+                method = 'default'
+            tv = self.__get_kana_treeview_custom_key_table(method)
+        if mode == "thumb":
+            method = prefs.get_value('thumb_typing_rule', 'method')
+            if method == None:
+                method = 'base'
+            tv = self.__get_thumb_treeview_custom_key_table(method)
+
+        self.__connect_dialog_custom_key_table_buttons(mode)
+        combobox.set_active(0)
+        combobox.connect("changed", self.on_cb_custom_key_table_changed, mode)
+
+        id = dlg.run()
+        dlg.hide()
+
+        self.__disconnect_dialog_custom_key_table_buttons()
 
     def __set_thumb_kb_label(self):
         if self.__thumb_kb_layout_mode == None or \
@@ -475,6 +712,10 @@ class AnthySetup(object):
         for name in [['btn_default', 'btn_edit'], ['button5', 'button6']][id]:
             set_sensitive(name, flg)
 
+    def on_selection_custom_key_table_changed(self, widget, id):
+        button = self.xml.get_widget('button_remove_custom_key')
+        button.set_sensitive(True)
+
     def on_main_delete(self, widget, event):
         self.on_btn_cancel_clicked(widget)
         return True
@@ -514,6 +755,24 @@ class AnthySetup(object):
         section, key = self.__get_section_key(widget.name)
         self.prefs.set_value(section, key, widget.get_active())
         self.xml.get_widget('btn_apply').set_sensitive(True)
+
+    def on_cb_custom_key_table_changed(self, widget, user_data):
+        tv = self.xml.get_widget('treeview_custom_key_table')
+        mode = user_data
+        id = widget.get_active()
+        model = widget.get_model()
+        method = model[id][1]
+        if tv != None:
+            for column in tv.get_columns():
+                tv.remove_column(column)
+            for child in tv.get_children():
+                tv.remove(child)
+        if mode == 'romaji':
+            tv = self.__get_romaji_treeview_custom_key_table(method)
+        elif mode == 'kana':
+            tv = self.__get_kana_treeview_custom_key_table(method)
+        elif mode == 'thumb':
+            tv = self.__get_thumb_treeview_custom_key_table(method)
 
     def on_sb_changed(self, widget):
         section, key = self.__get_section_key(widget.name)
@@ -556,6 +815,105 @@ class AnthySetup(object):
             self.prefs.set_value(sec, ls.get(it, 0)[0], s_to_l(new))
             ls.set(it, 1, new)
             self.xml.get_widget('btn_apply').set_sensitive(True)
+
+    def on_btn_romaji_custom_table_clicked(self, widget):
+        self.__run_dialog_custom_key_table("romaji")
+
+    def on_btn_kana_custom_table_clicked(self, widget):
+        self.__run_dialog_custom_key_table("kana")
+
+    def on_btn_thumb_custom_table_clicked(self, widget):
+        self.__run_dialog_custom_key_table("thumb")
+
+    def on_btn_add_custom_key(self, widget, user_data):
+        prefs = self.prefs
+        input = self.xml.get_widget('entry_input_custom_key')
+        output = self.xml.get_widget('entry_output_custom_key')
+        left = self.xml.get_widget('entry_left_thumb_shift_custom_key')
+        right = self.xml.get_widget('entry_right_thumb_shift_custom_key')
+        model = self.xml.get_widget('treeview_custom_key_table').get_model()
+        combobox = self.xml.get_widget('combobox_custom_key_table')
+        id = combobox.get_active()
+        model_combobox = combobox.get_model()
+        method = model_combobox[id][1]
+        type = user_data
+        section = None
+        key = input.get_text()
+        value = output.get_text()
+        left_text = left.get_text()
+        right_text = right.get_text()
+
+        if key == None:
+            self.__run_message_dialog(_("Please specify Input Chars"))
+            return
+        elif value == None:
+            self.__run_message_dialog(_("Please specify Output Chars"))
+            return
+        elif type == 'thumb' and left_text == None:
+            self.__run_message_dialog(_("Please specify Left Thumb Shift Chars"))
+            return
+        elif type == 'thumb' and right_text == None:
+            self.__run_message_dialog(_("Please specify Right Thumb Shift Chars"))
+            return
+
+        if type == 'romaji':
+            section = 'romaji_typing_rule/' + method
+            model.append([type, key, value])
+        elif type == 'kana':
+            section = 'kana_typing_rule/' + method
+            model.append([type, key, value])
+        elif type == 'thumb':
+            section = 'thumb_typing_rule/' + method
+            model.append([type, key, value, left_text, right_text])
+        if section == None:
+            self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
+            return
+        if section not in prefs.sections():
+            prefs.set_new_section(section)
+        if key not in prefs.keys(section):
+            prefs.set_new_key(section, key)
+        if type != 'thumb':
+            prefs.set_value(section, key, value)
+        else:
+            prefs.set_value(section, key, [value, right_text, left_text])
+            left.set_text('')
+            right.set_text('')
+        input.set_text('')
+        output.set_text('')
+        self.xml.get_widget('btn_apply').set_sensitive(True)
+
+    def on_btn_remove_custom_key(self, widget, user_data):
+        prefs = self.prefs
+        combobox = self.xml.get_widget('combobox_custom_key_table')
+        id = combobox.get_active()
+        model_combobox = combobox.get_model()
+        method = model_combobox[id][1]
+        tv = user_data
+        l, i = tv.get_selection().get_selected()
+        type = l[i][0]
+        key = l[i][1]
+        section = None
+        if type == 'romaji':
+            section = 'romaji_typing_rule/' + method
+        elif type == 'kana':
+            section = 'kana_typing_rule/' + method
+        elif type == 'thumb':
+            section = 'thumb_typing_rule/' + method
+        if section == None:
+            self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
+            return
+        if section not in prefs.sections():
+            prefs.set_new_section(section)
+        if key not in prefs.keys(section):
+            prefs.set_new_key(section, key)
+        # config.set_value(key, None) is not supported.
+        if type != 'thumb':
+            prefs.set_value(section, key, '')
+        else:
+            prefs.set_value(section, key, ['', '', ''])
+        l.remove(i)
+        widget.set_sensitive(False)
+        self.xml.get_widget('btn_apply').set_sensitive(True)
 
     def on_btn_thumb_key_clicked(self, widget):
         if widget.name == 'thumb:button_ls':
@@ -810,6 +1168,25 @@ class AnthySetup(object):
         widget.e = (event.keyval, event.state)
         widget.response(gtk.RESPONSE_OK)
         return True
+
+    def on_entry_custom_key_changed(self, widget, user_data):
+        mode = user_data
+        input = self.xml.get_widget('entry_input_custom_key')
+        output = self.xml.get_widget('entry_output_custom_key')
+        left = self.xml.get_widget('entry_left_thumb_shift_custom_key')
+        right = self.xml.get_widget('entry_right_thumb_shift_custom_key')
+        button = self.xml.get_widget('button_add_custom_key')
+        if mode != "thumb":
+            if input.get_text() != "" and output.get_text() != "":
+                button.set_sensitive(True)
+            else:
+                button.set_sensitive(False)
+        else:
+            if input.get_text() != "" and output.get_text() != "" and \
+                left.get_text() != "" and right.get_text() != "":
+                button.set_sensitive(True)
+            else:
+                button.set_sensitive(False)
 
     def on_entry_dict_command_changed(self, widget):
         if not widget.get_text():

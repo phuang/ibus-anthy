@@ -27,11 +27,41 @@ import segment
 _UNFINISHED_HIRAGANA = set(u"かきくけこさしすせそたちつてとはひふへほ")
 
 class KanaSegment(segment.Segment):
+    _prefs = None
+    _kana_typing_rule_section = None
     
     def __init__(self, enchars=u"", jachars=u""):
         if not jachars:
-            jachars = kana_typing_rule.get(enchars, u"")
+            jachars = self.__get_kana_typing_rule(enchars, u"")
         super(KanaSegment, self).__init__(enchars, jachars)
+
+    @classmethod
+    def _init_kana_typing_rule(cls, prefs):
+        cls._prefs = prefs
+        if prefs == None:
+            cls._kana_typing_rule_section = None
+            return
+        method = prefs.get_value('kana_typing_rule', 'method')
+        if method == None:
+            method = 'default'
+        cls._kana_typing_rule_section = 'kana_typing_rule/' + method
+        if cls._kana_typing_rule_section not in prefs.sections():
+            cls._kana_typing_rule_section = None
+
+    def __get_kana_typing_rule(self, enchars, retval=None):
+        prefs = self._prefs
+        value = None
+        section = self._kana_typing_rule_section
+        if section != None:
+            if enchars in prefs.keys(section):
+                value = prefs.get_value(section, enchars)
+            if value == '':
+                value = None
+            if value == None:
+                value = retval 
+        else:
+            value = kana_typing_rule_static.get(enchars, retval)
+        return value
 
     def is_finished(self):
         return not (self._jachars in _UNFINISHED_HIRAGANA)
@@ -48,7 +78,7 @@ class KanaSegment(segment.Segment):
                 return []
             return [KanaSegment(enchar)]
         self._enchars = self._enchars + enchar
-        self._jachars = kana_typing_rule.get(self._enchars, u"")
+        self._jachars = self.__get_kana_typing_rule(self._enchars, u"")
         return []
 
     def prepend(self, enchar):
@@ -56,7 +86,7 @@ class KanaSegment(segment.Segment):
             return []
         if self._enchars == u"":
             self._enchars = enchar
-            self._jachars = kana_typing_rule.get(self._enchars, u"")
+            self._jachars = self.__get_kana_typing_rule(self._enchars, u"")
             return []
         return [KanaSegment(enchar)]
 
@@ -68,4 +98,4 @@ class KanaSegment(segment.Segment):
         enchars = list(self._enchars)
         del enchars[index]
         self._enchars = u"".join(enchars)
-        self._jachars = kana_typing_rule.get(self._enchars, u"")
+        self._jachars = self.__get_kana_typing_rule(self._enchars, u"")

@@ -28,12 +28,43 @@ def romaji_correction_rule_get(k, d):
     return (u'ん', k[1:2]) if k[0:1] == u'n' and not k[1:2] in u"aiueony'" else d
 
 class RomajiSegment(segment.Segment):
+    _prefs = None
+    _romaji_typing_rule_section = None
+
     def __init__(self, enchars=u"", jachars=u"", shift=False):
         if not jachars and not shift:
-            jachars = romaji_typing_rule.get(enchars, None)
+            jachars = self.__get_romaji_typing_rule(enchars, None)
             if jachars == None:
                 jachars = symbol_rule.get(enchars, u"")
         super(RomajiSegment, self).__init__(enchars, jachars)
+
+    @classmethod
+    def _init_romaji_typing_rule(cls, prefs):
+        cls._prefs = prefs
+        if prefs == None:
+            cls._romaji_typing_rule_section = None
+            return
+        method = prefs.get_value('romaji_typing_rule', 'method')
+        if method == None:
+            method = 'default'
+        cls._romaji_typing_rule_section = 'romaji_typing_rule/' + method
+        if cls._romaji_typing_rule_section not in prefs.sections():
+            cls._romaji_typing_rule_section = None
+
+    def __get_romaji_typing_rule(self, enchars, retval=None):
+        prefs = self._prefs
+        value = None
+        section = self._romaji_typing_rule_section
+        if section != None:
+            if enchars in prefs.keys(section):
+                value = prefs.get_value(section, enchars)
+            if value == '':
+                value = None
+            if value == None:
+                value = retval 
+        else:
+            value = romaji_typing_rule_static.get(enchars, retval)
+        return value
 
     def is_finished(self):
         return self._jachars != u""
@@ -49,7 +80,7 @@ class RomajiSegment(segment.Segment):
             self._enchars = text
             return []
 
-        jachars = romaji_typing_rule.get(text, None)
+        jachars = self.__get_romaji_typing_rule(text, None)
         if jachars == None:
             jachars = symbol_rule.get(text, None)
         if jachars:
@@ -73,7 +104,7 @@ class RomajiSegment(segment.Segment):
         for i in range(-min(4, len(text)), 0):
             enchars = text[i:]
 
-            jachars = romaji_typing_rule.get(enchars, None)
+            jachars = self.__get_romaji_typing_rule(enchars, None)
             if jachars == None:
                 jachars = symbol_rule.get(enchars, None)
             if jachars:
@@ -113,7 +144,7 @@ class RomajiSegment(segment.Segment):
             self._enchars = text
             return []
 
-        jachars = romaji_typing_rule.get(text, None)
+        jachars = self.__get_romaji_typing_rule(text, None)
         if jachars == None:
             jachars = symbol_rule.get(text, None)
         if jachars:
@@ -135,7 +166,7 @@ class RomajiSegment(segment.Segment):
         for i in range(min(4, len(text)), 0, -1):
             enchars = text[:i]
 
-            jachars = romaji_typing_rule.get(enchars, None)
+            jachars = self.__get_romaji_typing_rule(enchars, None)
             if jachars == None:
                 jachars = symbol_rule.get(enchars, None)
             if jachars:
@@ -169,7 +200,7 @@ class RomajiSegment(segment.Segment):
             enchars = list(self._enchars)
             del enchars[index]
             self._enchars = u"".join(enchars)
-            jachars = romaji_typing_rule.get(self._enchars, None)
+            jachars = self.__get_romaji_typing_rule(self._enchars, None)
             if jachars == None:
                 jachars = symbol_rule.get(self._enchars, u"")
             self._jachars = jachars

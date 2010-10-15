@@ -35,8 +35,9 @@ try:
 except ImportError:
     get_default_root_window = lambda : None
 
+_THUMB_BASIC_METHOD = 'base'
 
-_table = {
+_table_static = {
     'q': [u'。', u'',   u'ぁ'],
     'w': [u'か', u'が', u'え'],
     'e': [u'た', u'だ', u'り'],
@@ -87,7 +88,7 @@ _table = {
     '\\': [u'￥', u'',  u''],
 }
 
-_nicola_j_table = {
+_nicola_j_table_static = {
     ':': [u'：', u'',   u''],
     '@': [u'、', u'',   u''],
     '[': [u'゛', u'゜', u''],
@@ -97,7 +98,7 @@ _nicola_j_table = {
     '0': [u'0',  u'',   u''],
 }
 
-_nicola_a_table = {
+_nicola_a_table_static = {
     ':': [u'：', u'',   u''],
     '@': [u'＠', u'',   u''],
     '[': [u'、', u'',   u''],
@@ -107,7 +108,7 @@ _nicola_a_table = {
     '0': [u'0',  u'）', u''],
 }
 
-_nicola_f_table = {
+_nicola_f_table_static = {
     ':': [u'、', u'',   u''],
     '@': [u'＠', u'',   u''],
     '[': [u'゛', u'゜', u''],
@@ -117,28 +118,28 @@ _nicola_f_table = {
     '0': [u'0',  u'',   u''],
 }
 
-_kb231_j_fmv_table = {
+_kb231_j_fmv_table_static = {
     '3': [u'3',  u'',   u'～'],
     '0': [u'0',  u'『', u''],
     '-': [u'-',  u'』', u''],
     '=': [u'=',  u'',   u''],
 }
 
-_kb231_a_fmv_table = {
+_kb231_a_fmv_table_static = {
     '3': [u'3',  u'',   u'～'],
     '0': [u'0',  u'）', u''],
     '-': [u'-',  u'『', u''],
     '=': [u'=',  u'』', u''],
 }
 
-_kb231_f_fmv_table = {
+_kb231_f_fmv_table_static = {
     '3': [u'3',  u'',   u'～'],
     '0': [u'0',  u'『', u''],
     '-': [u'-',  u'』', u''],
     '=': [u'=',  u'',   u''],
 }
 
-_kb611_j_fmv_table = {
+_kb611_j_fmv_table_static = {
     '`':  [u'‘', u'',   u''],
     '^':  [u'々', u'£',  u''],
     ':':  [u'：', u'',   u''],
@@ -149,7 +150,7 @@ _kb611_j_fmv_table = {
     '\\': [u'￥', u'¦',  u''],
 }
 
-_kb611_a_fmv_table = {
+_kb611_a_fmv_table_static = {
     '`':  [u'々', u'',   u'£'],
     ':':  [u'：', u'',   u''],
     '@':  [u'＠', u'',   u''],
@@ -158,7 +159,7 @@ _kb611_a_fmv_table = {
     '\\': [u'￥', u'¦',  u''],
 }
 
-_kb611_f_fmv_table = {
+_kb611_f_fmv_table_static = {
     '`':  [u'‘', u'',   u''],
     '^':  [u'々', u'£',  u''],
     ':':  [u'、', u'¢',  u''],
@@ -176,13 +177,13 @@ _shift_table = {
     '>': u'ぽ',
 }
 
-table = {}
-r_table = {}
+table_static = {}
+r_table_static = {}
 
-for k in _table.keys():
-    table[ord(k)] = _table[k]
-    for c in _table[k]:
-        r_table[c] = k
+for k in _table_static.keys():
+    table_static[ord(k)] = _table_static[k]
+    for c in _table_static[k]:
+        r_table_static[c] = k
 
 kana_voiced_consonant_rule = {
     u"か゛" : u"が",
@@ -217,8 +218,8 @@ _UNFINISHED_HIRAGANA = set(u"かきくけこさしすせそたちつてとはひ
 class ThumbShiftKeyboard:
     def __init__(self, prefs=None):
         self.__prefs = prefs
-        self.__table = table
-        self.__r_table = r_table
+        self.__table = table_static
+        self.__r_table = r_table_static
         self.__shift_table = {}
         self.__ls = 0
         self.__rs = 0
@@ -227,54 +228,109 @@ class ThumbShiftKeyboard:
         self.__layout = 0
         self.__fmv_extension = 2
         self.__handakuten = False
+        self.__thumb_typing_rule_section = None
+        self.__init_thumb_typing_rule()
         if self.__prefs != None:
             self.reset()
             self.__reset_shift_table(False)
+
+    def __init_thumb_typing_rule(self):
+        prefs = self.__prefs
+        if prefs == None:
+            self.__thumb_typing_rule_section = None
+            return
+        method = prefs.get_value('thumb_typing_rule', 'method')
+        if method == None:
+            method = _THUMB_BASIC_METHOD
+        self.__thumb_typing_rule_section = 'thumb_typing_rule/' + method
+        if self.__thumb_typing_rule_section not in prefs.sections():
+            self.__thumb_typing_rule_section = None
 
     def __init_layout_table(self):
         if self.__table != {}:
             self.__table.clear()
         if self.__r_table != {}:
             self.__r_table.clear()
-        for k in _table.keys():
-            self.__table[ord(k)] = _table[k]
-            for c in _table[k]:
-                self.__r_table[c] = k
+        section = self.__thumb_typing_rule_section
+        if section != None:
+            prefs = self.__prefs
+            for k in prefs.keys(section):
+                value = prefs.get_value(section, k)
+                if len(value) == 3 and value[0] == '' and \
+                    value[1] == '' and value[2] == '':
+                    continue
+                self.__table[ord(k)] = value
+                for c in value:
+                    self.__r_table[c] = k
+        else:
+            for k in _table.keys():
+                self.__table[ord(k)] = _table_static[k]
+                for c in _table_static[k]:
+                    self.__r_table[c] = k
 
-    def __reset_layout_table(self, init, j_table, a_table, f_table):
+    def __reset_layout_table(self, init,
+                             j_table_label, j_table,
+                             a_table_label, a_table,
+                             f_table_label, f_table):
         if init:
             self.__init_layout_table()
+        method = None
         sub_table = None
         if self.__layout == 0:
+            method = j_table_label
             sub_table = j_table
         elif self.__layout == 1:
+            method = a_table_label
             sub_table = a_table
         elif self.__layout == 2:
+            method = f_table_label
             sub_table = f_table
-        if sub_table == None:
+        if method == None or sub_table == None:
             return
-        for k in sub_table.keys():
-            self.__table[ord(unicode(k))] = sub_table[k]
-            for c in sub_table[k]:
-                self.__r_table[c] = k
+        base_section = self.__thumb_typing_rule_section
+        sub_section = 'thumb_typing_rule/' + method
+        if base_section != None:
+            prefs = self.__prefs
+            for k in prefs.keys(sub_section):
+                value = prefs.get_value(sub_section, k)
+                if len(value) == 3 and value[0] == '' and \
+                    value[1] == '' and value[2] == '':
+                    continue
+                self.__table[ord(k)] = value
+                for c in value:
+                    self.__r_table[c] = k
+        else:
+            for k in sub_table.keys():
+                self.__table[ord(unicode(k))] = sub_table[k]
+                for c in sub_table[k]:
+                    self.__r_table[c] = k
 
     def __reset_extension_table(self, init):
         self.__reset_layout_table(init,
-                                  _nicola_j_table,
-                                  _nicola_a_table,
-                                  _nicola_f_table)
+                                  "nicola_j_table",
+                                  _nicola_j_table_static,
+                                  "nicola_a_table",
+                                  _nicola_a_table_static,
+                                  "nicola_f_table",
+                                  _nicola_f_table_static)
         if self.__fmv_extension == 0:
             return
         if self.__fmv_extension >= 1:
             self.__reset_layout_table(False,
-                                      _kb231_j_fmv_table,
-                                      _kb231_a_fmv_table,
-                                      _kb231_f_fmv_table)
+                                      "kb231_j_fmv_table",
+                                      _kb231_j_fmv_table_static,
+                                      "kb231_a_fmv_table",
+                                      _kb231_a_fmv_table_static,
+                                      "kb231_f_fmv_table",
+                                      _kb231_f_fmv_table_static)
         if self.__fmv_extension >= 2:
             self.__reset_layout_table(False,
-                                      _kb611_j_fmv_table,
-                                      _kb611_a_fmv_table,
-                                      _kb611_f_fmv_table)
+                                      "kb611_j_fmv_table",
+                                      _kb611_j_fmv_table_static,
+                                      "kb611_a_fmv_table",
+                                      _kb611_a_fmv_table_static,
+                                      "kb611_f_fmv_table",
+                                      _kb611_f_fmv_table_static)
 
     def __reset_shift_table(self, init):
         self.__reset_extension_table(init)
@@ -417,15 +473,51 @@ class ThumbShiftKeyboard:
 
 
 class ThumbShiftSegment(segment.Segment):
-    
+    _prefs = None
+    _thumb_typing_rule_section = None
+    _r_table = {}
+
     def __init__(self, enchars=u"", jachars=u""):
         if not jachars:
             if u'!' <= enchars <= u'~':
                 jachars = segment.unichar_half_to_full(enchars)
             else:
                 jachars = enchars
-                enchars = r_table.get(jachars, u'')
+                enchars = self._r_table.get(jachars, u'')
         super(ThumbShiftSegment, self).__init__(enchars, jachars)
+
+    @classmethod
+    def _init_thumb_typing_rule(cls, prefs):
+        cls._prefs = prefs
+        if prefs == None:
+            cls._thumb_typing_rule_section = None
+            return
+        method = prefs.get_value('thumb_typing_rule', 'method')
+        if method == None:
+            method = _THUMB_BASIC_METHOD
+        cls._thumb_typing_rule_section = 'thumb_typing_rule/' + method
+        if cls._thumb_typing_rule_section not in prefs.sections():
+            cls._thumb_typing_rule_section = None
+        cls._init_layout_table()
+
+    @classmethod
+    def _init_layout_table(cls):
+        if cls._r_table != {}:
+            cls._r_table.clear()
+        section = cls._thumb_typing_rule_section
+        if section != None:
+            prefs = cls._prefs
+            for k in prefs.keys(section):
+                value = prefs.get_value(section, k)
+                if len(value) == 3 and value[0] == '' and \
+                    value[1] == '' and value[2] == '':
+                    continue
+                for c in value:
+                    cls._r_table[c] = k
+        else:
+            for k in _table.keys():
+                for c in _table_static[k]:
+                    cls._r_table[c] = k
 
     def is_finished(self):
         return not (self._jachars in _UNFINISHED_HIRAGANA)
@@ -436,7 +528,7 @@ class ThumbShiftSegment(segment.Segment):
         text = self._jachars + enchar
         jachars = kana_voiced_consonant_rule.get(text, None)
         if jachars:
-            self._enchars = self._enchars + r_table.get(enchar, u'')
+            self._enchars = self._enchars + self._r_table.get(enchar, u'')
             self._jachars = jachars
             return []
         return [ThumbShiftSegment(enchar)]
@@ -449,7 +541,7 @@ class ThumbShiftSegment(segment.Segment):
                 self._enchars = enchar
                 self._jachars = segment.unichar_half_to_full(enchars)
             else:
-                self._enchars = r_table.get(enchar, u'')
+                self._enchars = self._r_table.get(enchar, u'')
                 self._jachars = enchar
             return []
         return [ThumbShiftSegment(enchar)]
