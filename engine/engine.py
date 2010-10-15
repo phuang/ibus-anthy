@@ -2051,6 +2051,16 @@ class Engine(ibus.EngineBase):
             self.__shrink_segment(1)
             return True
 
+    def __move_cursor_char_length(self, length):
+        if self.__input_mode == INPUT_MODE_HIRAGANA:
+            self.__preedit_ja_string.move_cursor_hiragana_length(length)
+        elif self.__input_mode == INPUT_MODE_KATAKANA:
+            self.__preedit_ja_string.move_cursor_katakana_length(length)
+        elif self.__input_mode == INPUT_MODE_HALF_WIDTH_KATAKANA:
+            self.__preedit_ja_string.move_cursor_half_with_katakana_length(length)
+        else:
+            self.__preedit_ja_string.move_cursor(length)
+
     def __commit_nth_segment(self, commit_index, keyval, state):
 
         if commit_index >= len(self.__segments):
@@ -2066,10 +2076,10 @@ class Engine(ibus.EngineBase):
             for i in xrange(0, commit_index + 1):
                 buf = self.__context.get_segment(i, NTH_UNCONVERTED_CANDIDATE)
                 commit_length += len(unicode(buf, "utf-8"))
-            self.__preedit_ja_string.move_cursor(commit_length - cursor)
+            self.__move_cursor_char_length(commit_length - cursor)
             for i in xrange(0, commit_length):
                 self.__preedit_ja_string.remove_before()
-            self.__preedit_ja_string.move_cursor(cursor - commit_length)
+            self.__move_cursor_char_length(cursor - commit_length)
 
             del self.__segments[0:commit_index + 1]
 
@@ -2080,7 +2090,7 @@ class Engine(ibus.EngineBase):
                 self.__cursor_pos -= (commit_index + 1)
             else:
                 self.__cursor_pos = 0
-            (seg_index, text) = self.__segments[self.__cursor_pos]
+            text, cursor = self.__get_preedit()
             self.__convert_chars = text
             self.__context.set_string(text.encode ("utf-8"))
 

@@ -132,6 +132,77 @@ class JaString:
         elif self.__cursor > len(self.__segments):
             self.__cursor = len(self.__segments)
 
+    # hiragana segments are not char lengths.
+    # e.g. 'ya' is 1 segment and 1 char and 'kya' is 1 segment and 2 chars.
+    def move_cursor_hiragana_length(self, length):
+        delta = length
+        if delta < 0:
+            if self.__cursor >= len(self.__segments):
+                delta = delta + (self.__cursor - len(self.__segments) + 1)
+                self.__cursor = len(self.__segments) - 1
+            while delta < 0:
+                text = unicode(self.__segments[self.__cursor].to_hiragana())
+                if len(text) > -delta:
+                    break
+                delta = delta + len(text)
+                self.__cursor = self.__cursor - 1
+        else:
+            if self.__cursor >= len(self.__segments):
+                self.__cursor = len(self.__segments)
+                return
+            while delta > 0:
+                text = unicode(self.__segments[self.__cursor].to_hiragana())
+                if len(text) > delta:
+                    break
+                delta = delta - len(text)
+                self.__cursor = self.__cursor + 1
+
+    def move_cursor_katakana_length(self, length):
+        delta = length
+        if delta < 0:
+            if self.__cursor >= len(self.__segments):
+                delta = delta + (self.__cursor - len(self.__segments) + 1)
+                self.__cursor = len(self.__segments) - 1
+            while delta < 0:
+                text = unicode(self.__segments[self.__cursor].to_katanaka())
+                if len(text) > -delta:
+                    break
+                delta = delta + len(text)
+                self.__cursor = self.__cursor - 1
+        else:
+            if self.__cursor >= len(self.__segments):
+                self.__cursor = len(self.__segments)
+                return
+            while delta > 0:
+                text = unicode(self.__segments[self.__cursor].to_katanaka())
+                if len(text) > delta:
+                    break
+                delta = delta - len(text)
+                self.__cursor = self.__cursor + 1
+
+    def move_cursor_half_with_katakana_length(self, length):
+        delta = length
+        if delta < 0:
+            if self.__cursor >= len(self.__segments):
+                delta = delta + (self.__cursor - len(self.__segments) + 1)
+                self.__cursor = len(self.__segments) - 1
+            while delta < 0:
+                text = unicode(self.__segments[self.__cursor].to_half_width_katakana())
+                if len(text) > -delta:
+                    break
+                delta = delta + len(text)
+                self.__cursor = self.__cursor - 1
+        else:
+            if self.__cursor >= len(self.__segments):
+                self.__cursor = len(self.__segments)
+                return
+            while delta > 0:
+                text = unicode(self.__segments[self.__cursor].to_half_width_katakana())
+                if len(text) > delta:
+                    break
+                delta = delta - len(text)
+                self.__cursor = self.__cursor + 1
+
     def _chk_text(self, s):
         period = self._prefs.get_value('common', 'period_style')
         symbol = self._prefs.get_value('common', 'symbol_style')
