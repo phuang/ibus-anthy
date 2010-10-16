@@ -3,15 +3,14 @@
 # Copyright (C) 1999-2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the ibus-anthy package.
 #
-# UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
 # Humbert Julien <julroy67@gmail.com>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
 "POT-Creation-Date: 2010-10-15 18:19+0900\n"
-"PO-Revision-Date: 2010-03-12 18:59+0100\n"
-"Last-Translator: Julien <julroy67@gmail.com>\n"
+"PO-Revision-Date: 2010-10-15 21:25+0100\n"
+"Last-Translator: Humbert Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +61,7 @@ msgstr "Thumb shift"
 
 #: ../engine/engine.py:227
 msgid "Preferences - Anthy"
-msgstr ""
+msgstr "Préférences – Anthy"
 
 #: ../engine/engine.py:229
 msgid "Configure Anthy"
@@ -93,9 +92,8 @@ msgid "Switch Dictionary"
 msgstr "Changer de dictionnaire"
 
 #: ../engine/engine.py:321
-#, fuzzy
 msgid "Dictionary - Anthy"
-msgstr "_Dictionnaire"
+msgstr "Dictionnaire – Anthy"
 
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
 #: ../engine/engine.py:326
@@ -160,112 +158,110 @@ msgstr "Embarqué"
 msgid "Sgl"
 msgstr "Seul"
 
-#: ../setup/main.py:262 ../setup/main.py:284
+#: ../setup/main.py:262
+#: ../setup/main.py:284
 msgid "Input Chars"
-msgstr ""
+msgstr "Caractères d'entrée"
 
-#: ../setup/main.py:264 ../setup/main.py:286
+#: ../setup/main.py:264
+#: ../setup/main.py:286
 msgid "Output Chars"
-msgstr ""
+msgstr "Caractères de sortie"
 
 #: ../setup/main.py:312
 msgid "Input"
-msgstr ""
+msgstr "Entrée"
 
 #: ../setup/main.py:314
-#, fuzzy
 msgid "Single"
-msgstr "Segments simples"
+msgstr "Seul"
 
 #: ../setup/main.py:316
 msgid "Left"
-msgstr ""
+msgstr "Gauche"
 
 #: ../setup/main.py:318
 msgid "Right"
-msgstr ""
+msgstr "Droite"
 
 #: ../setup/main.py:393
 msgid "Customize Romaji Key Table"
-msgstr ""
+msgstr "Modifier la table des touches Romaji"
 
 #: ../setup/main.py:394
 msgid "_Romaji Key Table"
-msgstr ""
+msgstr "Table des touches _Romaji"
 
-#: ../setup/main.py:395 ../setup/main.py:401 ../setup/setup.glade.h:87
+#: ../setup/main.py:395
+#: ../setup/main.py:401
+#: ../setup/setup.glade.h:87
 msgid "_Output Chars"
-msgstr ""
+msgstr "Caractères de s_ortie"
 
-#: ../setup/main.py:396 ../setup/main.py:402
-#, fuzzy
+#: ../setup/main.py:396
+#: ../setup/main.py:402
 msgid "Default"
-msgstr "Dé_faut"
+msgstr "Défaut"
 
 #: ../setup/main.py:399
 msgid "Customize Kana Key Table"
-msgstr ""
+msgstr "Modifier la table des touches Kana"
 
 #: ../setup/main.py:400
 msgid "_Kana Key Table"
-msgstr ""
+msgstr "Table des touches _Kana"
 
 #: ../setup/main.py:405
 msgid "Customize Thumb Shift Key Table"
-msgstr ""
+msgstr "Modifier la table des touches de la méthode Thumb Shift"
 
 #: ../setup/main.py:406
-#, fuzzy
 msgid "_Thumb Shift Key Table"
-msgstr "Touche Dr_oite pour la méthode Thumb Shift :"
+msgstr "Table des touches de la méthode _Thumb Shift"
 
 #: ../setup/main.py:407
 msgid "Single _Output Chars"
-msgstr ""
+msgstr "Caractère de s_ortie seul"
 
 #: ../setup/main.py:408
 msgid "Base"
-msgstr ""
+msgstr "Base"
 
 #: ../setup/main.py:409
 msgid "NICOLA-J key extension"
-msgstr ""
+msgstr "NICOLA-J key extension"
 
 #: ../setup/main.py:410
 msgid "NICOLA-A key extension"
-msgstr ""
+msgstr "NICOLA-A key extension"
 
 #: ../setup/main.py:411
 msgid "NICOLA-F key extension"
-msgstr ""
+msgstr "NICOLA-F key extension"
 
 #: ../setup/main.py:412
 msgid "FMV KB231-J key extension"
-msgstr ""
+msgstr "FMV KB231-J key extension"
 
 #: ../setup/main.py:413
 msgid "FMV KB231-A key extension"
-msgstr ""
+msgstr "FMV KB231-A key extension"
 
 #: ../setup/main.py:414
-#, fuzzy
 msgid "FMV KB231-F key extension"
-msgstr ""
-"Aucun\n"
-"FMV KB231 key extension\n"
-"FMV KB611 key extension"
+msgstr "FMV KB231-F key extension"
 
 #: ../setup/main.py:415
 msgid "FMV KB611-J key extension"
-msgstr ""
+msgstr "FMV KB611-J key extension"
 
 #: ../setup/main.py:416
 msgid "FMV KB611-A key extension"
-msgstr ""
+msgstr "FMV KB611-A key extension"
 
 #: ../setup/main.py:417
 msgid "FMV KB611-F key extension"
-msgstr ""
+msgstr "FMV KB611-F key extension"
 
 #: ../setup/main.py:562
 msgid "Your choosed file has already been added: "
@@ -281,8 +277,7 @@ msgstr "Le fichier que vous avez selectionné est un dossier : "
 
 #: ../setup/main.py:574
 msgid "You cannot add dictionaries in the anthy private directory: "
-msgstr ""
-"Vous ne pouvez pas ajouter de dictionnaire dans le dossier privé d'Anthy : "
+msgstr "Vous ne pouvez pas ajouter de dictionnaire dans le dossier privé d'Anthy : "
 
 #: ../setup/main.py:581
 msgid "Your file path is not good: "
@@ -302,31 +297,31 @@ msgstr "Attention !"
 
 #: ../setup/main.py:762
 msgid "Are you sure to close Setup without save configure?"
-msgstr ""
-"Êtes-vous sûr de fermer la fenêtre de configuration sans sauver les "
-"modifications ?"
+msgstr "Êtes-vous sûr de fermer la fenêtre de configuration sans sauver les modifications ?"
 
 #: ../setup/main.py:866
 msgid "Please specify Input Chars"
-msgstr ""
+msgstr "Veuillez spécifier les caractères d'entrée"
 
 #: ../setup/main.py:869
 msgid "Please specify Output Chars"
-msgstr ""
+msgstr "Veuillez spécifier les caractères de sortie"
 
 #: ../setup/main.py:872
 msgid "Please specify Left Thumb Shift Chars"
-msgstr ""
+msgstr "Veuillez spécifier les caractères Thumb Shift Gauche"
 
 #: ../setup/main.py:875
 msgid "Please specify Right Thumb Shift Chars"
-msgstr ""
+msgstr "Veuillez spécifier les caractères Thumb Shift Droit"
 
-#: ../setup/main.py:888 ../setup/main.py:922
+#: ../setup/main.py:888
+#: ../setup/main.py:922
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
-msgstr ""
+msgstr "Votre touche personnalisée n'est assignée à aucune section. Sans doute un bogue."
 
-#: ../setup/main.py:981 ../setup/main.py:1067
+#: ../setup/main.py:981
+#: ../setup/main.py:1067
 msgid "Your file does not exist: "
 msgstr "Le fichier que vous avez selectionné n'existe pas : "
 
@@ -362,18 +357,19 @@ msgstr "Veuillez appuyer sur une touche (ou une combinaison de touches)"
 msgid "The dialog will be closed when the key is released"
 msgstr "La fenêtre se fermera lorsque la touche sera relâchée"
 
-#: ../setup/main.py:1262 ../setup/main.py:1282
+#: ../setup/main.py:1262
+#: ../setup/main.py:1282
 msgid "Invalid keysym"
 msgstr "« keysym » invalide"
 
-#: ../setup/main.py:1263 ../setup/main.py:1283
+#: ../setup/main.py:1263
+#: ../setup/main.py:1283
 msgid "This keysym is not valid"
 msgstr "Le « keysym » est invalide"
 
 #: ../setup/setup.glade.h:1
 msgid "'～', 『', '¢', '£' and so on can be output with Thumb Shift key"
-msgstr ""
-"'～', 『', '¢', '£', etc. peuvent être tapées avec la méthode Thumb Shift"
+msgstr "'～', 『', '¢', '£', etc. peuvent être tapées avec la méthode Thumb Shift"
 
 #: ../setup/setup.glade.h:2
 msgid "<b>Behavior</b>"
@@ -392,18 +388,16 @@ msgid "<b>Initial Setting</b>"
 msgstr "<b>Configuration initiale</b>"
 
 #: ../setup/setup.glade.h:6
-#, fuzzy
 msgid "<b>Kana</b>"
-msgstr "<b>Comportement</b>"
+msgstr "<b>Kana</b>"
 
 #: ../setup/setup.glade.h:7
 msgid "<b>Other</b>"
 msgstr "<b>Autres options</b>"
 
 #: ../setup/setup.glade.h:8
-#, fuzzy
 msgid "<b>Romaji</b>"
-msgstr "<b>Comportement</b>"
+msgstr "<b>Romaji</b>"
 
 #: ../setup/setup.glade.h:9
 msgid "<b>Thumb Shift Layout</b>"
@@ -423,9 +417,7 @@ msgstr "Utilise la disposition clavier utilisée dans XKB pour l'IME"
 
 #: ../setup/setup.glade.h:13
 msgid "Adjust _input method layout to system keyboard layout"
-msgstr ""
-"Utiliser la di_sposition clavier système comme disposition pour la méthode "
-"d'entrée"
+msgstr "Utiliser la di_sposition clavier système comme disposition pour la méthode d'entrée"
 
 #: ../setup/setup.glade.h:14
 msgid "Behavior on _Focus Out:"
@@ -582,9 +574,8 @@ msgid "Restart ibus when you change the keyboard layout."
 msgstr "Redémarrez ibus lorsque vous changer la disposition clavier système."
 
 #: ../setup/setup.glade.h:60
-#, fuzzy
 msgid "Right _Thumb Shift Key:"
-msgstr "Touche Dr_oite pour la méthode Thumb Shift :"
+msgstr "Touche _Thumb Shift Droit"
 
 #: ../setup/setup.glade.h:61
 msgid ""
@@ -605,13 +596,8 @@ msgid "Setup - IBus-Anthy"
 msgstr "Configuration – IBus-Anthy"
 
 #: ../setup/setup.glade.h:66
-msgid ""
-"Strongly recommend to enable \"Use system keyboard layout\" check button in "
-"\"Advanced\" tab using 'ibus-setup' command"
-msgstr ""
-"Il est fortement recommandé de cocher la case pour l'option « Utiliser la "
-"disposition clavier système » dans l'onglet « Avancé » en utilisant la "
-"commande « ibus-setup »"
+msgid "Strongly recommend to enable \"Use system keyboard layout\" check button in \"Advanced\" tab using 'ibus-setup' command"
+msgstr "Il est fortement recommandé de cocher la case pour l'option « Utiliser la disposition clavier système » dans l'onglet « Avancé » en utilisant la commande « ibus-setup »"
 
 #: ../setup/setup.glade.h:67
 msgid "Symbo_l Style:"
@@ -619,39 +605,27 @@ msgstr "Style de _Symboles :"
 
 #: ../setup/setup.glade.h:68
 msgid "The Anthy engine for IBus input platform"
-msgstr ""
+msgstr "Le moteur Anthy pour la plateforme de saisie IBus"
 
 #: ../setup/setup.glade.h:69
 msgid "Thumb S_hift"
 msgstr "_Thumb Shift"
 
 #: ../setup/setup.glade.h:70
-#, fuzzy
 msgid "Thumb _Shift Key Table:"
-msgstr "Touche G_auche pour la méthode Thumb Shift :"
+msgstr "Table des touches Thumb Shift :"
 
 #: ../setup/setup.glade.h:71
 msgid "You can change the order on language bar"
 msgstr "Vous pouvez changer l'odre dans la barre de langue"
 
 #: ../setup/setup.glade.h:72
-msgid ""
-"You do not have to reconfigure XKB since this option changes IM layout only "
-"with IM on."
-msgstr ""
-"Vous n'avez pas besoin de reconfigurer XKB, puisque cette option ne change "
-"que la disposition de l'IME lorsque l'IME est activé."
+msgid "You do not have to reconfigure XKB since this option changes IM layout only with IM on."
+msgstr "Vous n'avez pas besoin de reconfigurer XKB, puisque cette option ne change que la disposition de l'IME lorsque l'IME est activé."
 
 #: ../setup/setup.glade.h:73
-msgid ""
-"You do not have to reconfigure the system keyboard layout for \"Additional "
-"Key Arrangement\" since this option changes input method layout only in case "
-"input method is turned on."
-msgstr ""
-"Vous n'avez pas besoin de reconfigurer la disposition clavier système pour "
-"profiter des « Arrangement des Touches Additionnelles », puisque cette "
-"option ne change la disposition de la méthode d'entrée que lorsque la "
-"méthode d'entrée est activée."
+msgid "You do not have to reconfigure the system keyboard layout for \"Additional Key Arrangement\" since this option changes input method layout only in case input method is turned on."
+msgstr "Vous n'avez pas besoin de reconfigurer la disposition clavier système pour profiter des « Arrangement des Touches Additionnelles », puisque cette option ne change la disposition de la méthode d'entrée que lorsque la méthode d'entrée est activée."
 
 #: ../setup/setup.glade.h:74
 msgid "_Add Word Command:"
@@ -687,7 +661,7 @@ msgstr "_Général"
 
 #: ../setup/setup.glade.h:82
 msgid "_Input Chars"
-msgstr ""
+msgstr "Caractères d'ent_rée"
 
 #: ../setup/setup.glade.h:83
 msgid "_Input Mode:"
@@ -695,30 +669,27 @@ msgstr "Méthode d'E_ntrée :"
 
 #: ../setup/setup.glade.h:84
 msgid "_Kana Key Table:"
-msgstr ""
+msgstr "Table des touches _Kana :"
 
 #: ../setup/setup.glade.h:85
-#, fuzzy
 msgid "_Left Thumb Shift"
-msgstr "_Thumb Shift"
+msgstr "Thumb Shift _Gauche"
 
 #: ../setup/setup.glade.h:86
-#, fuzzy
 msgid "_Left Thumb Shift Key:"
-msgstr "Touche Dr_oite pour la méthode Thumb Shift :"
+msgstr "Touche Thumb Shift _Gauche"
 
 #: ../setup/setup.glade.h:88
 msgid "_Period Style:"
 msgstr "Style de _Ponctuation :"
 
 #: ../setup/setup.glade.h:89
-#, fuzzy
 msgid "_Right Thumb Shift"
-msgstr "_Thumb Shift"
+msgstr "Thumb Shift D_roit"
 
 #: ../setup/setup.glade.h:90
 msgid "_Romaji Key Table:"
-msgstr ""
+msgstr "Table des touches _Romaji :"
 
 #: ../setup/setup.glade.h:91
 msgid "_Shift"
@@ -733,9 +704,8 @@ msgid "_Shortcut Type:"
 msgstr "Raccourcis _claviers :"
 
 #: ../setup/setup.glade.h:94
-#, fuzzy
 msgid "_Typing Method"
-msgstr "Méthode d'Éc_riture :"
+msgstr "Méthode d'Écri_ture :"
 
 #: ../setup/setup.glade.h:95
 msgid "_Typing Method:"
@@ -743,8 +713,7 @@ msgstr "Méthode d'Éc_riture :"
 
 #: ../setup/setup.glade.h:96
 msgid "_Use your dictionary alone with switching dictionaries"
-msgstr ""
-"_Utiliser votre dictionnaire seul lors du basculement des dictionnaires"
+msgstr "_Utiliser votre dictionnaire seul lors du basculement des dictionnaires"
 
 #: ../setup/setup.glade.h:97
 msgid "_View"
@@ -752,7 +721,7 @@ msgstr "_Voir"
 
 #: ../setup/setup.glade.h:98
 msgid "translator_credits"
-msgstr ""
+msgstr "Humbert Julien"
 
 #~ msgid ""
 #~ "<span size='xx-large'><b>IBus-Anthy</b></span>\n"
