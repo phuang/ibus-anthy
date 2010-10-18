@@ -230,6 +230,7 @@ class ThumbShiftKeyboard:
         self.__handakuten = False
         self.__thumb_typing_rule_section = None
         self.__init_thumb_typing_rule()
+        self.__init_layout_table()
         if self.__prefs != None:
             self.reset()
             self.__reset_shift_table(False)
