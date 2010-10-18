@@ -1181,10 +1181,10 @@ class AnthySetup(object):
                 widget.dc = False
 
     def on_key_input_dialog_key_press_event(self, widget, event):
+        widget.e = (event.keyval, event.state)
         return True
 
     def on_key_input_dialog_key_release_event(self, widget, event):
-        widget.e = (event.keyval, event.state)
         widget.response(gtk.RESPONSE_OK)
         return True
 

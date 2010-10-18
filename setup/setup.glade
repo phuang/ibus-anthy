@@ -1578,6 +1578,8 @@ FMV KB611 key extension</property>
                 <property name="orientation">vertical</property>
                 <property name="border_width">10</property>
                 <property name="spacing">6</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
               </widget>
               <packing>
                 <property name="position">5</property>
