@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2010-10-15 18:19+0900\n"
+"POT-Creation-Date: 2010-10-21 11:23+0900\n"
 "PO-Revision-Date: 2010-10-15 12:14+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -184,9 +184,9 @@ msgstr "右"
 msgid "Customize Romaji Key Table"
 msgstr "ローマ字キーテーブルのカスタマイズ"
 
-#: ../setup/main.py:394
-msgid "_Romaji Key Table"
-msgstr "ローマ字キーテーブル(_R)"
+#: ../setup/main.py:394 ../setup/setup.glade.h:90
+msgid "_Romaji Key Table:"
+msgstr "ローマ字キーテーブル(_R):"
 
 #: ../setup/main.py:395 ../setup/main.py:401 ../setup/setup.glade.h:87
 msgid "_Output Chars"
@@ -200,16 +200,16 @@ msgstr "デフォルト"
 msgid "Customize Kana Key Table"
 msgstr "かなキーテーブルのカスタマイズ"
 
-#: ../setup/main.py:400
-msgid "_Kana Key Table"
-msgstr "かなキーテーブル(_K)"
+#: ../setup/main.py:400 ../setup/setup.glade.h:84
+msgid "_Kana Key Table:"
+msgstr "かなキーテーブル(_K):"
 
 #: ../setup/main.py:405
 msgid "Customize Thumb Shift Key Table"
 msgstr "親指シフトキーテーブルのカスタマイズ"
 
 #: ../setup/main.py:406
-msgid "_Thumb Shift Key Table"
+msgid "_Thumb Shift Key Table:"
 msgstr "親指シフトキーテーブル(_T):"
 
 #: ../setup/main.py:407
@@ -672,10 +672,6 @@ msgstr "入力文字(_I)"
 msgid "_Input Mode:"
 msgstr "入力モード(_I):"
 
-#: ../setup/setup.glade.h:84
-msgid "_Kana Key Table:"
-msgstr "かなキーテーブル(_K):"
-
 #: ../setup/setup.glade.h:85
 msgid "_Left Thumb Shift"
 msgstr "左親指シフト(_L)"
@@ -691,10 +687,6 @@ msgstr "句読点スタイル(_P):"
 #: ../setup/setup.glade.h:89
 msgid "_Right Thumb Shift"
 msgstr "右親指シフト(_R)"
-
-#: ../setup/setup.glade.h:90
-msgid "_Romaji Key Table:"
-msgstr "ローマ字キーテーブル(_R):"
 
 #: ../setup/setup.glade.h:91
 msgid "_Shift"

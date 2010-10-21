@@ -391,19 +391,19 @@ class AnthySetup(object):
         list_labels = []
         if mode == "romaji":
             dlg.set_title(_("Customize Romaji Key Table"))
-            label.set_label(_("_Romaji Key Table"))
+            label.set_label(_("_Romaji Key Table:"))
             label_output.set_label(_("_Output Chars"))
             list_labels = [["default", _("Default")]]
             self.__show_dialog_custom_key_table_extention(mode)
         elif mode == "kana":
             dlg.set_title(_("Customize Kana Key Table"))
-            label.set_label(_("_Kana Key Table"))
+            label.set_label(_("_Kana Key Table:"))
             label_output.set_label(_("_Output Chars"))
             list_labels = [["default", _("Default")]]
             self.__show_dialog_custom_key_table_extention(mode)
         elif mode == "thumb":
             dlg.set_title(_("Customize Thumb Shift Key Table"))
-            label.set_label(_("_Thumb Shift Key Table"))
+            label.set_label(_("_Thumb Shift Key Table:"))
             label_output.set_label(_("Single _Output Chars"))
             list_labels = [["base", _("Base")],
                            ["nicola_j_table", _("NICOLA-J key extension")],

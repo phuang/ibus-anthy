@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2010-10-15 18:19+0900\n"
+"POT-Creation-Date: 2010-10-21 11:23+0900\n"
 "PO-Revision-Date: 2008-08-21 21:37+0800\n"
 "Last-Translator: Peng Huang <shawn.p.huang@gmail.com>\n"
 "Language-Team: Peng Huang <shawn.p.huang@gmail.com>\n"
@@ -186,8 +186,8 @@ msgstr ""
 msgid "Customize Romaji Key Table"
 msgstr ""
 
-#: ../setup/main.py:394
-msgid "_Romaji Key Table"
+#: ../setup/main.py:394 ../setup/setup.glade.h:90
+msgid "_Romaji Key Table:"
 msgstr ""
 
 #: ../setup/main.py:395 ../setup/main.py:401 ../setup/setup.glade.h:87
@@ -202,8 +202,8 @@ msgstr ""
 msgid "Customize Kana Key Table"
 msgstr ""
 
-#: ../setup/main.py:400
-msgid "_Kana Key Table"
+#: ../setup/main.py:400 ../setup/setup.glade.h:84
+msgid "_Kana Key Table:"
 msgstr ""
 
 #: ../setup/main.py:405
@@ -211,7 +211,7 @@ msgid "Customize Thumb Shift Key Table"
 msgstr ""
 
 #: ../setup/main.py:406
-msgid "_Thumb Shift Key Table"
+msgid "_Thumb Shift Key Table:"
 msgstr ""
 
 #: ../setup/main.py:407
@@ -637,10 +637,6 @@ msgstr ""
 msgid "_Input Mode:"
 msgstr ""
 
-#: ../setup/setup.glade.h:84
-msgid "_Kana Key Table:"
-msgstr ""
-
 #: ../setup/setup.glade.h:85
 msgid "_Left Thumb Shift"
 msgstr ""
@@ -655,10 +651,6 @@ msgstr ""
 
 #: ../setup/setup.glade.h:89
 msgid "_Right Thumb Shift"
-msgstr ""
-
-#: ../setup/setup.glade.h:90
-msgid "_Romaji Key Table:"
 msgstr ""
 
 #: ../setup/setup.glade.h:91
