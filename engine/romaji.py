@@ -57,7 +57,7 @@ class RomajiSegment(segment.Segment):
         section = self._romaji_typing_rule_section
         if section != None:
             if enchars in prefs.keys(section):
-                value = prefs.get_value(section, enchars)
+                value = unicode(str(prefs.get_value(section, enchars)))
             if value == '':
                 value = None
             if value == None:

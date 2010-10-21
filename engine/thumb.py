@@ -257,9 +257,13 @@ class ThumbShiftKeyboard:
             prefs = self.__prefs
             for k in prefs.keys(section):
                 value = prefs.get_value(section, k)
-                if len(value) == 3 and value[0] == '' and \
-                    value[1] == '' and value[2] == '':
+                if value == None or len(value) != 3 or \
+                   (str(value[0]) == '' and \
+                    str(value[1]) == '' and str(value[2]) == ''):
                     continue
+                value = [unicode(str(value[0])),
+                         unicode(str(value[1])),
+                         unicode(str(value[2]))]
                 self.__table[ord(k)] = value
                 for c in value:
                     self.__r_table[c] = k
@@ -510,9 +514,13 @@ class ThumbShiftSegment(segment.Segment):
             prefs = cls._prefs
             for k in prefs.keys(section):
                 value = prefs.get_value(section, k)
-                if len(value) == 3 and value[0] == '' and \
-                    value[1] == '' and value[2] == '':
+                if value == None or len(value) != 3 or \
+                   (str(value[0]) == '' and \
+                    str(value[1]) == '' and str(value[2]) == ''):
                     continue
+                value = [unicode(str(value[0])),
+                         unicode(str(value[1])),
+                         unicode(str(value[2]))]
                 for c in value:
                     cls._r_table[c] = k
         else:
