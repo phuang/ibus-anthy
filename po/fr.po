@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
 "POT-Creation-Date: 2010-10-15 18:19+0900\n"
-"PO-Revision-Date: 2010-10-15 21:25+0100\n"
+"PO-Revision-Date: 2010-10-20 22:16+0100\n"
 "Last-Translator: Humbert Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "Language: fr\n"
@@ -705,7 +705,7 @@ msgstr "Raccourcis _claviers :"
 
 #: ../setup/setup.glade.h:94
 msgid "_Typing Method"
-msgstr "Méthode d'Écri_ture :"
+msgstr "Méthode d'Écri_ture"
 
 #: ../setup/setup.glade.h:95
 msgid "_Typing Method:"
