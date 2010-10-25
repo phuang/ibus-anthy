@@ -23,5 +23,5 @@
 prefix=@prefix@
 datarootdir=@datarootdir@
 export IBUS_LOCALEDIR=@localedir@
-exec python @prefix@/share/ibus-anthy/setup/main.py $@
+exec @PYTHON@ @prefix@/share/ibus-anthy/setup/main.py $@
 
