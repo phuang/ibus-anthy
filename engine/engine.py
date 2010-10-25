@@ -738,6 +738,10 @@ class Engine(ibus.EngineBase):
         elif mode == 1:
             self.__on_key_return()
 
+    def reset(self):
+        self.__reset()
+        self.__invalidate()
+
     def do_destroy(self):
         if self.__idle_id != 0:
             gobject.source_remove(self.__idle_id)
