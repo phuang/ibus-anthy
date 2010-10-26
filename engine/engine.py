@@ -225,7 +225,7 @@ class Engine(ibus.EngineBase):
         self.__set_dict_config_props(anthy_props)
         anthy_props.append(ibus.Property(key=u"setup",
                                          label=UN(_("Preferences - Anthy")),
-                                         icon=u"preferences-desktop",
+                                         icon=u"gtk-preferences",
                                          tooltip=UN(_("Configure Anthy"))))
 
         return anthy_props
