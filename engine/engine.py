@@ -119,6 +119,7 @@ class Engine(ibus.EngineBase):
         self.__dict_mode = 0
         self.__prop_dict = {}
         self.__is_utf8 = (getpreferredencoding().lower() == "utf-8")
+        self.__ibus_version = 0
 
 #        self.__lookup_table = ibus.LookupTable(page_size=9, round=True)
         size = self.__prefs.get_value('common', 'page_size')
@@ -139,8 +140,21 @@ class Engine(ibus.EngineBase):
                                  'ImmediateMulti', 'ImmediateSingle'][mode]
         self.__segment_mode_activate(mode, ibus.PROP_STATE_CHECKED)
 
+        self.__init_ibus_version()
+
         # use reset to init values
         self.__reset()
+
+    def __init_ibus_version(self):
+        version_str = ibus.get_version()
+        if version_str == None:
+            return
+        versions = version_str.split('.')
+        if len(versions) < 3:
+            return
+        version_str = "%03d%03d%03d" % \
+            (int(versions[0]), int(versions[1]), int(versions[2]))
+        self.__ibus_version = long(version_str)
 
     # reset values of engine
     def __reset(self):
@@ -372,7 +386,14 @@ class Engine(ibus.EngineBase):
             self._remove_dict_file(file)
 
     def update_preedit(self, string, attrs, cursor_pos, visible):
-        self.update_preedit_text(ibus.Text(string, attrs), cursor_pos, visible)
+        mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
+        if self.__ibus_version >= 1003000 and mode == 1:
+            self.update_preedit_text(ibus.Text(string, attrs),
+                                     cursor_pos, visible,
+                                     ibus.common.IBUS_ENGINE_PREEDIT_COMMIT)
+        else:
+            self.update_preedit_text(ibus.Text(string, attrs),
+                                     cursor_pos, visible)
 
     def update_aux_string(self, string, attrs, visible):
         self.update_auxiliary_text(ibus.Text(string, attrs), visible)
@@ -727,16 +748,21 @@ class Engine(ibus.EngineBase):
     def focus_in(self):
         self.register_properties(self.__prop_list)
         self.__refresh_typing_mode_property()
+        mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
+        if mode == 2:
+            self.__update_input_chars()
 #        self.__reset()
 #        self.__invalidate()
 
     def focus_out(self):
         mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
-        if mode == 0:
+        if mode == 0 or mode == 1:
             self.__reset()
             self.__invalidate()
-        elif mode == 1:
-            self.__on_key_return()
+
+    def disable(self):
+        self.__reset()
+        self.__invalidate()
 
     def reset(self):
         self.__reset()
