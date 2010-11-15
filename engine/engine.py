@@ -151,6 +151,9 @@ class Engine(ibus.EngineBase):
             return
         versions = version_str.split('.')
         if len(versions) < 3:
+            print >> sys.stderr, \
+                "ibus.get_version returns incorrect str \"" + \
+                version_str + "\""
             return
         version_str = "%03d%03d%03d" % \
             (int(versions[0]), int(versions[1]), int(versions[2]))
