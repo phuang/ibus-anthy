@@ -695,24 +695,14 @@ class AnthySetup(object):
                 l[i] = [id, short_label, long_label, embed, single, reverse]
 
         key = 'short_label'
-        if key not in prefs.keys(section):
-            prefs.set_new_key(section, key)
         prefs.set_value(section, key, short_label)
         key = 'long_label'
-        if key not in prefs.keys(section):
-            prefs.set_new_key(section, key)
         prefs.set_value(section, key, long_label)
         key = 'embed'
-        if key not in prefs.keys(section):
-            prefs.set_new_key(section, key)
         prefs.set_value(section, key, embed)
         key = 'single'
-        if key not in prefs.keys(section):
-            prefs.set_new_key(section, key)
         prefs.set_value(section, key, single)
         key = 'reverse'
-        if key not in prefs.keys(section):
-            prefs.set_new_key(section, key)
         prefs.set_value(section, key, reverse)
 
     def __text_cell_data_cb(self, layout, renderer, model, iter, id):
@@ -887,10 +877,6 @@ class AnthySetup(object):
         if section == None:
             self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
             return
-        if section not in prefs.sections():
-            prefs.set_new_section(section)
-        if key not in prefs.keys(section):
-            prefs.set_new_key(section, key)
         if type != 'thumb':
             prefs.set_value(section, key, value)
         else:
@@ -921,10 +907,6 @@ class AnthySetup(object):
         if section == None:
             self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
             return
-        if section not in prefs.sections():
-            prefs.set_new_section(section)
-        if key not in prefs.keys(section):
-            prefs.set_new_key(section, key)
         # config.set_value(key, None) is not supported.
         if type != 'thumb':
             prefs.set_value(section, key, '')

@@ -57,6 +57,10 @@ class Prefs(object):
                 return self.default[section][key]
 
     def set_value(self, section, key, value):
+        if section not in self.sections():
+            self.set_new_section(section)
+        if key not in self.keys(section):
+            self.set_new_key(section, key)
         self.default[section][key]
         self.new.setdefault(section, {})[key] = value
 
