@@ -55,6 +55,10 @@ class KanaSegment(segment.Segment):
         if section != None:
             if enchars in prefs.keys(section):
                 value = unicode(str(prefs.get_value(section, enchars)))
+            else:
+                value = prefs.get_value_direct(section, enchars)
+                if value != None:
+                    value = unicode(str(value))
             if value == '':
                 value = None
             if value == None:

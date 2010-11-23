@@ -249,10 +249,17 @@ class AnthySetup(object):
         rule = {}
         ls = gtk.ListStore(str, str, str)
         tv = self.xml.get_widget('treeview_custom_key_table')
-        section = 'romaji_typing_rule/' + str(method)
+        section_base = 'romaji_typing_rule'
+        section = section_base + '/' + str(method)
         for key in prefs.keys(section):
             key = str(key)
             value = prefs.get_value(section, key)
+            # config.set_value(key, None) is not supported.
+            if value != None and value != '':
+                rule[key] = str(value)
+        for key in prefs.get_value(section_base, 'newkeys'):
+            key = str(key)
+            value = self.prefs.get_value_direct(section, key)
             # config.set_value(key, None) is not supported.
             if value != None and value != '':
                 rule[key] = str(value)
@@ -271,10 +278,17 @@ class AnthySetup(object):
         rule = {}
         ls = gtk.ListStore(str, str, str)
         tv = self.xml.get_widget('treeview_custom_key_table')
-        section = 'kana_typing_rule/' + str(method)
+        section_base = 'kana_typing_rule'
+        section = section_base + '/' + str(method)
         for key in prefs.keys(section):
             key = str(key)
             value = prefs.get_value(section, key)
+            # config.set_value(key, None) is not supported.
+            if value != None and value != '':
+                rule[key] = str(value)
+        for key in prefs.get_value(section_base, 'newkeys'):
+            key = str(key)
+            value = self.prefs.get_value_direct(section, key)
             # config.set_value(key, None) is not supported.
             if value != None and value != '':
                 rule[key] = str(value)
@@ -293,10 +307,23 @@ class AnthySetup(object):
         rule = {}
         ls = gtk.ListStore(str, str, str, str, str)
         tv = self.xml.get_widget('treeview_custom_key_table')
-        section = 'thumb_typing_rule/' + str(method)
+        section_base = 'thumb_typing_rule'
+        section = section_base + '/' + str(method)
         for key in prefs.keys(section):
             key = str(key)
             value = prefs.get_value(section, key)
+            # config.set_value(key, None) is not supported.
+            if value != None and len(value) == 3 and \
+                ((value[0] != None and value[0] != '') or \
+                 (value[1] != None and value[1] != '') or \
+                 (value[2] != None and value[2] != '')):
+                rule[key] = {}
+                rule[key][0] = str(value[0])
+                rule[key][1] = str(value[1])
+                rule[key][2] = str(value[2])
+        for key in prefs.get_value(section_base, 'newkeys'):
+            key = str(key)
+            value = self.prefs.get_value_direct(section, key)
             # config.set_value(key, None) is not supported.
             if value != None and len(value) == 3 and \
                 ((value[0] != None and value[0] != '') or \
@@ -846,7 +873,7 @@ class AnthySetup(object):
         model_combobox = combobox.get_model()
         method = model_combobox[id][1]
         type = user_data
-        section = None
+        section_base = None
         key = input.get_text()
         value = output.get_text()
         left_text = left.get_text()
@@ -866,17 +893,27 @@ class AnthySetup(object):
             return
 
         if type == 'romaji':
-            section = 'romaji_typing_rule/' + method
+            section_base = 'romaji_typing_rule'
             model.append([type, key, value])
         elif type == 'kana':
-            section = 'kana_typing_rule/' + method
+            section_base = 'kana_typing_rule'
             model.append([type, key, value])
         elif type == 'thumb':
-            section = 'thumb_typing_rule/' + method
+            section_base = 'thumb_typing_rule'
             model.append([type, key, value, left_text, right_text])
-        if section == None:
+        if section_base == None:
             self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
             return
+        section = section_base + '/' + method
+        if key not in prefs.keys(section):
+            # ibus does not support gconf_client_all_entries().
+            # prefs.fetch_section() doesn't get the keys if they exist
+            # in gconf only.
+            # Use newkeys for that way.
+            newkeys = prefs.get_value(section_base, 'newkeys')
+            if key not in newkeys:
+                newkeys.append(key)
+                prefs.set_value(section_base, 'newkeys', newkeys)
         if type != 'thumb':
             prefs.set_value(section, key, value)
         else:
@@ -897,16 +934,21 @@ class AnthySetup(object):
         l, i = tv.get_selection().get_selected()
         type = l[i][0]
         key = l[i][1]
-        section = None
+        section_base = None
         if type == 'romaji':
-            section = 'romaji_typing_rule/' + method
+            section_base = 'romaji_typing_rule'
         elif type == 'kana':
-            section = 'kana_typing_rule/' + method
+            section_base = 'kana_typing_rule'
         elif type == 'thumb':
-            section = 'thumb_typing_rule/' + method
-        if section == None:
+            section_base = 'thumb_typing_rule'
+        if section_base == None:
             self.__run_message_dialog(_("Your custom key is not assigned in any sections. Maybe a bug."))
             return
+        section = section_base + '/' + method
+        newkeys = prefs.get_value(section_base, 'newkeys')
+        if key in newkeys:
+            newkeys.remove(key)
+            prefs.set_value(section_base, 'newkeys', newkeys)
         # config.set_value(key, None) is not supported.
         if type != 'thumb':
             prefs.set_value(section, key, '')

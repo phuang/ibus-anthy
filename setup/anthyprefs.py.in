@@ -243,6 +243,11 @@ _config = {
 
     'romaji_typing_rule': {
         'method': 'default',
+        # The newkeys list is saved for every romaji_typing_rule/$method
+        # so that prefs.get_value_direct() is not used.
+        # prefs.fetch_section() doesn't get the keys if they exist
+        # in gconf only.
+        'newkeys': [],
     },
 
     'romaji_typing_rule/default': {
@@ -485,6 +490,7 @@ _config = {
 
     'kana_typing_rule': {
         'method': 'default',
+        'newkeys': [],
     },
 
     'kana_typing_rule/default': {
@@ -612,6 +618,16 @@ _config = {
 
     'thumb_typing_rule': {
         'method': 'base',
+        'newkeys': [],
+        'nicola_j_table_newkeys': [],
+        'nicola_a_table_newkeys': [],
+        'nicola_f_table_newkeys': [],
+        'kb231_j_fmv_table_newkeys': [],
+        'kb231_a_fmv_table_newkeys': [],
+        'kb231_f_fmv_table_newkeys': [],
+        'kb611_j_fmv_table_newkeys': [],
+        'kb611_a_fmv_table_newkeys': [],
+        'kb611_f_fmv_table_newkeys': [],
     },
 
     'thumb_typing_rule/base': {

@@ -56,6 +56,12 @@ class Prefs(object):
             except:
                 return self.default[section][key]
 
+    def get_value_direct(self, section, key, default=None):
+        s = section
+        section = '/'.join(
+            [s for s in '/'.join([self._prefix, section]).split('/') if s])
+        return self._config.get_value(section, key, default)
+
     def set_value(self, section, key, value):
         if section not in self.sections():
             self.set_new_section(section)

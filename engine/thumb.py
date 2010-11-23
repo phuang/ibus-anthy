@@ -228,6 +228,7 @@ class ThumbShiftKeyboard:
         self.__layout = 0
         self.__fmv_extension = 2
         self.__handakuten = False
+        self.__thumb_typing_rule_section_base = None
         self.__thumb_typing_rule_section = None
         self.__init_thumb_typing_rule()
         self.__init_layout_table()
@@ -243,7 +244,9 @@ class ThumbShiftKeyboard:
         method = prefs.get_value('thumb_typing_rule', 'method')
         if method == None:
             method = _THUMB_BASIC_METHOD
-        self.__thumb_typing_rule_section = 'thumb_typing_rule/' + method
+        self.__thumb_typing_rule_section_base = 'thumb_typing_rule'
+        self.__thumb_typing_rule_section = \
+            self.__thumb_typing_rule_section_base + '/' + method
         if self.__thumb_typing_rule_section not in prefs.sections():
             self.__thumb_typing_rule_section = None
 
@@ -252,26 +255,33 @@ class ThumbShiftKeyboard:
             self.__table.clear()
         if self.__r_table != {}:
             self.__r_table.clear()
+        section_base = self.__thumb_typing_rule_section_base
         section = self.__thumb_typing_rule_section
         if section != None:
             prefs = self.__prefs
             for k in prefs.keys(section):
                 value = prefs.get_value(section, k)
-                if value == None or len(value) != 3 or \
-                   (str(value[0]) == '' and \
-                    str(value[1]) == '' and str(value[2]) == ''):
-                    continue
-                value = [unicode(str(value[0])),
-                         unicode(str(value[1])),
-                         unicode(str(value[2]))]
-                self.__table[ord(k)] = value
-                for c in value:
-                    self.__r_table[c] = k
+                self.__set_bus_table(k, value)
+            for k in prefs.get_value(section_base, 'newkeys'):
+                value = prefs.get_value_direct(section, k)
+                self.__set_bus_table(k, value)
         else:
             for k in _table.keys():
                 self.__table[ord(k)] = _table_static[k]
                 for c in _table_static[k]:
                     self.__r_table[c] = k
+
+    def __set_bus_table(self, key, value):
+        if value == None or len(value) != 3 or \
+            (str(value[0]) == '' and \
+             str(value[1]) == '' and str(value[2]) == ''):
+            return
+        value = [unicode(str(value[0])),
+                 unicode(str(value[1])),
+                 unicode(str(value[2]))]
+        self.__table[ord(key)] = value
+        for c in value:
+            self.__r_table[c] = key
 
     def __reset_layout_table(self, init,
                              j_table_label, j_table,
@@ -292,18 +302,17 @@ class ThumbShiftKeyboard:
             sub_table = f_table
         if method == None or sub_table == None:
             return
-        base_section = self.__thumb_typing_rule_section
-        sub_section = 'thumb_typing_rule/' + method
-        if base_section != None:
+        section_base = self.__thumb_typing_rule_section_base
+        section = self.__thumb_typing_rule_section
+        sub_section = section_base + '/' + method
+        if section != None:
             prefs = self.__prefs
             for k in prefs.keys(sub_section):
                 value = prefs.get_value(sub_section, k)
-                if len(value) == 3 and value[0] == '' and \
-                    value[1] == '' and value[2] == '':
-                    continue
-                self.__table[ord(k)] = value
-                for c in value:
-                    self.__r_table[c] = k
+                self.__set_bus_table(k, value)
+            for k in prefs.get_value(section_base, method + '_newkeys'):
+                value = prefs.get_value_direct(sub_section, k)
+                self.__set_bus_table(k, value)
         else:
             for k in sub_table.keys():
                 self.__table[ord(unicode(k))] = sub_table[k]
@@ -479,6 +488,7 @@ class ThumbShiftKeyboard:
 
 class ThumbShiftSegment(segment.Segment):
     _prefs = None
+    _thumb_typing_rule_section_base = None
     _thumb_typing_rule_section = None
     _r_table = {}
 
@@ -500,7 +510,9 @@ class ThumbShiftSegment(segment.Segment):
         method = prefs.get_value('thumb_typing_rule', 'method')
         if method == None:
             method = _THUMB_BASIC_METHOD
-        cls._thumb_typing_rule_section = 'thumb_typing_rule/' + method
+        cls._thumb_typing_rule_section_base = 'thumb_typing_rule'
+        cls._thumb_typing_rule_section = \
+            cls._thumb_typing_rule_section_base + '/' + method
         if cls._thumb_typing_rule_section not in prefs.sections():
             cls._thumb_typing_rule_section = None
         cls._init_layout_table()
@@ -509,24 +521,32 @@ class ThumbShiftSegment(segment.Segment):
     def _init_layout_table(cls):
         if cls._r_table != {}:
             cls._r_table.clear()
+        section_base = cls._thumb_typing_rule_section_base
         section = cls._thumb_typing_rule_section
         if section != None:
             prefs = cls._prefs
             for k in prefs.keys(section):
                 value = prefs.get_value(section, k)
-                if value == None or len(value) != 3 or \
-                   (str(value[0]) == '' and \
-                    str(value[1]) == '' and str(value[2]) == ''):
-                    continue
-                value = [unicode(str(value[0])),
-                         unicode(str(value[1])),
-                         unicode(str(value[2]))]
-                for c in value:
-                    cls._r_table[c] = k
+                cls._set_bus_table(k, value)
+            for k in prefs.get_value(section_base, 'newkeys'):
+                value = prefs.get_value_direct(section, k)
+                cls._set_bus_table(k, value)
         else:
             for k in _table.keys():
                 for c in _table_static[k]:
                     cls._r_table[c] = k
+
+    @classmethod
+    def _set_bus_table(cls, key, value):
+        if value == None or len(value) != 3 or \
+            (str(value[0]) == '' and \
+             str(value[1]) == '' and str(value[2]) == ''):
+            return
+        value = [unicode(str(value[0])),
+                 unicode(str(value[1])),
+                 unicode(str(value[2]))]
+        for c in value:
+            cls._r_table[c] = key
 
     def is_finished(self):
         return not (self._jachars in _UNFINISHED_HIRAGANA)
