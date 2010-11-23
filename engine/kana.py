@@ -23,6 +23,7 @@
 from ibus import unichar_half_to_full
 from tables import *
 import segment
+import sys
 
 _UNFINISHED_HIRAGANA = set(u"かきくけこさしすせそたちつてとはひふへほ")
 
@@ -53,6 +54,13 @@ class KanaSegment(segment.Segment):
         value = None
         section = self._kana_typing_rule_section
         if section != None:
+            try:
+                # U+A5 needs to be UTF-8 since gconf values are
+                # disk saved values.
+                enchars = enchars.encode('utf-8')
+            except:
+                print >> sys.stderr, \
+                    "Failed to encode UTF-8:", enchars
             if enchars in prefs.keys(section):
                 value = unicode(str(prefs.get_value(section, enchars)))
             else:

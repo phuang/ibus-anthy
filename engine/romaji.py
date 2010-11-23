@@ -23,6 +23,7 @@
 from ibus import unichar_half_to_full
 from tables import *
 import segment
+import sys
 
 def romaji_correction_rule_get(k, d):
     return (u'ん', k[1:2]) if k[0:1] == u'n' and not k[1:2] in u"aiueony'" else d
@@ -56,6 +57,13 @@ class RomajiSegment(segment.Segment):
         value = None
         section = self._romaji_typing_rule_section
         if section != None:
+            try:
+                # U+A5 needs to be UTF-8 since gconf values are
+                # disk saved values.
+                enchars = enchars.encode('utf-8')
+            except:
+                print >> sys.stderr, \
+                    "Failed to encode UTF-8:", enchars
             if enchars in prefs.keys(section):
                 value = unicode(str(prefs.get_value(section, enchars)))
             else:
