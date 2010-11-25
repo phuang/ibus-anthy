@@ -107,7 +107,11 @@ class KanaSegment(segment.Segment):
             index = len(self._enchars) - 1
         if index < 0 or index >= len(self._enchars):
             raise IndexError("Out of bound")
-        enchars = list(self._enchars)
-        del enchars[index]
-        self._enchars = u"".join(enchars)
-        self._jachars = self.__get_kana_typing_rule(self._enchars, u"")
+        if self.is_finished():
+            self._enchars = u""
+            self._jachars = u""
+        else:
+            enchars = list(self._enchars)
+            del enchars[index]
+            self._enchars = u"".join(enchars)
+            self._jachars = self.__get_kana_typing_rule(self._enchars, u"")
