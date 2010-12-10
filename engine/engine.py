@@ -756,6 +756,9 @@ class Engine(ibus.EngineBase):
             self.__update_input_chars()
 #        self.__reset()
 #        self.__invalidate()
+        size = self.__prefs.get_value('common', 'page_size')
+        if size != self.__lookup_table.get_page_size():
+            self.__lookup_table.set_page_size(size)
 
     def focus_out(self):
         mode = self.__prefs.get_value('common', 'behavior_on_focus_out')
