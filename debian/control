@@ -1,0 +1,23 @@
+Source: ibus-anthy
+Section: utils
+Priority: optional
+Maintainer: IME Packaging Team <pkg-ime-devel@lists.alioth.debian.org>
+Uploaders: LI Daobing <lidaobing@debian.org>
+Build-Depends: debhelper (>= 7), autotools-dev, swig, python-dev (>= 2.5),
+ pkg-config, libanthy-dev, python-support, intltool
+Standards-Version: 3.9.1
+Homepage: http://code.google.com/p/ibus
+XS-Python-Version: >= 2.5
+Vcs-Bzr: lp:~pkg-ime/ibus/debian-ibus-anthy
+Vcs-Browser: https://code.launchpad.net/~pkg-ime/ibus/debian-ibus-anthy
+
+Package: ibus-anthy
+Architecture: any
+Depends: ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}, ibus (>= 1.2), anthy, kasumi
+XB-Python-Version: ${python:Versions}
+Description: anthy engine for IBus
+ IBus is an Intelligent Input Bus. It is a new input framework for Linux
+ OS. It provides full featured and user friendly input method user interface.
+ It also may help developers to develop input method easily.
+ .
+ IBus-Anthy is an input method (IM) for Japanese, based on IBus.

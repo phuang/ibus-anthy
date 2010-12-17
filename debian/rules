@@ -1,0 +1,53 @@
+#!/usr/bin/make -f
+
+config.status:
+	dh_testdir
+	cp -f /usr/share/misc/config.sub config.sub
+	cp -f /usr/share/misc/config.guess config.guess
+	dh_auto_configure -- \
+	  --with-anthy-zipcode="/usr/share/anthy/dic/zipcode.t"
+
+build: build-stamp
+build-stamp: config.status
+	dh_testdir
+	cd po; intltool-update --pot
+	touch $@
+
+clean:
+	dh_testdir
+	dh_testroot
+	[ ! -f Makefile ] || $(MAKE) distclean
+	rm -f config.sub config.guess
+	rm -f po/*.gmo
+	dh_clean build-stamp
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	$(MAKE) DESTDIR=$(CURDIR)/debian/ibus-anthy install
+
+binary-indep: install
+
+binary-arch: install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs -s
+	dh_installdocs -s AUTHORS README
+	dh_installexamples -s
+	dh_pysupport -s
+	dh_installman -s
+	dh_lintian -s
+	dh_link -s
+	dh_strip -s
+	dh_compress -s
+	dh_fixperms -s
+	dh_installdeb -s
+	dh_shlibdeps -s
+	dh_gencontrol -s
+	dh_md5sums -s
+	dh_builddeb -s
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

@@ -1,0 +1,132 @@
+ibus-anthy (1.2.5-1ppa1~maverick2) maverick; urgency=low
+
+  * New upstream release.
+  * debian/control:
+    - bump standards version to 3.9.1.
+    - add kasumi dependency.
+  * debian/rules:
+    - add --with-anthy-zipcode.
+
+ -- Takao Fujiwara <takao.fujiwara1@gmail.com>  Thu, 16 Dec 2010 21:50:16 +0900
+
+ibus-anthy (1.2.1-1) unstable; urgency=low
+
+  * New upstream release.
+    - debian/patches/broken-link: removed.
+    - debian/patches/zipcode-t-dir: removed.
+  * debian/control:
+    - set maintainer to IME team, add me to uploaders.
+    - update Vcs-* fields.
+
+ -- LI Daobing <lidaobing@debian.org>  Thu, 29 Apr 2010 20:21:17 +0800
+
+ibus-anthy (1.2.0.20100313-2) unstable; urgency=low
+
+  * debian/source/format: 3.0.
+  * Fix "ibus-anthy fails to start with "File exist" error" (Closes: #575540)
+    - debian/patches/broken-link: also remove broken link in ~/.anthy
+    - debian/patches/zipcode-t-dir: change the dir of zipcode.t
+
+ -- LI Daobing <lidaobing@debian.org>  Sat, 10 Apr 2010 18:39:23 +0800
+
+ibus-anthy (1.2.0.20100313-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control: bump standards version to 3.8.4. 
+
+ -- LI Daobing <lidaobing@debian.org>  Sun, 21 Mar 2010 18:36:23 +0800
+
+ibus-anthy (1.2.0.20100115-1) unstable; urgency=low
+
+  * New upstream release.
+    - fix convert_to_half do same as convert_to_half_katakana (LP: #475031) 
+
+ -- LI Daobing <lidaobing@debian.org>  Sun, 24 Jan 2010 16:17:50 +0800
+
+ibus-anthy (1.2.0.20091127-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- LI Daobing <lidaobing@debian.org>  Sat, 28 Nov 2009 14:15:30 +0800
+
+ibus-anthy (1.2.0.20090917-1) unstable; urgency=low
+
+  * new upstream release.
+
+ -- LI Daobing <lidaobing@debian.org>  Thu, 17 Sep 2009 19:37:06 +0800
+
+ibus-anthy (1.2.0.20090907-1) unstable; urgency=low
+
+  * new upstream release.
+  * debian/rules: update clean rule. 
+
+ -- LI Daobing <lidaobing@debian.org>  Mon, 14 Sep 2009 21:23:56 +0800
+
+ibus-anthy (1.2.0.20090813-2) unstable; urgency=low
+
+  [ Loïc Minier ]
+  * Drop useless CROSS logic in rules; build uses dh_auto_configure.
+  * Drop /usr/share/misc/config.{sub,.guess} conditionals since these are
+    always present (thanks to autotools-dev bdep).
+  * Drop bogus ibus-anthy.lintian-overrides since the binary truly lacks a
+    manpage.
+  * Pass -s to dh_* in binary-arch.
+  * Drop non-existent clean0 from .PHONY.
+  * Cleanup rules droppping boilerplate comments and superfluous whitespace.
+  * Add XS-Python-Version/XB-Python-Version: fields.
+  * Version the python-dev bdep to >= 2.5.
+  * Drop useless autoconf, automake, and libtool bdeps.
+  * Update pot file during build; bdep on intltool.
+
+  [ LI Daobing ]
+  * debian/control: bump standards version to 3.8.3. 
+
+ -- LI Daobing <lidaobing@debian.org>  Tue, 25 Aug 2009 19:19:26 +0800
+
+ibus-anthy (1.2.0.20090813-1) unstable; urgency=low
+  
+  * new upstream release.
+  * debian/control: change vcs url.
+
+ -- LI Daobing <lidaobing@debian.org>  Thu, 13 Aug 2009 21:48:20 +0800
+
+ibus-anthy (1.2.0.20090804-1) unstable; urgency=low
+
+  * new upstream release.
+
+ -- LI Daobing <lidaobing@debian.org>  Wed, 05 Aug 2009 20:31:23 +0800
+
+ibus-anthy (1.2.0.20090617-1) unstable; urgency=low
+
+  * new upstream release.
+  * debian/control: 
+    - depends on ibus >= 1.2
+    - bump standards version to 3.8.2
+
+ -- LI Daobing <lidaobing@debian.org>  Sat, 20 Jun 2009 23:15:11 +0800
+
+ibus-anthy (1.1.0.20090603-1) unstable; urgency=low
+
+  * new upstream release.
+
+ -- LI Daobing <lidaobing@debian.org>  Sat, 06 Jun 2009 16:58:31 +0800
+
+ibus-anthy (1.1.0.20090402-1) unstable; urgency=low
+
+  * initial release to Debian (closes: #521627)
+  * new upstream release.
+  * debian/debian/patches/01_rpath.dpatch: merged by upstream, removed.
+  * no patch is needed. remove dpatch from debian/*
+  * debian/control: 
+    - bump standards version to 3.8.1. 
+    - change maintainer's email.
+    - add ${python:Depends} to depends.
+
+ -- LI Daobing <lidaobing@debian.org>  Thu, 23 Apr 2009 19:47:11 +0800
+
+ibus-anthy (0.1.1.20080912-0ubuntu1) jaunty; urgency=low
+
+  * Initial release (LP: #312715)
+  * debian/patches/01_rpath.dpatch: remove rpath in Makefile.am
+
+ -- LI Daobing <lidaobing@gmail.com>  Fri, 13 Feb 2009 20:41:26 +0800
