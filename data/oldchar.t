@@ -18,15 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-dicts_DATA = \
-	oldchar.t \
-	symbol.t \
-	$(NULL)
-
-dictsdir = $(pkgdatadir)/dicts
-
-EXTRA_DIST = \
-        oldchar.t \
-        symbol.t \
-        $(NULL)
+#
+# This file was imported from im-dict-ja
+# im-dict-ja - Japanese word dictionary set for input method
+# http://github.com/fujiwarat/im-dict-ja
+#
+# Typing 'va' can convert 'ヷ' with this dictionary.
+う゛ぁ #T35*500 ヷ
+う゛ぃ #T35*500 ヸ
+う゛ぇ #T35*500 ヹ
+う゛ぉ #T35*500 ヺ

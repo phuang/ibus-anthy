@@ -359,7 +359,12 @@ romaji_correction_rule = {
 
 # EUC-JP and SJIS do not have the chars
 romaji_utf8_rule = {
-    u"ヴ" : (u"ゔ"),
+    u"う゛" : [u"ゔ"],
+}
+
+# Hiragana normalization is needed for the personal dict.
+romaji_normalize_rule = {
+    u"ヴ" : [u"う゛"],
 }
 
 # a port of 101kana.sty from scim-anthy

@@ -817,9 +817,11 @@ _config = {
     'dict': {
         'anthy_zipcode': ['@ANTHY_ZIPCODE_FILE@'],
         'ibus_symbol': ['@pkgdatadir@/dicts/symbol.t'],
+        'ibus_oldchar': ['@pkgdatadir@/dicts/oldchar.t'],
         'files': [
             '@ANTHY_ZIPCODE_FILE@',
             '@pkgdatadir@/dicts/symbol.t',
+            '@pkgdatadir@/dicts/oldchar.t',
         ],
     },
 
@@ -864,6 +866,17 @@ _config = {
         'icon': None,
         'short_label': '記',
         'long_label': N_("Symbol"),
+        'preview_lines': -1,
+        'reverse': False,
+        'is_system': True,
+    },
+
+    'dict/file/ibus_oldchar': {
+        'embed': False,
+        'single': True,
+        'icon': None,
+        'short_label': '旧',
+        'long_label': N_("Old Character Style"),
         'preview_lines': -1,
         'reverse': False,
         'is_system': True,
