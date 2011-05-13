@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-anthy 1.2\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2010-10-21 11:23+0900\n"
+"POT-Creation-Date: 2011-05-13 14:45+0900\n"
 "PO-Revision-Date: 2010-10-20 22:16+0100\n"
 "Last-Translator: Humbert Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -19,104 +19,104 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../engine/engine.py:170
+#: ../engine/engine.py:187
 msgid "Switch input mode"
 msgstr "Changer de méthode d'entrée"
 
-#: ../engine/engine.py:176
+#: ../engine/engine.py:193
 msgid "Hiragana"
 msgstr "Hiragana"
 
-#: ../engine/engine.py:179
+#: ../engine/engine.py:196
 msgid "Katakana"
 msgstr "Katakana"
 
-#: ../engine/engine.py:182
+#: ../engine/engine.py:199
 msgid "Half width katakana"
 msgstr "Half width katakana"
 
-#: ../engine/engine.py:185
+#: ../engine/engine.py:202
 msgid "Latin"
 msgstr "Latin"
 
-#: ../engine/engine.py:188
+#: ../engine/engine.py:205
 msgid "Wide Latin"
 msgstr "Latin large"
 
-#: ../engine/engine.py:202
+#: ../engine/engine.py:219
 msgid "Switch typing mode"
 msgstr "Changer de méthode d'écriture"
 
-#: ../engine/engine.py:208
+#: ../engine/engine.py:225
 msgid "Romaji"
 msgstr "Romaji"
 
-#: ../engine/engine.py:211
+#: ../engine/engine.py:228
 msgid "Kana"
 msgstr "Kana"
 
-#: ../engine/engine.py:214
+#: ../engine/engine.py:231
 msgid "Thumb shift"
 msgstr "Thumb shift"
 
-#: ../engine/engine.py:227
+#: ../engine/engine.py:244
 msgid "Preferences - Anthy"
 msgstr "Préférences – Anthy"
 
-#: ../engine/engine.py:229
+#: ../engine/engine.py:246
 msgid "Configure Anthy"
 msgstr "Configurer Anthy"
 
-#: ../engine/engine.py:249
+#: ../engine/engine.py:266
 msgid "Switch conversion mode"
 msgstr "Changer de méthode de conversion"
 
-#: ../engine/engine.py:255
+#: ../engine/engine.py:272
 msgid "Multiple segment"
 msgstr "Segments multiples"
 
-#: ../engine/engine.py:258
+#: ../engine/engine.py:275
 msgid "Single segment"
 msgstr "Segments simples"
 
-#: ../engine/engine.py:261
+#: ../engine/engine.py:278
 msgid "Immediate conversion (Multiple segment)"
 msgstr "Conversion immédiate (Segments multiples)"
 
-#: ../engine/engine.py:264
+#: ../engine/engine.py:281
 msgid "Immediate conversion (Single segment)"
 msgstr "Conversion immédiate (Segments simples)"
 
-#: ../engine/engine.py:279
+#: ../engine/engine.py:296
 msgid "Switch Dictionary"
 msgstr "Changer de dictionnaire"
 
-#: ../engine/engine.py:321
+#: ../engine/engine.py:338
 msgid "Dictionary - Anthy"
 msgstr "Dictionnaire – Anthy"
 
 #. Translators: "Dic" means 'dictionary', One kanji may be good.
-#: ../engine/engine.py:326
+#: ../engine/engine.py:343
 msgid "Dic"
 msgstr "Dico"
 
-#: ../engine/engine.py:333
+#: ../engine/engine.py:350
 msgid "Configure dictionaries"
 msgstr "Configurer les dictionnaires"
 
-#: ../engine/engine.py:338
+#: ../engine/engine.py:355
 msgid "Edit dictionaries"
 msgstr "Éditer les dictionnaires"
 
-#: ../engine/engine.py:340
+#: ../engine/engine.py:357
 msgid "Launch the dictionary tool"
 msgstr "Lancer l'utilitaire d'édition du dictionnaire"
 
-#: ../engine/engine.py:343
+#: ../engine/engine.py:360
 msgid "Add words"
 msgstr "Ajouter de nouveaux mots"
 
-#: ../engine/engine.py:345
+#: ../engine/engine.py:362
 msgid "Add words in the dictionary"
 msgstr "Ajouter de nouveaux mots dans le dictionnaire"
 
@@ -124,17 +124,21 @@ msgstr "Ajouter de nouveaux mots dans le dictionnaire"
 msgid "Anthy"
 msgstr "Anthy"
 
-#: ../setup/anthyprefs.py.in:775
+#: ../setup/anthyprefs.py.in:845
 msgid "General"
 msgstr "Général"
 
-#: ../setup/anthyprefs.py.in:786
+#: ../setup/anthyprefs.py.in:856
 msgid "Zip Code Conversion"
 msgstr "Conversion de Codes Postaux"
 
-#: ../setup/anthyprefs.py.in:798
+#: ../setup/anthyprefs.py.in:868
 msgid "Symbol"
 msgstr "Symboles"
+
+#: ../setup/anthyprefs.py.in:879
+msgid "Old Character Style"
+msgstr ""
 
 #: ../setup/main.py:86
 msgid "Command"
@@ -158,208 +162,208 @@ msgstr "Embarqué"
 msgid "Sgl"
 msgstr "Seul"
 
-#: ../setup/main.py:262 ../setup/main.py:284
+#: ../setup/main.py:269 ../setup/main.py:298
 msgid "Input Chars"
 msgstr "Caractères d'entrée"
 
-#: ../setup/main.py:264 ../setup/main.py:286
+#: ../setup/main.py:271 ../setup/main.py:300
 msgid "Output Chars"
 msgstr "Caractères de sortie"
 
-#: ../setup/main.py:312
+#: ../setup/main.py:339
 msgid "Input"
 msgstr "Entrée"
 
-#: ../setup/main.py:314
+#: ../setup/main.py:341
 msgid "Single"
 msgstr "Seul"
 
-#: ../setup/main.py:316
+#: ../setup/main.py:343
 msgid "Left"
 msgstr "Gauche"
 
-#: ../setup/main.py:318
+#: ../setup/main.py:345
 msgid "Right"
 msgstr "Droite"
 
-#: ../setup/main.py:393
+#: ../setup/main.py:420
 msgid "Customize Romaji Key Table"
 msgstr "Modifier la table des touches Romaji"
 
-#: ../setup/main.py:394 ../setup/setup.glade.h:90
+#: ../setup/main.py:421 ../setup/setup.glade.h:90
 msgid "_Romaji Key Table:"
 msgstr "Table des touches _Romaji :"
 
-#: ../setup/main.py:395 ../setup/main.py:401 ../setup/setup.glade.h:87
+#: ../setup/main.py:422 ../setup/main.py:428 ../setup/setup.glade.h:87
 msgid "_Output Chars"
 msgstr "Caractères de s_ortie"
 
-#: ../setup/main.py:396 ../setup/main.py:402
+#: ../setup/main.py:423 ../setup/main.py:429
 msgid "Default"
 msgstr "Défaut"
 
-#: ../setup/main.py:399
+#: ../setup/main.py:426
 msgid "Customize Kana Key Table"
 msgstr "Modifier la table des touches Kana"
 
-#: ../setup/main.py:400 ../setup/setup.glade.h:84
+#: ../setup/main.py:427 ../setup/setup.glade.h:84
 msgid "_Kana Key Table:"
 msgstr "Table des touches _Kana :"
 
-#: ../setup/main.py:405
+#: ../setup/main.py:432
 msgid "Customize Thumb Shift Key Table"
 msgstr "Modifier la table des touches de la méthode Thumb Shift"
 
-#: ../setup/main.py:406
+#: ../setup/main.py:433
 msgid "_Thumb Shift Key Table:"
 msgstr "Table des touches de la méthode _Thumb Shift :"
 
-#: ../setup/main.py:407
+#: ../setup/main.py:434
 msgid "Single _Output Chars"
 msgstr "Caractère de s_ortie seul"
 
-#: ../setup/main.py:408
+#: ../setup/main.py:435
 msgid "Base"
 msgstr "Base"
 
-#: ../setup/main.py:409
+#: ../setup/main.py:436
 msgid "NICOLA-J key extension"
 msgstr "NICOLA-J key extension"
 
-#: ../setup/main.py:410
+#: ../setup/main.py:437
 msgid "NICOLA-A key extension"
 msgstr "NICOLA-A key extension"
 
-#: ../setup/main.py:411
+#: ../setup/main.py:438
 msgid "NICOLA-F key extension"
 msgstr "NICOLA-F key extension"
 
-#: ../setup/main.py:412
+#: ../setup/main.py:439
 msgid "FMV KB231-J key extension"
 msgstr "FMV KB231-J key extension"
 
-#: ../setup/main.py:413
+#: ../setup/main.py:440
 msgid "FMV KB231-A key extension"
 msgstr "FMV KB231-A key extension"
 
-#: ../setup/main.py:414
+#: ../setup/main.py:441
 msgid "FMV KB231-F key extension"
 msgstr "FMV KB231-F key extension"
 
-#: ../setup/main.py:415
+#: ../setup/main.py:442
 msgid "FMV KB611-J key extension"
 msgstr "FMV KB611-J key extension"
 
-#: ../setup/main.py:416
+#: ../setup/main.py:443
 msgid "FMV KB611-A key extension"
 msgstr "FMV KB611-A key extension"
 
-#: ../setup/main.py:417
+#: ../setup/main.py:444
 msgid "FMV KB611-F key extension"
 msgstr "FMV KB611-F key extension"
 
-#: ../setup/main.py:562
+#: ../setup/main.py:593
 msgid "Your choosed file has already been added: "
 msgstr "Le fichier que vous avez selectionné a déjà été ajouté : "
 
-#: ../setup/main.py:566
+#: ../setup/main.py:597
 msgid "Your choosed file does not exist: "
 msgstr "Le fichier que vous avez selectionné n'existe pas : "
 
-#: ../setup/main.py:570
+#: ../setup/main.py:601
 msgid "Your choosed file is a directory: "
 msgstr "Le fichier que vous avez selectionné est un dossier : "
 
-#: ../setup/main.py:574
+#: ../setup/main.py:605
 msgid "You cannot add dictionaries in the anthy private directory: "
 msgstr ""
 "Vous ne pouvez pas ajouter de dictionnaire dans le dossier privé d'Anthy : "
 
-#: ../setup/main.py:581
+#: ../setup/main.py:612
 msgid "Your file path is not good: "
 msgstr "Le chemin du fichier selectionné est incorrect : "
 
-#: ../setup/main.py:747
+#: ../setup/main.py:768
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: ../setup/main.py:748
+#: ../setup/main.py:769
 msgid "Are you sure to close Setup?"
 msgstr "Êtes-vous sûr de vouloir fermer la fenêtre de configuration ?"
 
-#: ../setup/main.py:761
+#: ../setup/main.py:782
 msgid "Notice!"
 msgstr "Attention !"
 
-#: ../setup/main.py:762
+#: ../setup/main.py:783
 msgid "Are you sure to close Setup without save configure?"
 msgstr ""
 "Êtes-vous sûr de fermer la fenêtre de configuration sans sauver les "
 "modifications ?"
 
-#: ../setup/main.py:866
+#: ../setup/main.py:887
 msgid "Please specify Input Chars"
 msgstr "Veuillez spécifier les caractères d'entrée"
 
-#: ../setup/main.py:869
+#: ../setup/main.py:890
 msgid "Please specify Output Chars"
 msgstr "Veuillez spécifier les caractères de sortie"
 
-#: ../setup/main.py:872
+#: ../setup/main.py:893
 msgid "Please specify Left Thumb Shift Chars"
 msgstr "Veuillez spécifier les caractères Thumb Shift Gauche"
 
-#: ../setup/main.py:875
+#: ../setup/main.py:896
 msgid "Please specify Right Thumb Shift Chars"
 msgstr "Veuillez spécifier les caractères Thumb Shift Droit"
 
-#: ../setup/main.py:888 ../setup/main.py:922
+#: ../setup/main.py:909 ../setup/main.py:949
 msgid "Your custom key is not assigned in any sections. Maybe a bug."
 msgstr ""
 "Votre touche personnalisée n'est assignée à aucune section. Sans doute un "
 "bogue."
 
-#: ../setup/main.py:981 ../setup/main.py:1067
+#: ../setup/main.py:1009 ../setup/main.py:1095
 msgid "Your file does not exist: "
 msgstr "Le fichier que vous avez selectionné n'existe pas : "
 
-#: ../setup/main.py:991
+#: ../setup/main.py:1019
 msgid "Open Dictionary File"
 msgstr "Ouvrir un fichier de dictionnaire"
 
-#: ../setup/main.py:997
+#: ../setup/main.py:1025
 msgid "Edit Dictionary File"
 msgstr "Éditer le fichier de dictionnaire"
 
-#: ../setup/main.py:1011
+#: ../setup/main.py:1039
 msgid "Your choosed file is not correct."
 msgstr "Le fichier que vous avez selectionné est incorrect."
 
-#: ../setup/main.py:1040
+#: ../setup/main.py:1068
 msgid "You cannot delete the system dictionary."
 msgstr "Vous ne pouvez pas supprimer le dictionnaire système."
 
-#: ../setup/main.py:1063
+#: ../setup/main.py:1091
 msgid "Your file is not good."
 msgstr "Le fichier que vous avez selectionné n'est pas bon."
 
-#: ../setup/main.py:1092
+#: ../setup/main.py:1120
 msgid "View Dictionary File"
 msgstr "Voir le fichier de dictionnaire"
 
-#: ../setup/main.py:1242
+#: ../setup/main.py:1270
 msgid "Please press a key (or a key combination)"
 msgstr "Veuillez appuyer sur une touche (ou une combinaison de touches)"
 
-#: ../setup/main.py:1243
+#: ../setup/main.py:1271
 msgid "The dialog will be closed when the key is released"
 msgstr "La fenêtre se fermera lorsque la touche sera relâchée"
 
-#: ../setup/main.py:1262 ../setup/main.py:1282
+#: ../setup/main.py:1290 ../setup/main.py:1310
 msgid "Invalid keysym"
 msgstr "« keysym » invalide"
 
-#: ../setup/main.py:1263 ../setup/main.py:1283
+#: ../setup/main.py:1291 ../setup/main.py:1311
 msgid "This keysym is not valid"
 msgstr "Le « keysym » est invalide"
 
